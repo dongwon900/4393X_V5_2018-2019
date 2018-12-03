@@ -19,15 +19,17 @@ Controller controller;
 
 // LIFT SYSTEM //TODO update PID values
 const int LIFT_MOTOR = 3;
-const int NUM_HEIGHTS = 4;
-const int height1 = 20;
-const int height2 = 60;
-const int height3 = 100;
-const int height4 = 140;
-const int heights[NUM_HEIGHTS] = {height1, height2, height3, height4};
+const int NUM_HEIGHTS = 3;
+const int lift_floor = 20;
+const int lift_low = 60;
+const int lift_high = 100;
+const int heights[NUM_HEIGHTS] = {lift_floor, lift_low, lift_high};
 ControllerButton btnUp(ControllerDigital::R1);
 ControllerButton btnDown(ControllerDigital::R2);
+ControllerButton autoFlipButton(ControllerDigital::B);
+Motor liftMotor(LIFT_MOTOR);
 auto liftControl = AsyncControllerFactory::posIntegrated(LIFT_MOTOR);
+
 
 // SHOOTING SYSTEM
 const int LAUNCH_MOTOR = 4;
@@ -42,21 +44,32 @@ auto drive = ChassisControllerFactory::create({1,2}, {9,10});
 ControllerButton autoButton1(ControllerDigital::A);
 ControllerButton autoButton2(ControllerDigital::left);
 
+void displaySensorValuesOnBrain() {
+	pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
+									 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+									 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+
+	pros::lcd::print(0, "Lift PID: %d", liftMotor.getPosition());
+}
+
+void flipScoredEnemyCap() {
+	// set target to current PID + X
+	// FLIP
+	// go back down
+}
+
 void opcontrol() {
 	// LIFT SYSTEM
 	int goalHeight = 0;
 
 	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+	  displaySensorValuesOnBrain();
 
 		// DRIVETRAIN
 	  drive.tank(controller.getAnalog(ControllerAnalog::leftY),
-              controller.getAnalog(ControllerAnalog::rightY));
+              -1 * controller.getAnalog(ControllerAnalog::rightY));
 
 		// SHOOTING SYSTEM
-		// Don't power the launcher if it is all the way down
 		if (launcherLimitSwitch.isPressed()) {
   		launcherMotor.move_voltage(0);
 		} else {
@@ -67,14 +80,17 @@ void opcontrol() {
 			}
 		}
 
-		// LIFT LOGIC
+		// LIFT SYSTEM
 		if (btnUp.changedToPressed() && goalHeight < NUM_HEIGHTS - 1) {
-			// If the goal height is not at maximum and the up button is pressed, increase the setpoint
 			goalHeight++;
 			liftControl.setTarget(heights[goalHeight]);
 		} else if (btnDown.changedToPressed() && goalHeight > 0) {
 				goalHeight--;
 				liftControl.setTarget(heights[goalHeight]);
+		}
+
+		if (autoFlipButton.isPressed()) {
+			flipScoredEnemyCap();
 		}
 
 		// AUTO testing
