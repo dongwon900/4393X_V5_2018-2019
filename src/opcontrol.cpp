@@ -57,6 +57,8 @@ void displaySensorValuesOnBrain() {
 
 	pros::lcd::print(0, "Lift PID: %d", liftMotor.getRawPosition(NULL));
 	pros::lcd::print(1, "Limit Switch (H): %d", launcherLimitSwitch.isPressed());
+	// ultrasonic.get() returns 0 
+	// could try ultrasnoic.controllerGet() 
 	pros::lcd::print(2, "Ultrasonic: %d", ultrasonic.get());
 
 
