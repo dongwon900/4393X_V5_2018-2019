@@ -42,12 +42,13 @@ ControllerButton shootButton(ControllerDigital::A);
 // DRIVETRAIN
 auto drive = ChassisControllerFactory::create({1,2}, {9,10});
 
-// SENSOR POSITIONING
+// SENSOR POSITIONING //note: between 1100 and 1250 (11 and 12.5 cm) to score 
 ADIUltrasonic ultrasonic(1,2);
 
 // AUTO
 ControllerButton autoButton1(ControllerDigital::A);
 ControllerButton autoButton2(ControllerDigital::left);
+
 
 void displaySensorValuesOnBrain() {
 	pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
