@@ -42,8 +42,11 @@ ControllerButton shootButton(ControllerDigital::A);
 // DRIVETRAIN
 auto drive = ChassisControllerFactory::create({1,2}, {9,10});
 
-// SENSOR POSITIONING //note: between 1100 and 1250 (11 and 12.5 cm) to score 
-ADIUltrasonic ultrasonic(1,2);
+// SENSOR POSITIONING //note: between 1100 and 1250 (11 and 12.5 cm) to score
+#define ULTRA_ECHO_PORT 1
+#define ULTRA_PING_PORT 2
+//ADIUltrasonic ultrasonic(1,2);
+pros::ADIUltrasonic ultrasonic (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
 
 // AUTO
 ControllerButton autoButton1(ControllerDigital::A);
@@ -57,11 +60,7 @@ void displaySensorValuesOnBrain() {
 
 	pros::lcd::print(0, "Lift PID: %d", liftMotor.getRawPosition(NULL));
 	pros::lcd::print(1, "Limit Switch (H): %d", launcherLimitSwitch.isPressed());
-	// ultrasonic.get() returns 0 
-	// could try ultrasnoic.controllerGet() 
-	pros::lcd::print(2, "Ultrasonic: %d", ultrasonic.get());
-
-
+	pros::lcd::print(2, "Ultrasonic: %d", ultrasonic.get_value());
 }
 
 void flipScoredEnemyCap() {
@@ -71,7 +70,7 @@ void flipScoredEnemyCap() {
 }
 
 void goToWall() {
-	while (ultrasonic.get() > 100) {
+	while (ultrasonic.get_value() > 100) {
 	// Move forward until the robot is 100 cm from a solid object
 		drive.setMaxVoltage(127);
 	}
