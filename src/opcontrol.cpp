@@ -80,7 +80,7 @@ void goToWall() {
 	while (ultrasonicRight.get_value() > 1150 || ultrasonicLeft.get_value() > 1150) {
 	// Move forward until the robot is 11.5 cm from a solid object
 		//drive.setMaxVelocity(300); //   * Sets a new maximum velocity in RPM [0-600].
-		if (ultrasonicRight.get_value() > 1150) {}
+		if (ultrasonicRight.get_value() > 1150) {
 			drive.right(300);
 		}
 
@@ -88,8 +88,10 @@ void goToWall() {
 			drive.left(300);
 		}
 
-	drive.setMaxVoltage(0);
+		drive.setMaxVoltage(0);
+		}
 }
+
 
 void opcontrol() {
 	// LIFT SYSTEM
