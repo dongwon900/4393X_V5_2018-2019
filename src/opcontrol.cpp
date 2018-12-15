@@ -24,6 +24,14 @@ Controller controller;
 #define ULTRA_PING_PORT_LEFT 4
 #define LIFT_POTENTIOMETER_PORT 5
 
+// Controller Buttons
+ControllerButton btnUp(ControllerDigital::R1);
+ControllerButton btnDown(ControllerDigital::R2);
+ControllerButton autoFlipButton(ControllerDigital::B);
+ControllerButton shootButton(ControllerDigital::A);
+ControllerButton autoButton1(ControllerDigital::A);
+ControllerButton autoButton2(ControllerDigital::left);
+
 // LIFT SYSTEM //TODO update PID values
 const int LIFT_MOTOR = 3;
 const int NUM_HEIGHTS = 5;
@@ -33,9 +41,9 @@ const int lift_low = 1200;
 const int lift_high = 2000;
 const int lift_top = 2600;
 const int heights[NUM_HEIGHTS] = {lift_floor, lift_wall, lift_low, lift_high, lift_top};
-ControllerButton btnUp(ControllerDigital::R1);
-ControllerButton btnDown(ControllerDigital::R2);
-ControllerButton autoFlipButton(ControllerDigital::B);
+
+
+
 Motor liftMotor(LIFT_MOTOR);
 auto liftControl = AsyncControllerFactory::posIntegrated(LIFT_MOTOR);
 auto liftControlPot = AsyncControllerFactory::posPID(LIFT_MOTOR, Potentiometer(LIFT_POTENTIOMETER_PORT), 0.01, 0.0, 0.005);
@@ -44,7 +52,6 @@ auto liftControlPot = AsyncControllerFactory::posPID(LIFT_MOTOR, Potentiometer(L
 const int LAUNCH_MOTOR = 4;
 ADIButton launcherLimitSwitch('H');
 Motor launcherMotor(LAUNCH_MOTOR);
-ControllerButton shootButton(ControllerDigital::A);
 
 // DRIVETRAIN
 auto drive = ChassisControllerFactory::create({1,2}, {9,10});
@@ -53,10 +60,6 @@ auto drive = ChassisControllerFactory::create({1,2}, {9,10});
 //ADIUltrasonic ultrasonic(1,2);
 pros::ADIUltrasonic ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
 pros::ADIUltrasonic ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT);
-
-// AUTO
-ControllerButton autoButton1(ControllerDigital::A);
-ControllerButton autoButton2(ControllerDigital::left);
 
 void displaySensorValuesOnBrain() {
 	pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
