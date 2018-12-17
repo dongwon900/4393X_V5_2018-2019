@@ -14,9 +14,4 @@ using namespace okapi;
  // Motor Definitions
 
 void autonomous() {
-  // launcherMotor.move_voltage(12000);
-  // while (true) {
-  //   drive.tank(1,-1);
-  // }
-
 }

@@ -67,6 +67,18 @@ void initialize(void);
 void disabled(void);
 void competition_initialize(void);
 void opcontrol(void);
+void goToWall(void);
+
+// Motor Definitions
+#define DRIVETRAIN_R_F 1
+#define DRIVETRAIN_R_B 2
+#define LIFT_MOTOR 13
+#define LAUNCH_MOTOR 4
+#define FORK_MOTOR 20
+#define INTAKE_MOTOR -6
+#define DRIVETRAIN_L_F 9
+#define DRIVETRAIN_L_B 10
+
 #ifdef __cplusplus
 }
 #endif
