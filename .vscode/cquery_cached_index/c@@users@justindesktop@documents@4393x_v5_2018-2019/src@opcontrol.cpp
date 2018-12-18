@@ -94,8 +94,10 @@ void displaySensorValuesOnBrain() {
 }
 
 void displayOptionsOnController() {
- controller.setText(1, 1, "Test Boy");
- //controller.clear();
+ controller.clear();
+ controller.setText(0, 0, "Auto 1");
+ controller.setText(1, 0, "Auto 2");
+ controller.setText(2, 0, "Auto 3");
 }
 
 void leftDrive(int velocity){
@@ -186,6 +188,16 @@ void adjustDistance(int leftTarget, int rightTarget){
 			completed = true;
 		}
 	}
+}
+
+//takes true for fork down, and false for forkup
+void toggleForklift(bool forkPosition){
+	if(forkPosition){
+		forkMotor.moveRelative(50, 200);
+	}
+	else{
+		forkMotor.moveRelative(50, -200);
+	} //super wack and not correct
 }
 
 void flipScoredEnemyCap() {
