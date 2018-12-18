@@ -175,13 +175,13 @@ std::vector<bool> sonicDistanceAdjust(int leftLowerBound, int leftUpperBound, in
 }
 
 //AUTO FUNCTIONS THAT CAN BE USED IN AUTONOMOUS OR IN DRIVER CONTROL
-//using distances to the wall of
-void goToWall(){
+//adjustDistance should be used where the movements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
+void adjustDistance(int leftTarget, int rightTarget){
 	bool completed = false;
 	std::vector<bool> setSides;
 
 	while(!completed){
-		setSides = sonicDistanceAdjust(160,170,160,170);
+		setSides = sonicDistanceAdjust(leftTarget-5,leftTarget+5,rightTarget-5,rightTarget+5);
 		if(setSides[0] == true && setSides[1] == true){
 			completed = true;
 		}
@@ -198,8 +198,8 @@ void opcontrol() {
 	// LIFT SYSTEM
 	int goalHeight = 0;
 
-	drive.setMaxVelocity(500);
-	liftMotor.setVoltageLimit(10000);
+	drive.setMaxVelocity(200);
+	liftMotor.setVoltageLimit(12000);
 
 	while (true) {
 	  displaySensorValuesOnBrain();
@@ -217,7 +217,7 @@ void opcontrol() {
 		// }
 
 		if (toggleMaxSpeedButton.changedToPressed()) {
-			drive.setMaxVelocity(600);
+			drive.setMaxVelocity(200);
 		}
 
 		// DRIVETRAIN
@@ -287,7 +287,7 @@ void opcontrol() {
 		}
 
 		if (autoDistanceButton.changedToPressed()) {
-			goToWall();
+			adjustDistance(165, 165);
 		}
 
 		// AUTO testing
