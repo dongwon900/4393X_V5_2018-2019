@@ -105,7 +105,7 @@ private:
 	const int ticksRed = 1800;
 	const int ticksGreen = 900;
 	const int ticksBlue = 300;
-	const int forkMoveDown = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
+	const int forkMoveDownFromAuto = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
 	const int forkToggle = forkMoveDown * .4;
 	//different conditions of the robot
 	bool launcherCocked;
@@ -114,6 +114,9 @@ private:
 	bool performingAutoFunction;
 	int driveState;
 	int currentVoltageIndex;
+	int intakeDirection;
+  bool intakeOn;
+	bool forkDown;
 	//Action log using enums (for debugging)
 	std::vector<robotActions> actionLog;
 };
@@ -128,6 +131,9 @@ Robot::Robot(){
 	performingAutoFunction = false;
 	driveState = 1;
 	currentVoltageIndex = 10000;
+	intakeDirection = 0;
+	intakeOn = false;
+	forkDown = false; //should probably be an if statement chekcing the encoder value of the motor
 
 	if(launcherLimit == 1){
 		launcherCocked = true;
@@ -258,9 +264,12 @@ void Robot::launcher(){
 
 void Robot::intake(){
 	if (intakeButton.isPressed()) {
-		intakeMotor.move_voltage(12000);
+		intakeMotor.move_voltage(12000*intakeDirection);
 	} else {
 		intakeMotor.move_voltage(0);
+	}
+	if (intakeOn) {
+		intakeMotor.move_voltage(12000*intakeDirection);
 	}
 }
 
@@ -347,6 +356,28 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 			completed = true;
 		}
 	}
+}
+
+void Robot::toggleIntake(){
+	if(intakeOn == true){
+		intakeOn = false;
+	} else {
+		intakeOn = true;
+	}
+}
+
+void Robot::toggleForklift(){ //the plus and minus may need to be switched depending on the direction of the motor in physical
+	if(forkDown){
+		forkDown = false;
+		forkMotor.moveAbsolute(forkMotor.getPosition - forkToggle, 200); //the fork toggle ammount is not measured it is caluclated and could be wrong
+	} else {
+		forkDown = true;
+		forkMotor.moveAbsolute(forkMotor.getPosition + forkToggle, 200);
+	}
+}
+
+void Robot::flipScoredEnemyCap(){
+
 }
 
 void opcontrol(){
