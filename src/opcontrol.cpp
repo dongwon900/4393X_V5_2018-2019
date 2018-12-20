@@ -342,7 +342,7 @@ void opcontrol(){
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.changedToPressed()) {
-			robot.adjustDistance(165, 165);
+			robot.adjustDistance(380, 380);
 		}
 
 		if (autoButton.isPressed() && shootButton.isPressed()) {
