@@ -75,6 +75,7 @@ public:
 	void lift();
 	//Updating Sensors Methods
 	void updateSensors();
+	void updateLauncherCocked();
 	int getVoltageIndex();
 	void updateVoltageIndex(int newVoltageIndex);
 	void updateDriveState();
@@ -208,8 +209,7 @@ void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(3, "ULTRA Right: %d", ultrasonicRight.get_value());
 	pros::lcd::print(4, "Gyro: %d", gyro.get());
 	pros::lcd::print(5, "Current Voltage Index: %d", currentVoltageIndex);
-	pros::lcd::print(6, "Controller Analog Value Left: %d", controller.getAnalog(E_CONTROLLER_ANALOG_LEFT_Y));
-	pros::lcd::print(7, "Controller Analog Value Right: %d", controller.getAnalog(E_CONTROLLER_ANALOG_RIGHT_Y));
+	pros::lcd::print(6, "launcherCocked: %d", launcherCocked);
 }
 
 void Robot::displayOptionsOnController() {
@@ -250,7 +250,12 @@ void Robot::driveAll(int leftVoltage, int rightVoltage){
 	}
 }
 
+void Robot::updateLauncherCocked(){
+	launcherCocked = launcherLimit.isPressed();
+}
+
 void Robot::launcher(){
+	updateLauncherCocked();
 	if(launcherCocked){
 		if(shootButton.isPressed()){
 			launcherMotor.move_voltage(12000);
@@ -367,6 +372,7 @@ void Robot::toggleIntake(){
 }
 
 void Robot::toggleForklift(){ //the plus and minus may need to be switched depending on the direction of the motor in physical
+/*
 	if(forkDown){
 		forkDown = false;
 		forkMotor.moveAbsolute(forkMotor.getPosition - forkToggle, 200); //the fork toggle ammount is not measured it is caluclated and could be wrong
@@ -374,6 +380,7 @@ void Robot::toggleForklift(){ //the plus and minus may need to be switched depen
 		forkDown = true;
 		forkMotor.moveAbsolute(forkMotor.getPosition + forkToggle, 200);
 	}
+	*/
 }
 
 void Robot::flipScoredEnemyCap(){
@@ -402,9 +409,9 @@ void opcontrol(){
 		}
 
 		//GENERAL MOVEMENT
-		int leftMultiplier = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127; //these multipliers are to get what percent of the total voltage should be used
-		int rightMultiplier = controller.getAnalog(E_CONTROLLER_ANALOG_RIGHT_Y) / 127;
-		robot.driveAll(robot.getVoltageIndex()*leftMultiplier, robot.getVoltageIndex()*rightMultiplier);
+		//int leftMultiplier = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127; //these multipliers are to get what percent of the total voltage should be used
+		//int rightMultiplier = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127;
+		//robot.driveAll(robot.getVoltageIndex()*leftMultiplier, robot.getVoltageIndex()*rightMultiplier);
 		robot.intake();
 		robot.launcher();
 		robot.lift();
