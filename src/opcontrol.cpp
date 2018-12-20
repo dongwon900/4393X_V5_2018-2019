@@ -1,7 +1,7 @@
 #include "main.h"
 
 using namespace okapi;
-pros::Controller controller;
+Controller controller;
 
 //Motor definitions
 Motor liftMotor(LIFT_MOTOR);
@@ -107,9 +107,8 @@ private:
 	const int ticksGreen = 900;
 	const int ticksBlue = 300;
 	const int forkMoveDownFromAuto = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
-	const int forkToggle = forkMoveDown * .4;
+	const int forkToggle = forkMoveDownFromAuto * .4; //also wrong
 	//different conditions of the robot
-	bool launcherCocked;
 	bool capInPossession;
 	int ballsLoaded;
 	bool performingAutoFunction;
@@ -117,7 +116,7 @@ private:
 	int currentVoltageIndex;
 	int intakeDirection;
   bool intakeOn;
-	bool forkDown;
+	bool isForkDown;
 	//Action log using enums (for debugging)
 	std::vector<robotActions> actionLog;
 };
@@ -134,13 +133,7 @@ Robot::Robot(){
 	currentVoltageIndex = 10000;
 	intakeDirection = 0;
 	intakeOn = false;
-	forkDown = false; //should probably be an if statement chekcing the encoder value of the motor
-
-	if(launcherLimit == 1){
-		launcherCocked = true;
-	} else{
-		launcherCocked = false;
-	}
+	isForkDown = false; //should probably be an if statement chekcing the encoder value of the motor
 
 	if(pros::competition::is_connected()){
 		ballsLoaded = 1;
@@ -250,13 +243,8 @@ void Robot::driveAll(int leftVoltage, int rightVoltage){
 	}
 }
 
-void Robot::updateLauncherCocked(){
-	launcherCocked = launcherLimit.isPressed();
-}
-
 void Robot::launcher(){
-	updateLauncherCocked();
-	if(launcherCocked){
+	if(launcherLimit == 1){
 		if(shootButton.isPressed()){
 			launcherMotor.move_voltage(12000);
 		} else {
@@ -268,13 +256,10 @@ void Robot::launcher(){
 }
 
 void Robot::intake(){
-	if (intakeButton.isPressed()) {
+	if (intakeButton.isPressed() || intakeOn) {
 		intakeMotor.move_voltage(12000*intakeDirection);
 	} else {
 		intakeMotor.move_voltage(0);
-	}
-	if (intakeOn) {
-		intakeMotor.move_voltage(12000*intakeDirection);
 	}
 }
 
@@ -292,14 +277,13 @@ void Robot::lift(){
 }
 
 void Robot::forklift(){
-	if (forkUp.changedToPressed()) {
-		forkMotor.move_voltage(12000);
-	} else if (forkUp.changedToReleased()){
+	if(forkUp.isPressed() && forkDown.isPressed()){
 		forkMotor.move_voltage(0);
-	}
-	if (forkDown.changedToPressed()) {
+	} else if (forkUp.isPressed()){
+		forkMotor.move_voltage(12000);
+  } else if (forkDown.isPressed()){
 		forkMotor.move_voltage(-12000);
-	} else if (forkDown.changedToReleased()){
+	} else if (!forkUp.isPressed() && !forkDown.isPressed()){
 		forkMotor.move_voltage(0);
 	}
 }
@@ -409,9 +393,12 @@ void opcontrol(){
 		}
 
 		//GENERAL MOVEMENT
-		//int leftMultiplier = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127; //these multipliers are to get what percent of the total voltage should be used
-		//int rightMultiplier = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127;
-		//robot.driveAll(robot.getVoltageIndex()*leftMultiplier, robot.getVoltageIndex()*rightMultiplier);
+		float leftY = controller.getAnalog(ControllerAnalog::leftY);
+		float rightY = controller.getAnalog(ControllerAnalog::rightY);
+		float voltTarget = (float) robot.getVoltageIndex();
+		float leftVoltage = leftY * voltTarget;
+		float rightVoltage = rightY * voltTarget;
+		robot.driveAll((int)leftVoltage, (int)rightVoltage);
 		robot.intake();
 		robot.launcher();
 		robot.lift();
