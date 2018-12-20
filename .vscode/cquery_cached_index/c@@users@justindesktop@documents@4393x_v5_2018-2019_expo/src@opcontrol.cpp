@@ -271,6 +271,7 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 	updateSonics();
 	bool leftSet = false;
 	bool rightSet = false;
+	driveState = 1;
 
 	//left adjustment
 	if(leftDistance-10 < leftSonic && leftDistance+10 > leftSonic){
@@ -278,10 +279,10 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 		leftSet = true;
 	}
 	else if(leftDistance-10 > leftSonic){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
-		driveLeft(1000);
+		driveLeft(2000);
 	}
 	else if(leftDistance+10 < leftSonic){
-		driveLeft(-1000);
+		driveLeft(-2000);
 	}
 
 	//right adjustment
@@ -290,10 +291,10 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 		rightSet = true;
 	}
 	else if(rightDistance-10 > rightSonic){
-		driveRight(1000);
+		driveRight(2000);
 	}
 	else if(rightDistance+10 < rightSonic){
-		driveRight(-1000);
+		driveRight(-2000);
 	}
 
 	return std::vector<bool>{leftSet, rightSet};
@@ -334,7 +335,9 @@ void opcontrol(){
 		}
 
 		//GENERAL MOVEMENT
-		robot.driveAll(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog(ControllerAnalog::rightY));
+		int leftMultiplier = 127 / controller.getAnalog(ControllerAnalog::leftY); //these multipliers are to get what percent of the total voltage should be used
+		int rightMultiplier = 127 / controller.getAnalog(ControllerAnalog::rightY);
+		robot.driveAll(robot.getVoltageIndex()*leftMultiplier, robot.getVoltageIndex()*rightMultiplier);
 		robot.intake();
 		robot.launcher();
 		robot.lift();
@@ -342,7 +345,7 @@ void opcontrol(){
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.changedToPressed()) {
-			robot.adjustDistance(165, 165);
+			robot.adjustDistance(4000, 400);
 		}
 
 		if (autoButton.isPressed() && shootButton.isPressed()) {

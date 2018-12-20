@@ -63,11 +63,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/opcontrol.cpp.o",
-            "src\\opcontrol.cpp"
+            "bin/initialize.cpp.o",
+            "src\\initialize.cpp"
         ],
         "directory": "C:\\Users\\MEEEEEEEEEEEEEEEEEE\\Documents\\4393X_V5_2018-2019_EXPO",
-        "file": "src\\opcontrol.cpp"
+        "file": "src\\initialize.cpp"
     },
     {
         "arguments": [
@@ -98,10 +98,10 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/initialize.cpp.o",
-            "src\\initialize.cpp"
+            "bin/opcontrol.cpp.o",
+            "src\\opcontrol.cpp"
         ],
         "directory": "C:\\Users\\MEEEEEEEEEEEEEEEEEE\\Documents\\4393X_V5_2018-2019_EXPO",
-        "file": "src\\initialize.cpp"
+        "file": "src\\opcontrol.cpp"
     }
 ]
