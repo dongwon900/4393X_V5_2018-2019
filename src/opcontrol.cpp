@@ -1,7 +1,7 @@
 #include "main.h"
 
 using namespace okapi;
-Controller controller;
+pros::Controller controller;
 
 //Motor definitions
 Motor liftMotor(LIFT_MOTOR);
@@ -73,7 +73,7 @@ public:
 	void forklift();
 	void intake();
 	void lift();
-	//Other methods
+	//Updating Sensors Methods
 	void updateSensors();
 	int getVoltageIndex();
 	void updateVoltageIndex(int newVoltageIndex);
@@ -81,6 +81,13 @@ public:
 	void displaySensorValuesOnBrain();
 	void displayOptionsOnController();
 	void updateSonics();
+	void updateGyro();
+	int getGyro();
+	void updatePot();
+	int getPot();
+	void updateLauncherLimit();
+	int getLauncherLimit();
+	//Action Methods
 	std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
 	void adjustDistance(int lefTarget, int rightTarget);
 	void toggleForklift();
@@ -93,6 +100,7 @@ private:
 	int gyroAngle;
 	int potValue;
 	int launcherLimit;
+	int liftPosition; //goes 0,1,2,3,4,5,6
 	//Motor target positions (encoder values)
 	const int ticksRed = 1800;
 	const int ticksGreen = 900;
@@ -158,6 +166,30 @@ void Robot::updateDriveState(){
 	driveState = driveState * -1;
 }
 
+void Robot::updateGyro(){
+	gyroAngle = gyro.get();
+}
+
+int Robot::getGyro(){
+	return gyroAngle;
+}
+
+void Robot::updatePot(){
+	potValue = liftPotentiometer.get_value();
+}
+
+int Robot::getPot(){
+	return potValue;
+}
+
+void Robot::updateLauncherLimit(){
+	launcherLimit = launcherLimitSwitch.isPressed();
+}
+
+int Robot::getLauncherLimit(){
+	return launcherLimit;
+}
+
 //Display cluster of functions
 void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
@@ -170,8 +202,8 @@ void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(3, "ULTRA Right: %d", ultrasonicRight.get_value());
 	pros::lcd::print(4, "Gyro: %d", gyro.get());
 	pros::lcd::print(5, "Current Voltage Index: %d", currentVoltageIndex);
-	pros::lcd::print(6, "Controller Analog Value Left: %d", controller.getAnalog(ControllerAnalog::leftY));
-	pros::lcd::print(7, "Controller Analog Value Right: %d", controller.getAnalog(ControllerAnalog::rightY));
+	pros::lcd::print(6, "Controller Analog Value Left: %d", controller.getAnalog(E_CONTROLLER_ANALOG_LEFT_Y));
+	pros::lcd::print(7, "Controller Analog Value Right: %d", controller.getAnalog(E_CONTROLLER_ANALOG_RIGHT_Y));
 }
 
 void Robot::displayOptionsOnController() {
@@ -321,6 +353,7 @@ void opcontrol(){
 	Robot robot;
 
 	while (true) {
+		robot.updateSensors();
 	  robot.displaySensorValuesOnBrain();
 		//robot.displayOptionsOnController();
 
@@ -338,8 +371,8 @@ void opcontrol(){
 		}
 
 		//GENERAL MOVEMENT
-		int leftMultiplier = controller.getAnalog(ControllerAnalog::leftY) / 127; //these multipliers are to get what percent of the total voltage should be used
-		int rightMultiplier = controller.getAnalog(ControllerAnalog::rightY) / 127;
+		int leftMultiplier = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127; //these multipliers are to get what percent of the total voltage should be used
+		int rightMultiplier = controller.getAnalog(E_CONTROLLER_ANALOG_RIGHT_Y) / 127;
 		robot.driveAll(robot.getVoltageIndex()*leftMultiplier, robot.getVoltageIndex()*rightMultiplier);
 		robot.intake();
 		robot.launcher();
@@ -348,19 +381,7 @@ void opcontrol(){
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.isPressed()) {
-			//robot.adjustDistance(4000, 400);
-			/*
-			driveRightB.move_voltage(12000);
-			driveRightF.move_voltage(12000);
-			driveLeftF.move_voltage(12000);
-			driveLeftB.move_voltage(12000);
-		} else if(!autoDistanceButton.isPressed()){
-			driveRightB.move_voltage(0);
-			driveRightF.move_voltage(0);
-			driveLeftF.move_voltage(0);
-			driveLeftB.move_voltage(0);
-			*/
-			robot.driveAll(12000,12000);
+			robot.adjustDistance(400, 400);
 		}
 
 		if (autoButton.isPressed() && shootButton.isPressed()) {
