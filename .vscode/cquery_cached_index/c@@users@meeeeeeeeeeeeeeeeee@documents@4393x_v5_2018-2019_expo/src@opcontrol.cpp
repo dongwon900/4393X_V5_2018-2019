@@ -73,14 +73,22 @@ public:
 	void forklift();
 	void intake();
 	void lift();
-	//Other methods
+	//Updating Sensors Methods
 	void updateSensors();
+	void updateLauncherCocked();
 	int getVoltageIndex();
 	void updateVoltageIndex(int newVoltageIndex);
 	void updateDriveState();
 	void displaySensorValuesOnBrain();
 	void displayOptionsOnController();
 	void updateSonics();
+	void updateGyro();
+	int getGyro();
+	void updatePot();
+	int getPot();
+	void updateLauncherLimit();
+	int getLauncherLimit();
+	//Action Methods
 	std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
 	void adjustDistance(int lefTarget, int rightTarget);
 	void toggleForklift();
@@ -93,19 +101,22 @@ private:
 	int gyroAngle;
 	int potValue;
 	int launcherLimit;
+	int liftPosition; //goes 0,1,2,3,4,5,6
 	//Motor target positions (encoder values)
 	const int ticksRed = 1800;
 	const int ticksGreen = 900;
 	const int ticksBlue = 300;
-	const int forkMoveDown = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
-	const int forkToggle = forkMoveDown * .4;
+	const int forkMoveDownFromAuto = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
+	const int forkToggle = forkMoveDownFromAuto * .4; //also wrong
 	//different conditions of the robot
-	bool launcherCocked;
 	bool capInPossession;
 	int ballsLoaded;
 	bool performingAutoFunction;
 	int driveState;
 	int currentVoltageIndex;
+	int intakeDirection;
+  bool intakeOn;
+	bool isForkDown;
 	//Action log using enums (for debugging)
 	std::vector<robotActions> actionLog;
 };
@@ -120,12 +131,9 @@ Robot::Robot(){
 	performingAutoFunction = false;
 	driveState = 1;
 	currentVoltageIndex = 10000;
-
-	if(launcherLimit == 1){
-		launcherCocked = true;
-	} else{
-		launcherCocked = false;
-	}
+	intakeDirection = 1;
+	intakeOn = false;
+	isForkDown = false; //should probably be an if statement chekcing the encoder value of the motor
 
 	if(pros::competition::is_connected()){
 		ballsLoaded = 1;
@@ -158,6 +166,30 @@ void Robot::updateDriveState(){
 	driveState = driveState * -1;
 }
 
+void Robot::updateGyro(){
+	gyroAngle = gyro.get();
+}
+
+int Robot::getGyro(){
+	return gyroAngle;
+}
+
+void Robot::updatePot(){
+	potValue = liftPotentiometer.get_value();
+}
+
+int Robot::getPot(){
+	return potValue;
+}
+
+void Robot::updateLauncherLimit(){
+	launcherLimit = launcherLimitSwitch.isPressed();
+}
+
+int Robot::getLauncherLimit(){
+	return launcherLimit;
+}
+
 //Display cluster of functions
 void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
@@ -170,8 +202,7 @@ void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(3, "ULTRA Right: %d", ultrasonicRight.get_value());
 	pros::lcd::print(4, "Gyro: %d", gyro.get());
 	pros::lcd::print(5, "Current Voltage Index: %d", currentVoltageIndex);
-	pros::lcd::print(6, "Controller Analog Value Left: %d", controller.getAnalog(ControllerAnalog::leftY));
-	pros::lcd::print(7, "Controller Analog Value Right: %d", controller.getAnalog(ControllerAnalog::rightY));
+	pros::lcd::print(6, "launcherCocked: %d", launcherCocked);
 }
 
 void Robot::displayOptionsOnController() {
@@ -213,7 +244,7 @@ void Robot::driveAll(int leftVoltage, int rightVoltage){
 }
 
 void Robot::launcher(){
-	if(launcherCocked){
+	if(launcherLimit == 1){
 		if(shootButton.isPressed()){
 			launcherMotor.move_voltage(12000);
 		} else {
@@ -225,8 +256,8 @@ void Robot::launcher(){
 }
 
 void Robot::intake(){
-	if (intakeButton.isPressed()) {
-		intakeMotor.move_voltage(12000);
+	if (intakeButton.isPressed() || intakeOn) {
+		intakeMotor.move_voltage(-12000*intakeDirection);
 	} else {
 		intakeMotor.move_voltage(0);
 	}
@@ -246,14 +277,13 @@ void Robot::lift(){
 }
 
 void Robot::forklift(){
-	if (forkUp.changedToPressed()) {
-		forkMotor.move_voltage(12000);
-	} else if (forkUp.changedToReleased()){
+	if(forkUp.isPressed() && forkDown.isPressed()){
 		forkMotor.move_voltage(0);
-	}
-	if (forkDown.changedToPressed()) {
+	} else if (forkUp.isPressed()){
+		forkMotor.move_voltage(12000);
+  } else if (forkDown.isPressed()){
 		forkMotor.move_voltage(-12000);
-	} else if (forkDown.changedToReleased()){
+	} else if (!forkUp.isPressed() && !forkDown.isPressed()){
 		forkMotor.move_voltage(0);
 	}
 }
@@ -282,10 +312,10 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 		leftSet = true;
 	}
 	else if(leftDistance-10 > leftSonic){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
-		driveLeft(-2000);
+		driveLeft(2000);
 	}
 	else if(leftDistance+10 < leftSonic){
-		driveLeft(2000);
+		driveLeft(-2000);
 	}
 
 	//right adjustment
@@ -294,10 +324,10 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 		rightSet = true;
 	}
 	else if(rightDistance-10 > rightSonic){
-		driveRight(-2000);
+		driveRight(2000);
 	}
 	else if(rightDistance+10 < rightSonic){
-		driveRight(2000);
+		driveRight(-2000);
 	}
 
 	return std::vector<bool>{leftSet, rightSet};
@@ -317,10 +347,35 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	}
 }
 
+void Robot::toggleIntake(){
+	if(intakeOn == true){
+		intakeOn = false;
+	} else {
+		intakeOn = true;
+	}
+}
+
+void Robot::toggleForklift(){ //the plus and minus may need to be switched depending on the direction of the motor in physical
+/*
+	if(forkDown){
+		forkDown = false;
+		forkMotor.moveAbsolute(forkMotor.getPosition - forkToggle, 200); //the fork toggle ammount is not measured it is caluclated and could be wrong
+	} else {
+		forkDown = true;
+		forkMotor.moveAbsolute(forkMotor.getPosition + forkToggle, 200);
+	}
+	*/
+}
+
+void Robot::flipScoredEnemyCap(){
+
+}
+
 void opcontrol(){
 	Robot robot;
 
 	while (true) {
+		robot.updateSensors();
 	  robot.displaySensorValuesOnBrain();
 		//robot.displayOptionsOnController();
 
@@ -338,9 +393,12 @@ void opcontrol(){
 		}
 
 		//GENERAL MOVEMENT
-		int leftMultiplier = controller.getAnalog(ControllerAnalog::leftY) / 127; //these multipliers are to get what percent of the total voltage should be used
-		int rightMultiplier = controller.getAnalog(ControllerAnalog::rightY) / 127;
-		robot.driveAll(robot.getVoltageIndex()*leftMultiplier, robot.getVoltageIndex()*rightMultiplier);
+		float leftY = controller.getAnalog(ControllerAnalog::leftY);
+		float rightY = controller.getAnalog(ControllerAnalog::rightY);
+		float voltTarget = (float) robot.getVoltageIndex();
+		float leftVoltage = leftY * voltTarget;
+		float rightVoltage = rightY * voltTarget;
+		robot.driveAll((int)leftVoltage, (int)rightVoltage);
 		robot.intake();
 		robot.launcher();
 		robot.lift();
@@ -348,19 +406,7 @@ void opcontrol(){
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.isPressed()) {
-			//robot.adjustDistance(4000, 400);
-			/*
-			driveRightB.move_voltage(12000);
-			driveRightF.move_voltage(12000);
-			driveLeftF.move_voltage(12000);
-			driveLeftB.move_voltage(12000);
-		} else if(!autoDistanceButton.isPressed()){
-			driveRightB.move_voltage(0);
-			driveRightF.move_voltage(0);
-			driveLeftF.move_voltage(0);
-			driveLeftB.move_voltage(0);
-			*/
-			robot.driveAll(12000,12000);
+			robot.adjustDistance(400, 400);
 		}
 
 		if (autoButton.isPressed() && shootButton.isPressed()) {

@@ -131,7 +131,7 @@ Robot::Robot(){
 	performingAutoFunction = false;
 	driveState = 1;
 	currentVoltageIndex = 10000;
-	intakeDirection = 0;
+	intakeDirection = 1;
 	intakeOn = false;
 	isForkDown = false; //should probably be an if statement chekcing the encoder value of the motor
 
@@ -257,7 +257,7 @@ void Robot::launcher(){
 
 void Robot::intake(){
 	if (intakeButton.isPressed() || intakeOn) {
-		intakeMotor.move_voltage(12000*intakeDirection);
+		intakeMotor.move_voltage(-12000*intakeDirection);
 	} else {
 		intakeMotor.move_voltage(0);
 	}
@@ -312,10 +312,10 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 		leftSet = true;
 	}
 	else if(leftDistance-10 > leftSonic){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
-		driveLeft(-2000);
+		driveLeft(2000);
 	}
 	else if(leftDistance+10 < leftSonic){
-		driveLeft(2000);
+		driveLeft(-2000);
 	}
 
 	//right adjustment
@@ -324,10 +324,10 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 		rightSet = true;
 	}
 	else if(rightDistance-10 > rightSonic){
-		driveRight(-2000);
+		driveRight(2000);
 	}
 	else if(rightDistance+10 < rightSonic){
-		driveRight(2000);
+		driveRight(-2000);
 	}
 
 	return std::vector<bool>{leftSet, rightSet};
