@@ -308,26 +308,26 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 
 	//left adjustment
 	if(leftDistance-10 < leftSonic && leftDistance+10 > leftSonic){
-		driveLeft(0);
+		driveRight(0);
 		leftSet = true;
 	}
 	else if(leftDistance-10 > leftSonic){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
-		driveLeft(2000);
+		driveRight(2000);
 	}
 	else if(leftDistance+10 < leftSonic){
-		driveLeft(-2000);
+		driveRight(-2000);
 	}
 
 	//right adjustment
 	if(rightDistance-10 < rightSonic && rightDistance+10 > rightSonic){
-		driveRight(0);
+		driveLeft(0);
 		rightSet = true;
 	}
 	else if(rightDistance-10 > rightSonic){
-		driveRight(2000);
+		driveLeft(2000);
 	}
 	else if(rightDistance+10 < rightSonic){
-		driveRight(-2000);
+		driveLeft(-2000);
 	}
 
 	return std::vector<bool>{leftSet, rightSet};
