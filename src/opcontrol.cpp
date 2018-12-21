@@ -202,7 +202,6 @@ void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(3, "ULTRA Right: %d", ultrasonicRight.get_value());
 	pros::lcd::print(4, "Gyro: %d", gyro.get());
 	pros::lcd::print(5, "Current Voltage Index: %d", currentVoltageIndex);
-	pros::lcd::print(6, "launcherCocked: %d", launcherCocked);
 }
 
 void Robot::displayOptionsOnController() {
@@ -300,6 +299,7 @@ void Robot::updateSonics(){
 
 //meant to be called in a seperate while loop that way multiple 'auto' functions can be called and run at the same time
 //returns a vector of bools that are true if the ultrasonic is in the correct position ([0] for left and [1] for right)
+//The driveRight goes to left ultrasonic because the drive direction is relative to the intake and the ultrasonic direction is relative to the forklift
 std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance){
 	updateSonics();
 	bool leftSet = false;
@@ -380,7 +380,7 @@ void opcontrol(){
 		//robot.displayOptionsOnController();
 
 		//DRIVING FUNCTIONALITY
-		if (toggleMaxSpeedButton.changedToPressed()) {
+		if (toggleMaxSpeedButton.changedToPressed()) { //I know this should probably  be a method
 			if(robot.getVoltageIndex() == 10000){
 				robot.updateVoltageIndex(12000);
 			} else if (robot.getVoltageIndex() == 12000){
