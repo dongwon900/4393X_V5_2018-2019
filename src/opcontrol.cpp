@@ -13,15 +13,6 @@ Motor driveLeftB(DRIVETRAIN_L_B);
 Motor driveRightF(DRIVETRAIN_R_F);
 Motor driveRightB(DRIVETRAIN_R_B);
 
-// Legacy port definitions - A-H (1-8)
-#define ULTRA_ECHO_PORT_LEFT 1
-#define ULTRA_PING_PORT_LEFT 2
-#define ULTRA_ECHO_PORT 3
-#define ULTRA_PING_PORT 4
-#define LIFT_POTENTIOMETER_PORT 5
-#define GYRO_PORT 6
-#define LIMIT_PORT 8
-
 // Controller Buttons
 ControllerButton btnUp(ControllerDigital::R1);
 ControllerButton btnDown(ControllerDigital::R2);
@@ -33,16 +24,17 @@ ControllerButton autoDistanceButton(ControllerDigital::down);
 ControllerButton autoButton(ControllerDigital::right);
 ControllerButton driveReverseButton(ControllerDigital::X);
 ControllerButton toggleMaxSpeedButton(ControllerDigital::up);
+ControllerButton toggleIntakeButton(ControllerDigital::Y);
 
 // Legacy Sensor Initialization
 ADIButton launcherLimitSwitch(LIMIT_PORT);
-ADIGyro gyro(GYRO_PORT);
+pros::ADIGyro gyro(GYRO_PORT);
 pros::ADIPotentiometer liftPotentiometer (LIFT_POTENTIOMETER_PORT);
 pros::ADIUltrasonic ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
 pros::ADIUltrasonic ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT);
 
 //These actions can be added to a vector to determine what the robot has been doing
-enum robotActions{ //UNIMPLEMENTED
+enum RobotActions{ //UNIMPLEMENTED
 	initialized,
 	inAuto,
 	completedInitialMoves,
@@ -58,6 +50,16 @@ enum robotActions{ //UNIMPLEMENTED
 	displayBrain,
 	displayController,
 	adjustedDistance,
+};
+
+enum Alliance{
+	red,
+	blue
+};
+
+enum startingTile{
+	front,
+	back
 };
 
 //ROBOT CLASS IS USED TO STORE ALL THE SENSOR DATA
@@ -88,12 +90,16 @@ public:
 	int getPot();
 	void updateLauncherLimit();
 	int getLauncherLimit();
+	void raiseLiftIndex();
+	void lowerLiftIndex();
 	//Action Methods
 	std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
 	void adjustDistance(int lefTarget, int rightTarget);
 	void toggleForklift();
 	void flipScoredEnemyCap();
 	void toggleIntake();
+	void liftUpIndex();
+	void liftDownIndex();
 private:
 	//sensor readouts
 	int leftSonic;
@@ -108,7 +114,10 @@ private:
 	const int ticksBlue = 300;
 	const int forkMoveDownFromAuto = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
 	const int forkToggle = forkMoveDownFromAuto * .4; //also wrong
+	const std::vector<int> liftPositions {4079, 3690, 3185, 2840};
+	const std::vector<int> liftIndexes {0,1,2,3};
 	//different conditions of the robot
+	int liftIndex;
 	bool capInPossession;
 	int ballsLoaded;
 	bool performingAutoFunction;
@@ -118,13 +127,13 @@ private:
   bool intakeOn;
 	bool isForkDown;
 	//Action log using enums (for debugging)
-	std::vector<robotActions> actionLog;
+	std::vector<RobotActions> actionLog;
 };
 
 Robot::Robot(){
 	leftSonic = ultrasonicLeft.get_value();
 	rightSonic = ultrasonicRight.get_value();
-	gyroAngle = ultrasonicRight.get_value();
+	gyroAngle = gyro.get_value();
 	potValue = liftPotentiometer.get_value();
 	launcherLimit = launcherLimitSwitch.isPressed();
 	capInPossession = false;
@@ -141,7 +150,7 @@ Robot::Robot(){
 		ballsLoaded = 0;
 	}
 
-  std::vector<robotActions> startSet;
+  std::vector<RobotActions> startSet;
 	startSet.push_back(initialized);
 	actionLog = startSet;
 }
@@ -149,7 +158,7 @@ Robot::Robot(){
 void Robot::updateSensors(){
 	leftSonic = ultrasonicLeft.get_value();
 	rightSonic = ultrasonicRight.get_value();
-	gyroAngle = ultrasonicRight.get_value();
+	gyroAngle = gyro.get_value();
 	potValue = liftPotentiometer.get_value();
 	launcherLimit = launcherLimitSwitch.isPressed();
 }
@@ -167,7 +176,7 @@ void Robot::updateDriveState(){
 }
 
 void Robot::updateGyro(){
-	gyroAngle = gyro.get();
+	gyroAngle = gyro.get_value();
 }
 
 int Robot::getGyro(){
@@ -196,12 +205,14 @@ void Robot::displaySensorValuesOnBrain() {
 									 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 									 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 
-	pros::lcd::print(0, "LIFT PID (pros): %d", liftPotentiometer.get_value());
-	pros::lcd::print(1, "Limit Switch (H): %d", launcherLimitSwitch.isPressed());
-	pros::lcd::print(2, "ULTRA Left: %d", ultrasonicLeft.get_value());
-	pros::lcd::print(3, "ULTRA Right: %d", ultrasonicRight.get_value());
-	pros::lcd::print(4, "Gyro: %d", gyro.get());
-	pros::lcd::print(5, "Current Voltage Index: %d", currentVoltageIndex);
+	pros::lcd::print(0, "LIFT PID (pros): %d", potValue);
+	pros::lcd::print(1, "ULTRA Left: %d", leftSonic);
+	pros::lcd::print(2, "ULTRA Right: %d", rightSonic);
+	pros::lcd::print(3, "Gyro: %d", gyroAngle);
+
+
+
+
 }
 
 void Robot::displayOptionsOnController() {
@@ -255,10 +266,13 @@ void Robot::launcher(){
 }
 
 void Robot::intake(){
-	if (intakeButton.isPressed() || intakeOn) {
+	if (intakeButton.isPressed()){
 		intakeMotor.move_voltage(-12000*intakeDirection);
 	} else {
 		intakeMotor.move_voltage(0);
+	}
+	if(intakeOn){
+		intakeMotor.move_voltage(-12000*intakeDirection);
 	}
 }
 
@@ -304,30 +318,38 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 	updateSonics();
 	bool leftSet = false;
 	bool rightSet = false;
-	driveState = 1;
 
-	//left adjustment
-	if(leftDistance-10 < leftSonic && leftDistance+10 > leftSonic){
-		driveRight(0);
-		leftSet = true;
-	}
-	else if(leftDistance-10 > leftSonic){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
-		driveRight(2000);
-	}
-	else if(leftDistance+10 < leftSonic){
-		driveRight(-2000);
-	}
+	//Equalization
+	if(leftSonic < rightSonic-15 && leftDistance > leftSonic){
+		driveRight(1800);
+	  driveLeft(-1800);
+	} else if (rightSonic < leftSonic-15 && rightDistance > rightSonic){
+		driveLeft(1800);
+		driveRight(-1800);
+	} else {
+		//left adjustment
+		if(leftDistance-10 < leftSonic && leftDistance+10 > leftSonic){
+			driveRight(0);
+			leftSet = true;
+		}
+		else if(leftDistance-10 > leftSonic){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
+			driveRight(1800);
+		}
+		else if(leftDistance+10 < leftSonic){
+			driveRight(-1800);
+		}
 
-	//right adjustment
-	if(rightDistance-10 < rightSonic && rightDistance+10 > rightSonic){
-		driveLeft(0);
-		rightSet = true;
-	}
-	else if(rightDistance-10 > rightSonic){
-		driveLeft(2000);
-	}
-	else if(rightDistance+10 < rightSonic){
-		driveLeft(-2000);
+		//right adjustment
+		if(rightDistance-10 < rightSonic && rightDistance+10 > rightSonic){
+			driveLeft(0);
+			rightSet = true;
+		}
+		else if(rightDistance-10 > rightSonic){
+			driveLeft(1800);
+		}
+		else if(rightDistance+10 < rightSonic){
+			driveLeft(-1800);
+		}
 	}
 
 	return std::vector<bool>{leftSet, rightSet};
@@ -348,27 +370,59 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 }
 
 void Robot::toggleIntake(){
-	if(intakeOn == true){
-		intakeOn = false;
-	} else {
-		intakeOn = true;
+	if(toggleIntakeButton.changedToPressed()){
+		if(intakeOn){
+			intakeOn = false;
+		} else {
+			intakeOn = true;
+		}
 	}
 }
 
-void Robot::toggleForklift(){ //the plus and minus may need to be switched depending on the direction of the motor in physical
-/*
-	if(forkDown){
-		forkDown = false;
-		forkMotor.moveAbsolute(forkMotor.getPosition - forkToggle, 200); //the fork toggle ammount is not measured it is caluclated and could be wrong
+void Robot::raiseLiftIndex(){
+	if(liftIndex != 3){
+		liftIndex++;
 	} else {
-		forkDown = true;
-		forkMotor.moveAbsolute(forkMotor.getPosition + forkToggle, 200);
+		return;
 	}
-	*/
 }
 
-void Robot::flipScoredEnemyCap(){
+void Robot::lowerLiftIndex(){
+	if(liftIndex != 0){
+		liftIndex--;
+	} else {
+		return;
+	}
+}
 
+void Robot::liftUpIndex(){
+	if(liftIndex != 3){
+		updatePot();
+		if(potValue > liftIndexes[liftIndex]+5){
+			liftMotor.move_voltage(-12000);
+		} else if(potValue < liftIndexes[liftIndex]-5){
+			liftMotor.move_voltage(12000);
+		} else {
+			liftMotor.move_voltage(300);
+		}
+	} else{
+		return;
+	}
+}
+
+void Robot::liftDownIndex(){
+	if(liftIndex != 0){
+		updatePot();
+		if(potValue > liftIndexes[liftIndex]+5){
+			liftMotor.move_voltage(-12000);
+		} else if(potValue < liftIndexes[liftIndex]-5){
+			liftMotor.move_voltage(12000);
+		} else {
+			liftMotor.move_voltage(300);
+		}
+	} else {
+		return;
+	}
 }
 
 void opcontrol(){
@@ -403,6 +457,7 @@ void opcontrol(){
 		robot.launcher();
 		robot.lift();
 		robot.forklift();
+		robot.toggleIntake();
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.isPressed()) {
