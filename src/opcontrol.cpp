@@ -1,313 +1,531 @@
 #include "main.h"
-#include <vector>
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
+//These actions can be added to a vector to determine what the robot has been doing
+enum RobotActions{
+	initialized,
+	inAuto,
+	completedInitialMoves,
+	completedAuto,
+	launcherCocked,
+	launcherUncocked,
+	toggleFork,
+	raiseLift,
+	lowerLift,
+	fireLauncher,
+	toggleIntake,
+	updateSensors,
+	displayBrain,
+	displayController,
+	adjustedDistance,
+};
 
-using namespace okapi;
-Controller controller;
+enum Alliance{
+	red,
+	blue,
+};
 
-// Legacy port definitions - A-H (1-8)
-#define ULTRA_ECHO_PORT_LEFT 1
-#define ULTRA_PING_PORT_LEFT 2
-#define ULTRA_ECHO_PORT 3
-#define ULTRA_PING_PORT 4
-#define LIFT_POTENTIOMETER_PORT 5
-#define GYRO_PORT 6
-#define LIMIT_PORT 8
+enum StartingTile{
+	front,
+	back,
+};
+
+//ROBOT CLASS IS USED TO STORE ALL THE SENSOR DATA
+class Robot{
+public:
+	//Constructers
+	Robot();
+	//Manual control methods
+	void driveLeft(int voltage);
+	void driveRight(int voltage);
+	void driveAll(int leftVoltage, int rightVoltage);
+	void launcher();
+	void forklift();
+	void intake();
+	void lift();
+	//Updating Sensors/States/Values Methods
+	void updateSensors();
+	void updateDriveState();
+	void displaySensorValuesOnBrain();
+	void displayDataOnController();
+	void updateSonics();
+	void raiseLiftIndex();
+	void lowerLiftIndex();
+	void toggleMaxSpeed();
+	void toggleDriveState();
+	void updateLiftIndex();
+	//Action Methods
+	std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
+	void adjustDistance(int lefTarget, int rightTarget);
+	void toggleForklift();
+	void flipScoredEnemyCap();
+	void toggleIntake();
+	void liftUpIndex();
+	void liftDownIndex();
+	//These next methods all relate to manual control
+	//Subsystem Methods (For basic manual control)
+	void intakeSubsystem();
+	void forkliftSubsystem();
+	void liftSubsystem();
+	void launcherSubsystem();
+	void driveSubsystem(int leftVoltage, int rightVoltage);
+	//Manual handles all methods for manual control
+	void manualControl(float leftJoy, float rightJoy);
+	//These are the fucntions relating to choosing the autonomous
+	bool chooseAlliance(); //takes a button press on the lcd emulator
+	bool chooseTile(); //takes a button press on the lcd emulator
+	void chooseAuto();
+	int autoIndex();
+	//Aux relates to the displays on cortex, controller, and console
+	void aux();
+private:
+	//sensor readouts
+	int leftSonic;
+	int rightSonic;
+	int gyroAngle;
+	int potValue;
+	int launcherLimit;
+	//Motor target positions (encoder values)
+	const int ticksRed = 1800;
+	const int ticksGreen = 900;
+	const int ticksBlue = 300;
+	const int forkMoveDownFromAuto = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
+	const int forkToggle = forkMoveDownFromAuto * .4; //also wrong
+	const std::vector<int> liftPositions {4079, 3690, 3185, 2840};
+	const std::vector<int> liftIndexes {0,1,2,3};
+	//different conditions of the robot
+	int liftIndex;
+	bool capInPossession;
+	int ballsLoaded;
+	bool performingAutoFunction;
+	int driveState;
+	int currentVoltageIndex;
+	int intakeDirection;
+  bool intakeOn;
+	bool isForkDown;
+	Alliance alliance;
+	StartingTile startingTile;
+	//Action log using enums (for debugging)
+	std::vector<RobotActions> actionLog;
+};
+
+Robot::Robot(){
+	leftSonic = ultrasonicLeft.get_value();
+	rightSonic = ultrasonicRight.get_value();
+	gyroAngle = gyro.get_value();
+	potValue = liftPotentiometer.get_value();
+	launcherLimit = launcherLimitSwitch.isPressed();
+	capInPossession = false;
+	performingAutoFunction = false;
+	driveState = 1;
+	currentVoltageIndex = 10000;
+	intakeDirection = 1;
+	intakeOn = false;
+	isForkDown = false; //should probably be an if statement chekcing the encoder value of the motor
+	liftIndex = 0;
+
+	if(pros::competition::is_connected()){
+		ballsLoaded = 1;
+	} else{
+		ballsLoaded = 0;
+	}
+
+  std::vector<RobotActions> startSet;
+	startSet.push_back(initialized);
+	actionLog = startSet;
+}
 
 
-// Constants
-const int NUM_HEIGHTS = 5;
-const int lift_floor = 4095;
-const int lift_wall = 3590;
-const int lift_low = 3000;
-const int lift_high = 2500;
-const int lift_top = 2000;
-const int heights[NUM_HEIGHTS] = {lift_floor, lift_wall, lift_low, lift_high, lift_top};
-const int NUM_VOLTAGES = 2;
-const int drive_voltage = 10000;
-const int climb_voltage = 12000;
-const int voltages[NUM_VOLTAGES] = {drive_voltage, climb_voltage};
+//Sonic updating with a filter
+void Robot::updateSonics(){
+	if(ultrasonicLeft.get_value() != -1){
+		leftSonic = ultrasonicLeft.get_value();
+	}
+	if(ultrasonicRight.get_value() != -1){
+		rightSonic = ultrasonicRight.get_value();
+	}
+}
 
-// Controller Buttons
-ControllerButton btnUp(ControllerDigital::R1);
-ControllerButton btnDown(ControllerDigital::R2);
-ControllerButton forkUp(ControllerDigital::L1);
-ControllerButton forkDown(ControllerDigital::L2);
-ControllerButton shootButton(ControllerDigital::A);
-ControllerButton intakeButton(ControllerDigital::B);
+void Robot::updateSensors(){
+	updateSonics();
+	gyroAngle = gyro.get_value();
+	potValue = liftPotentiometer.get_value();
+	launcherLimit = launcherLimitSwitch.isPressed();
+}
 
-ControllerButton autoDistanceButton(ControllerDigital::down);
-ControllerButton autoButton(ControllerDigital::right);
-ControllerButton driveReverseButton(ControllerDigital::X);
-ControllerButton toggleMaxSpeedButton(ControllerDigital::up);
+//All methods relating to autonomous choosing
+bool Robot::chooseAlliance(){
+	pros::lcd::clear();
+	pros::lcd::set_text(1, "Choose an Alliance");
+	pros::lcd::set_text(3, "Left for Blue");
+	pros::lcd::set_text(4, "Right for Red");
+	if(pros::lcd::read_buttons() == 4){
+		alliance = Alliance::blue;
+		return true;
+	} else if (pros::lcd::read_buttons() == 2){
+		//lv_disp_flush(10, 50, 10, 50, COLOR_BLACK); //(teehee) I dug deep into the files and can now print images to the touchscreen
+		return false;
+	} else if (pros::lcd::read_buttons() == 2){
+		alliance = Alliance::red;
+		return true;
+	} else {
+		return false;
+	}
+}
 
-// Legacy Sensor Initialization
-ADIButton launcherLimitSwitch(LIMIT_PORT);
-ADIGyro gyro(GYRO_PORT);
-pros::ADIPotentiometer liftPotentiometer (LIFT_POTENTIOMETER_PORT);
+bool Robot::chooseTile(){
+	pros::lcd::clear();
+	pros::lcd::set_text(1, "Choose a Tile");
+	pros::lcd::set_text(3, "Left for Front");
+	pros::lcd::set_text(4, "Right for Back");
+	if(pros::lcd::read_buttons() == 4){
+		startingTile = StartingTile::front;
+		return true;
+	} else if (pros::lcd::read_buttons() == 2){
+		//lv_disp_flush(10, 50, 10, 50, COLOR_BLACK); //(teehee) I dug deep into the files and can now print images to the touchscreen
+		return false;
+	} else if (pros::lcd::read_buttons() == 2){
+		startingTile = StartingTile::back;
+		return true;
+	} else {
+		return false;
+	}
+}
 
-// Direct Motor Control Initalization
-Motor liftMotor(LIFT_MOTOR);
-Motor forkMotor(FORK_MOTOR);
-Motor intakeMotor(INTAKE_MOTOR);
-Motor launcherMotor(LAUNCH_MOTOR);
-Motor leftDriveF(DRIVETRAIN_L_F);
-Motor leftDriveB(DRIVETRAIN_L_B);
-Motor rightDriveF(DRIVETRAIN_R_F);
-Motor rightDriveB(DRIVETRAIN_R_B);
+void Robot::chooseAuto(){
+	bool allianceSelected = false;
+	bool tileSelected = false;
 
-// Controller Factories
-auto drive = ChassisControllerFactory::create({1,2}, {9,10});
+	while(!allianceSelected){
+		allianceSelected = chooseAlliance();
+	}
+	while(!tileSelected){
+		tileSelected = chooseTile();
+	}
+}
 
-// Flags
-static bool loaded;
-static int reversed = 1;
-static int currentVoltageIndex = 0;
+int Robot::autoIndex(){
+	int counter = 0;
+	if(alliance == Alliance::red){
+		counter++;
+	} else {
+		counter = counter + 2;
+	}
+	if(startingTile == StartingTile::front){
+		counter++;
+	} else {
+		counter = counter + 2;
+	}
+	return counter;
+}
 
-// SENSOR POSITIONING //note: between 1100 and 1250 (11 and 12.5 cm) to score
-pros::ADIUltrasonic ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
-pros::ADIUltrasonic ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT);
-
-void displaySensorValuesOnBrain() {
+//All methods relating to AUX
+void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 									 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 									 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 
-	pros::lcd::print(0, "LIFT PID (pros): %d", liftPotentiometer.get_value());
-	pros::lcd::print(1, "Limit Switch (H): %d", launcherLimitSwitch.isPressed());
-	pros::lcd::print(2, "ULTRA Left: %d", ultrasonicLeft.get_value());
-	pros::lcd::print(3, "ULTRA Right: %d", ultrasonicRight.get_value());
-	pros::lcd::print(4, "Gyro: ", gyro.get());
+	pros::lcd::print(0, "LIFT PID (pros): %d", potValue);
+	pros::lcd::print(1, "ULTRA Left: %d", leftSonic);
+	pros::lcd::print(2, "ULTRA Right: %d", rightSonic);
+	pros::lcd::print(3, "Gyro: %d", gyroAngle);
 }
 
-void displayOptionsOnController() {
+void Robot::displayDataOnController() {
  controller.clear();
  controller.setText(0, 0, "Auto 1");
  controller.setText(1, 0, "Auto 2");
  controller.setText(2, 0, "Auto 3");
 }
 
-void leftDrive(int velocity){
-	leftDriveF.move(velocity);
-	leftDriveB.move(velocity);
+void Robot::aux(){
+	displaySensorValuesOnBrain();
+	displayDataOnController();
+
+  printf("%s\n", "I am running");
 }
 
-void rightDrive(int velocity){
-	rightDriveF.move(-velocity);
-	rightDriveB.move(-velocity);
-}
-//The speed integer controls the voltage
-void driveBothSides(int leftVelocity, int rightVelocity){
-	leftDrive(leftVelocity);
-	rightDrive(rightVelocity);
-}
-//returns the values as well as changing them in a reference, can be used either way
-std::vector<int> updateSonics(std::vector<int>& values){
-	std::vector<int> newValues;
-	newValues.push_back(ultrasonicLeft.get_value());
-	newValues.push_back(ultrasonicRight.get_value());
-	//passes the values through a basic filter (where -1 is undefined)
-	//this also figures out which operation to use when putting the value into the vector
-	if(newValues[0] != -1){
-		if(values.size() >= 2){
-			values[0] = newValues[0];
-		}
-		else{
-			values.clear();
-			values.push_back(newValues[0]);
-		}
+//Drivesubsytem cluster of functions
+void Robot::driveLeft(int voltage){
+	if(voltage > currentVoltageIndex){
+		driveLeftF.moveVoltage(currentVoltageIndex);
+		driveLeftB.moveVoltage(currentVoltageIndex);
+	} else {
+		driveLeftF.moveVoltage(voltage);
+		driveLeftB.moveVoltage(voltage);
 	}
-	if(newValues[1] != -1){
-		if(values.size() >= 2){
-			values[1] = newValues[1];
-		}
-		else{
-			values.push_back(newValues[1]);
-		}
-	}
-  return values;
 }
 
+void Robot::driveRight(int voltage){
+	if(voltage > currentVoltageIndex){
+		driveRightF.moveVoltage(-currentVoltageIndex);
+		driveRightB.moveVoltage(-currentVoltageIndex);
+	} else {
+		driveRightF.moveVoltage(-voltage);
+		driveRightB.moveVoltage(-voltage);
+	}
+}
+
+void Robot::driveAll(int leftVoltage, int rightVoltage){
+	if(driveState == 1){
+		driveLeft(leftVoltage);
+		driveRight(rightVoltage);
+	} else if(driveState == -1){
+		driveLeft(-rightVoltage);
+		driveRight(-leftVoltage);
+	}
+}
+
+void Robot::toggleMaxSpeed(){
+	if (toggleMaxSpeedButton.changedToPressed()) {
+		if(currentVoltageIndex == 10000){
+			currentVoltageIndex = 12000;
+		} else if (currentVoltageIndex == 12000){
+			currentVoltageIndex = 10000;
+		}
+	}
+}
+
+void Robot::toggleDriveState(){
+	if (driveReverseButton.changedToPressed()) {
+		driveState = driveState * -1;
+	}
+}
+
+void Robot::driveSubsystem(int leftVoltage, int rightVoltage){
+	toggleMaxSpeed();
+	toggleDriveState();
+	driveAll(leftVoltage, rightVoltage);
+}
+
+//Intake subsystem of methods
+void Robot::toggleIntake(){
+	if(toggleIntakeButton.changedToPressed()){
+		if(intakeOn){
+			intakeOn = false;
+		} else {
+			intakeOn = true;
+		}
+	}
+}
+
+void Robot::intake(){
+	if (toggleIntakeButton.isPressed()){
+		intakeMotor.move_voltage(-12000*intakeDirection);
+	} else {
+		intakeMotor.move_voltage(0);
+	}
+	if(intakeOn){
+		intakeMotor.move_voltage(-12000*intakeDirection);
+	}
+}
+
+void Robot::intakeSubsystem(){
+	toggleIntake();
+	intake();
+}
+
+//Launcher subsystem methods
+void Robot::launcher(){
+	if(launcherLimit == 1){
+		if(shootButton.isPressed()){
+			launcherMotor.move_voltage(12000);
+		} else {
+			launcherMotor.move_voltage(500);
+		}
+	}	else {
+		launcherMotor.move_voltage(12000);
+	}
+}
+
+void Robot::launcherSubsystem(){
+	launcher();
+}
+
+//Lift subsystem of methods
+//This is the manual lift functionality
+void Robot::lift(){
+	if (btnUp.changedToPressed()) {
+		liftMotor.move_voltage(12000);
+	} else if (btnUp.changedToReleased()){
+		liftMotor.move_voltage(0);
+	}
+	if (btnDown.changedToPressed()) {
+		liftMotor.move_voltage(-12000);
+	} else if(btnDown.changedToReleased()) {
+		liftMotor.move_voltage(0);
+	}
+}
+
+void Robot::updateLiftIndex(){
+	if(btnUp.changedToPressed()){
+		if(liftIndex != 3 ){
+			liftIndex++;
+		}
+	}
+	if(btnDown.changedToPressed()){
+		if(liftIndex != 0){
+			liftIndex--;
+		}
+	}
+}
+
+void Robot::raiseLiftIndex(){
+	if(liftIndex != 3){
+		liftIndex++;
+	} else {
+		return;
+	}
+}
+
+void Robot::lowerLiftIndex(){
+	if(liftIndex != 0){
+		liftIndex--;
+	} else {
+		return;
+	}
+}
+
+void Robot::liftUpIndex(){
+	if(liftIndex != 3){
+		updateSensors();
+		if(potValue > liftIndexes[liftIndex]+5){
+			liftMotor.move_voltage(-12000);
+		} else if(potValue < liftIndexes[liftIndex]-5){
+			liftMotor.move_voltage(12000);
+		} else {
+			liftMotor.move_voltage(300);
+		}
+	} else{
+		return;
+	}
+}
+
+void Robot::liftDownIndex(){
+	if(liftIndex != 0){
+		updateSensors();
+		if(potValue > liftIndexes[liftIndex]+5){
+			liftMotor.move_voltage(-12000);
+		} else if(potValue < liftIndexes[liftIndex]-5){
+			liftMotor.move_voltage(12000);
+		} else {
+			liftMotor.move_voltage(300);
+		}
+	} else {
+		return;
+	}
+}
+
+void Robot::liftSubsystem(){
+	lift();
+}
+
+//Forklift subsystem of methods
+void Robot::forklift(){
+	if(forkUp.isPressed() && forkDown.isPressed()){
+		forkMotor.move_voltage(0);
+	} else if (forkUp.isPressed()){
+		forkMotor.move_voltage(12000);
+  } else if (forkDown.isPressed()){
+		forkMotor.move_voltage(-12000);
+	} else if (!forkUp.isPressed() && !forkDown.isPressed()){
+		forkMotor.move_voltage(0);
+	}
+}
+
+void Robot::forkliftSubsystem(){
+	forklift();
+}
+
+void Robot::manualControl(float leftJoy, float rightJoy){
+  //Driving related
+	float voltTarget = (float) currentVoltageIndex;
+	float leftVoltage = leftJoy * voltTarget;
+	float rightVoltage = rightJoy * voltTarget;
+	driveSubsystem((int) leftVoltage, (int) rightVoltage);
+	intakeSubsystem();
+	launcherSubsystem();
+	liftSubsystem();
+	forkliftSubsystem();
+}
+
+//THE FOLLOWING METHODS ARE ALL RELATED TO AUTO BEHAVIOR
 //meant to be called in a seperate while loop that way multiple 'auto' functions can be called and run at the same time
 //returns a vector of bools that are true if the ultrasonic is in the correct position ([0] for left and [1] for right)
-std::vector<bool> sonicDistanceAdjust(int leftLowerBound, int leftUpperBound, int rightLowerBound, int rightUpperBound){
+//The driveRight goes to left ultrasonic because the drive direction is relative to the intake and the ultrasonic direction is relative to the forklift
+std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance){
+	updateSonics();
 	bool leftSet = false;
 	bool rightSet = false;
-	std::vector<int> sonicValues;
-	updateSonics(sonicValues);
 
-	//left adjustment
-	if(leftLowerBound < sonicValues[0] && leftUpperBound > sonicValues[0]){
-		leftDrive(0);
-		leftSet = true;
-	}
-	else if(leftLowerBound > sonicValues[0]){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
-		leftDrive(100);
-	}
-	else if(leftUpperBound < sonicValues[0]){
-		leftDrive(-100);
-	}
+	//Equalization
+	if(leftSonic < rightSonic-15 && leftDistance > leftSonic){
+		driveRight(1800);
+	  driveLeft(-1800);
+	} else if (rightSonic < leftSonic-15 && rightDistance > rightSonic){
+		driveLeft(1800);
+		driveRight(-1800);
+	} else {
+		//left adjustment
+		if(leftDistance-10 < leftSonic && leftDistance+10 > leftSonic){
+			driveRight(0);
+			leftSet = true;
+		}
+		else if(leftDistance-10 > leftSonic){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
+			driveRight(1800);
+		}
+		else if(leftDistance+10 < leftSonic){
+			driveRight(-1800);
+		}
 
-	//right adjustment
-	if(rightLowerBound < sonicValues[1] && rightUpperBound > sonicValues[1]){
-		rightDrive(0);
-		rightSet = true;
-	}
-	else if(rightLowerBound > sonicValues[1]){
-		rightDrive(100);
-	}
-	else if(rightUpperBound < sonicValues[1]){
-		rightDrive(-100);
+		//right adjustment
+		if(rightDistance-10 < rightSonic && rightDistance+10 > rightSonic){
+			driveLeft(0);
+			rightSet = true;
+		}
+		else if(rightDistance-10 > rightSonic){
+			driveLeft(1800);
+		}
+		else if(rightDistance+10 < rightSonic){
+			driveLeft(-1800);
+		}
 	}
 
 	return std::vector<bool>{leftSet, rightSet};
 }
 
 //AUTO FUNCTIONS THAT CAN BE USED IN AUTONOMOUS OR IN DRIVER CONTROL
-//adjustDistance should be used where the movements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
-void adjustDistance(int leftTarget, int rightTarget){
+//adjustDistance should be used where the moveVoltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
+void Robot::adjustDistance(int leftTarget, int rightTarget){
 	bool completed = false;
 	std::vector<bool> setSides;
 
 	while(!completed){
-		setSides = sonicDistanceAdjust(leftTarget-5,leftTarget+5,rightTarget-5,rightTarget+5);
+		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
 		if(setSides[0] == true && setSides[1] == true){
 			completed = true;
 		}
 	}
 }
 
-//takes true for fork down, and false for forkup
-void toggleForklift(bool forkPosition){
-	if(forkPosition){
-		forkMotor.moveRelative(50, 200);
-	}
-	else{
-		forkMotor.moveRelative(50, -200);
-	} //super wack and not correct
-}
-
-void flipScoredEnemyCap() {
-	// set target to current PID + X
-	// FLIP
-	// go back down
-}
-
-void opcontrol() {
-	// LIFT SYSTEM
-	int goalHeight = 0;
-
-	drive.setMaxVelocity(200);
-	liftMotor.setVoltageLimit(12000);
+void opcontrol(){
+	Robot robot;
 
 	while (true) {
-	  displaySensorValuesOnBrain();
-		displayOptionsOnController();
 
-		/*
-		* TO DO:
-		*  - Debug the speed toggling (currently, a one-shot to max speed for endgame)
-		*/
+		//Everything needed for manual control
+		robot.aux();
+		robot.manualControl(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog(ControllerAnalog::rightY));
 
-		// SPEED TOGGLING
-		// if (toggleMaxSpeedButton.changedToPressed()) {
-		// 	drive.setMaxVoltage(voltages[(currentVoltageIndex+1)%  NUM_VOLTAGES]);
-		// 	pros::lcd::print(5, "Drivketrain Voltage: ", voltages[(currentVoltageIndex+1)%  NUM_VOLTAGES]);
-		// }
-
-		if (toggleMaxSpeedButton.changedToPressed()) {
-			drive.setMaxVelocity(200);
+		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
+		if (autoDistanceButton.isPressed()) {
+			robot.adjustDistance(400, 400);
 		}
 
-		// DRIVETRAIN
-		if (driveReverseButton.changedToPressed()) {
-			reversed = reversed * -1;
-		}
-
-		if (reversed == 1) {
-	  drive.tank(controller.getAnalog(ControllerAnalog::leftY),
-            -1 * controller.getAnalog(ControllerAnalog::rightY));
-		} else if (reversed == -1) {
-			drive.tank(reversed*controller.getAnalog(ControllerAnalog::rightY),
-							-1*reversed*controller.getAnalog(ControllerAnalog::leftY));
-		}
-
-		//LAUNCHER SYSTEM
-		loaded = launcherLimitSwitch.isPressed();
-		if (loaded) {
-			if (shootButton.isPressed()) {
-				launcherMotor.move_voltage(12000);
-			} else {
-				launcherMotor.move_voltage(500);
-			}
-		} else {
-			launcherMotor.move_voltage(12000);
-		}
-
-		//LIFT SYSTEM (Auto levelling)
-		// if (btnUp.changedToPressed() && goalHeight < NUM_HEIGHTS - 1) {
-		// 	goalHeight++;
-		// 	liftControlPot.setTarget(heights[goalHeight]);
-		// } else if (btnDown.changedToPressed() && goalHeight > 0) {
-		// 		goalHeight--;
-		// 		liftControlPot.setTarget(heights[goalHeight]);
-		// }
-
-		// DIRECT LIFT CONTROL
-		if (btnUp.changedToPressed()) {
-			liftMotor.move_velocity(200);
-		} else if (btnUp.changedToReleased()){
-			liftMotor.move_velocity(0);
-		}
-		if (btnDown.changedToPressed()) {
-			liftMotor.move_velocity(-200);
-		} else if(btnDown.changedToReleased()) {
-			liftMotor.move_velocity(0);
-		}
-
-		// INTAKE CONTROL
-		if (intakeButton.isPressed()) {
-			intakeMotor.move_velocity(200);
-		} else {
-			intakeMotor.move_velocity(0);
-		}
-
-		// FORK CONTROl
-		if (forkUp.changedToPressed()) {
-			forkMotor.move_velocity(200);
-		} else if (forkUp.changedToReleased()){
-			forkMotor.move_velocity(0);
-		}
-
-		if (forkDown.changedToPressed()) {
-			forkMotor.move_velocity(-200);
-		} else if (forkDown.changedToReleased()) {
-			forkMotor.move_velocity(0);
-		}
-
-		if (autoDistanceButton.changedToPressed()) {
-			adjustDistance(165, 165);
-		}
-
-		// AUTO testing
 		if (autoButton.isPressed() && shootButton.isPressed()) {
-			autonomous();
+			autoSelector(robot.autoIndex());
 		}
 
-		pros::delay(20);
+		pros::delay(15);
 	}
 
 }

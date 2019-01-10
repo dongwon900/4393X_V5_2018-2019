@@ -1,5 +1,5 @@
 #include "main.h"
-using namespace okapi;
+
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -11,7 +11,25 @@ using namespace okapi;
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
- // Motor Definitions
 
-void autonomous() {
+ void autonomous() {
+   drive(12000, 12000);
+   pros::delay(500);
+   drive(0,0);
+ }
+
+void autoSelector(int value){
+  switch(value){
+    case 1:
+      autonomous();
+      break;
+    case 2:
+      break;
+    case 3:
+      break;
+    case 4:
+      break;
+    default:
+      break;
+  };
 }
