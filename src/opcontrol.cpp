@@ -483,12 +483,12 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	bool completed = false;
 	std::vector<bool> setSides;
 
-	while(!completed && performingAutoFunction){
+	while(!completed){
 		if (ControllerAnalog::LeftY != 0 || ControllerAnalog::RightY != 0) {
-			performingAutoFunction = false;
+			completed = true; 	// User interrupt
 		}
 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
-		if(setSides[0] == true && setSides[1] == true){
+		if(setSides[0] == true && setSides[1] == true) {
 			completed = true;
 		}
 	}
@@ -505,7 +505,6 @@ void opcontrol(){
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.isPressed()) {
-			performingAutoFunction = true;
 			robot.adjustDistance(400, 400);
 		}
 
