@@ -78,6 +78,9 @@ void opcontrol(void);
 #define DRIVETRAIN_L_F 9
 #define DRIVETRAIN_L_B 10
 
+#define VISION_1 11
+#define VISION_2 12
+
 // Legacy port definitions - A-H (1-8)
 #define ULTRA_ECHO_PORT_LEFT 1
 #define ULTRA_PING_PORT_LEFT 2

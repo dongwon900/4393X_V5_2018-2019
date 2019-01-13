@@ -10,6 +10,9 @@ Motor driveLeftB(DRIVETRAIN_L_B);
 Motor driveRightF(DRIVETRAIN_R_F);
 Motor driveRightB(DRIVETRAIN_R_B);
 
+Vision visionSensor1(VISION_1, pros::E_VISION_ZERO_TOPLEFT);
+Vision visionSensor2(VISION_2, pros::E_VISION_ZERO_TOPLEFT);
+
 //Controller
 Controller controller;
 

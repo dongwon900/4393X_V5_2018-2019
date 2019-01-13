@@ -32,7 +32,7 @@ enum StartingTile{
 //ROBOT CLASS IS USED TO STORE ALL THE SENSOR DATA
 class Robot{
 public:
-	//Constructors
+	//Constructers
 	Robot();
 	//Manual control methods
 	void driveLeft(int voltage);
@@ -484,7 +484,7 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	std::vector<bool> setSides;
 
 	while(!completed && performingAutoFunction){
-		if (ControllerAnalog::LeftY != 0 || ControllerAnalog::RightY != 0) {
+		if (controller.getAnalog(ControllerAnalog::leftY) != 0 || controller.getAnalog(ControllerAnalog::rightY) != 0) {
 			performingAutoFunction = false;
 		}
 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
@@ -505,7 +505,7 @@ void opcontrol(){
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.isPressed()) {
-			performingAutoFunction = true;
+			robot.performingAutoFunction = true;
 			robot.adjustDistance(400, 400);
 		}
 
