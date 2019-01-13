@@ -282,7 +282,7 @@ void Robot::driveSubsystem(int leftVoltage, int rightVoltage){
 }
 
 //Intake subsystem of methods
-void Robot::toggleIntake(){
+void Robot::toggleIntake() {
 	if(toggleIntakeButton.changedToPressed()){
 		if(intakeOn){
 			intakeOn = false;
@@ -436,7 +436,7 @@ void Robot::manualControl(float leftJoy, float rightJoy){
 //meant to be called in a seperate while loop that way multiple 'auto' functions can be called and run at the same time
 //returns a vector of bools that are true if the ultrasonic is in the correct position ([0] for left and [1] for right)
 //The driveRight goes to left ultrasonic because the drive direction is relative to the intake and the ultrasonic direction is relative to the forklift
-std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance){
+std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance) {
 	updateSonics();
 	bool leftSet = false;
 	bool rightSet = false;
@@ -483,7 +483,10 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	bool completed = false;
 	std::vector<bool> setSides;
 
-	while(!completed){
+	while(!completed && performingAutoFunction){
+		if (ControllerAnalog::LeftY != 0 || ControllerAnalog::RightY != 0) {
+			performingAutoFunction = false;
+		}
 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
 		if(setSides[0] == true && setSides[1] == true){
 			completed = true;
@@ -502,6 +505,7 @@ void opcontrol(){
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.isPressed()) {
+			performingAutoFunction = true;
 			robot.adjustDistance(400, 400);
 		}
 
