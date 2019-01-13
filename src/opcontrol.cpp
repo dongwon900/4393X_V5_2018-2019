@@ -32,7 +32,7 @@ enum StartingTile{
 //ROBOT CLASS IS USED TO STORE ALL THE SENSOR DATA
 class Robot{
 public:
-	//Constructers
+	//Constructors
 	Robot();
 	//Manual control methods
 	void driveLeft(int voltage);
