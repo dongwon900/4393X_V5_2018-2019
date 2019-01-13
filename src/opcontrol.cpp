@@ -484,7 +484,7 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	std::vector<bool> setSides;
 
 	while(!completed){
-		if (ControllerAnalog::LeftY != 0 || ControllerAnalog::RightY != 0) {
+		if (controller.getAnalog(ControllerAnalog::leftY) != 0 || controller.getAnalog(ControllerAnalog::rightY) != 0) {
 			completed = true; 	// User interrupt
 		}
 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
