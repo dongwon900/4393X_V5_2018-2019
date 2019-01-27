@@ -476,7 +476,11 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 
 	return std::vector<bool>{leftSet, rightSet};
 }
-
+// Returns true if x is in range [low..high], else false
+bool inRange(unsigned low, unsigned high, unsigned x)
+{
+    return  ((x-low) <= (high-low));
+}
 //AUTO FUNCTIONS THAT CAN BE USED IN AUTONOMOUS OR IN DRIVER CONTROL
 //adjustDistance should be used where the moveVoltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
 void Robot::adjustDistance(int leftTarget, int rightTarget){
@@ -484,7 +488,8 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	std::vector<bool> setSides;
 
 	while(!completed){
-		if (controller.getAnalog(ControllerAnalog::leftY) != 0 || controller.getAnalog(ControllerAnalog::rightY) != 0) {
+		if (!inRange(-10, 10, controller.getAnalog(ControllerAnalog::leftY)) ||
+				!inRange(-10, 10, controller.getAnalog(ControllerAnalog::rightY)) {
 			completed = true; 	// User interrupt
 		}
 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
@@ -494,14 +499,19 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	}
 }
 
-void opcontrol(){
+void opcontrol() {
 	Robot robot;
 
 	while (true) {
 
 		//Everything needed for manual control
 		robot.aux();
-		robot.manualControl(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog(ControllerAnalog::rightY));
+
+		float leftAnalogDrive = controller.getAnalog(ControllerAnalog::LeftY);
+		float rightAnalogDrive = controller.getAnalog(ControllerAnalog::LeftY);
+	  leftAnalogDrive = (inRange(-5, 5, leftAnalogDrive) ? 0 : leftAnalogDrive;
+		rightAnalogDrive = (inRange(-5, 5, leftAnalogDrive)) ? 0 : rightAnalogDrive;
+		robot.manualControl(leftAnalogDrive, rightAnalogDrive);
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
 		if (autoDistanceButton.isPressed()) {
