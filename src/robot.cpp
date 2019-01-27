@@ -311,14 +311,14 @@ void Robot::updateLiftIndex(){
 
 void Robot::updateLiftPosition(){
 	int diff = 0;
-	if(potValue > liftPositions[liftIndex] + 15){
+	if(potValue > liftPositions[liftIndex] + 10){
 		diff = potValue - liftPositions[liftIndex];
 		if(diff > 100){
 			liftMotor.move_voltage(-8000);
 		} else {
 			liftMotor.move_voltage(-500);
 		}
-  } else if(potValue < liftPositions[liftIndex] - 15){
+  } else if(potValue < liftPositions[liftIndex] - 10){
 		diff = liftPositions[liftIndex] - potValue;
 		if(diff > 100){
 			liftMotor.move_voltage(12000);
@@ -332,6 +332,7 @@ void Robot::updateLiftPosition(){
 
 void Robot::liftSubsystem(){
 	lift();
+	updateLiftIndex();
 	updateLiftPosition();
 }
 
