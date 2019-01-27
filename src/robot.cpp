@@ -314,9 +314,9 @@ void Robot::updateLiftPosition(){
 	if(potValue > liftPositions[liftIndex] + 10){
 		diff = potValue - liftPositions[liftIndex];
 		if(diff > 100){
-			liftMotor.move_voltage(-8000);
+			liftMotor.move_voltage(-6000);
 		} else {
-			liftMotor.move_voltage(-500);
+			liftMotor.move_voltage(-300);
 		}
   } else if(potValue < liftPositions[liftIndex] - 10){
 		diff = liftPositions[liftIndex] - potValue;
@@ -375,10 +375,10 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 	bool rightSet = false;
 
 	//Equalization
-	if(leftSonic < rightSonic-15 && leftDistance > leftSonic){
+	if((leftSonic < rightSonic-15 && leftDistance > leftSonic) || (leftSonic < rightSonic-15 && leftDistance < leftSonic)){
 		driveRight(1800);
 	  driveLeft(-1800);
-	} else if (rightSonic < leftSonic-15 && rightDistance > rightSonic){
+	} else if ((rightSonic < leftSonic-15 && rightDistance > rightSonic) || (rightSonic < leftSonic-15 && rightDistance < rightSonic)){
 		driveLeft(1800);
 		driveRight(-1800);
 	} else {
