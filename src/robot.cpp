@@ -128,9 +128,11 @@ void Robot::chooseAuto(){
 
 	while(!allianceSelected){
 		allianceSelected = chooseAlliance();
+		pros::delay(2);
 	}
 	while(!tileSelected){
 		tileSelected = chooseTile();
+		pros::delay(2);
 	}
 }
 
@@ -141,8 +143,7 @@ void Robot::displaySensorValuesOnBrain() {
 									 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 
 	pros::lcd::print(0, "LIFT PID (pros): %d", potValue);
-	pros::lcd::print(1, "ULTRA Left: %d", leftSonic);
-	pros::lcd::print(2, "ULTRA Right: %d", rightSonic);
+	pros::lcd::print(1, "lift index: %d", liftIndex);
 	pros::lcd::print(3, "Gyro: %d", gyroAngle);
 	pros::lcd::print(4, "Vision 1: %d", gyroAngle);
 	pros::lcd::print(5, "Vision 2: %d", gyroAngle);
@@ -264,79 +265,74 @@ void Robot::launcherSubsystem(){
 //Lift subsystem of methods
 //This is the manual lift functionality
 void Robot::lift(){
-	if (btnUp.changedToPressed()) {
+	if (btnUp.isPressed()) {
 		liftMotor.move_voltage(12000);
-	} else if (btnUp.changedToReleased()){
-		liftMotor.move_voltage(0);
 	}
-	if (btnDown.changedToPressed()) {
+	if (btnDown.isPressed()) {
 		liftMotor.move_voltage(-12000);
-	} else if(btnDown.changedToReleased()) {
-		liftMotor.move_voltage(0);
-	}
-}
-
-void Robot::updateLiftIndex(){
-	if(btnUp.changedToPressed()){
-		if(liftIndex != 3 ){
-			liftIndex++;
-		}
-	}
-	if(btnDown.changedToPressed()){
-		if(liftIndex != 0){
-			liftIndex--;
-		}
 	}
 }
 
 void Robot::raiseLiftIndex(){
-	if(liftIndex != 3){
+	if(liftIndex != liftPositions.size()-1){
 		liftIndex++;
-	} else {
-		return;
 	}
 }
 
 void Robot::lowerLiftIndex(){
 	if(liftIndex != 0){
 		liftIndex--;
-	} else {
-		return;
 	}
 }
 
-void Robot::liftUpIndex(){
-	if(liftIndex != 3){
-		updateSensors();
-		if(potValue > liftIndexes[liftIndex]+5){
-			liftMotor.move_voltage(-12000);
-		} else if(potValue < liftIndexes[liftIndex]-5){
-			liftMotor.move_voltage(12000);
-		} else {
-			liftMotor.move_voltage(300);
-		}
-	} else{
-		return;
+void Robot::updateLiftIndex(){
+	//Updates it for the button presses
+	if(btnUp.changedToPressed()){
+		raiseLiftIndex();
 	}
+	if(btnDown.changedToPressed()){
+		lowerLiftIndex();
+	}
+	/*
+	//updating for passing another lift index
+	int diff = liftPositions[liftIndex] - potValue;
+	//In a higher liftIndex
+	if(liftIndex != liftPositions.size()-1){
+		if(diff > liftPositions[liftIndex+1] - liftPositions[liftIndex] + 50){
+			liftIndex++;
+		}
+	}
+	//In a lower lifTIndex
+	if(diff < liftPositions[liftIndex -1] - liftPositions[liftIndex] - 50){
+		liftIndex--;
+	}
+	*/
 }
 
-void Robot::liftDownIndex(){
-	if(liftIndex != 0){
-		updateSensors();
-		if(potValue > liftIndexes[liftIndex]+5){
-			liftMotor.move_voltage(-12000);
-		} else if(potValue < liftIndexes[liftIndex]-5){
+void Robot::updateLiftPosition(){
+	int diff = 0;
+	if(potValue > liftPositions[liftIndex] + 15){
+		diff = potValue - liftPositions[liftIndex];
+		if(diff > 100){
+			liftMotor.move_voltage(-8000);
+		} else {
+			liftMotor.move_voltage(-500);
+		}
+  } else if(potValue < liftPositions[liftIndex] - 15){
+		diff = liftPositions[liftIndex] - potValue;
+		if(diff > 100){
 			liftMotor.move_voltage(12000);
 		} else {
-			liftMotor.move_voltage(300);
+			liftMotor.move_voltage(8000);
 		}
-	} else {
-		return;
+	} else if(!btnUp.isPressed() && !btnDown.isPressed()){
+		liftMotor.move_voltage(400);
 	}
 }
 
 void Robot::liftSubsystem(){
 	lift();
+	updateLiftPosition();
 }
 
 //Forklift subsystem of methods
@@ -420,13 +416,14 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	std::vector<bool> setSides;
 
 	while(!completed){
-		if (controller.getAnalog(ControllerAnalog::leftY) >= 2 || controller.getAnalog(ControllerAnalog::rightY) >= 2) {
+		if (controller.getAnalog(ControllerAnalog::leftY) != 0 || controller.getAnalog(ControllerAnalog::rightY) != 0) {
 			completed = true; 	// User interrupt
 		}
 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
 		if(setSides[0] == true && setSides[1] == true) {
 			completed = true;
 		}
+		pros::delay(2);
 	}
 }
 

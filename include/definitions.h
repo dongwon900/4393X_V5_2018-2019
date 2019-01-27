@@ -1,9 +1,9 @@
 // Motor Definitions
-#define DRIVETRAIN_R_F 1
-#define DRIVETRAIN_R_B 2
-#define DRIVETRAIN_L_F 3
-#define DRIVETRAIN_L_B 4
-#define FORK_MOTOR 5
+#define DRIVETRAIN_R_F 3
+#define DRIVETRAIN_R_B 4
+#define DRIVETRAIN_L_F 1
+#define DRIVETRAIN_L_B 2
+#define FORK_MOTOR 20
 #define INTAKE_MOTOR 6
 #define LIFT_MOTOR 7
 #define LAUNCH_MOTOR 8

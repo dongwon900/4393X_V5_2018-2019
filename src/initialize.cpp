@@ -1,4 +1,6 @@
 #include "main.h"
+#include "definitions.h"
+#include "robot.h"
 
  /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -8,7 +10,6 @@
  */
 void initialize() {
 	pros::lcd::initialize();
-	//pros::lcd::register_btn1_cb(on_center_button);
 }
 
 /**
