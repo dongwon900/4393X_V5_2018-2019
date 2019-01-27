@@ -75,7 +75,7 @@ public:
 	bool chooseTile(); //takes a button press on the lcd emulator
 	void chooseAuto();
 	//Aux relates to the displays on cortex, controller, and console
-	void aux();
+	void updateUserInterface();
 private:
 	//sensor readouts
 	int leftSonic;
@@ -209,8 +209,8 @@ void Robot::displaySensorValuesOnBrain() {
 									 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 
 	pros::lcd::print(0, "LIFT PID (pros): %d", potValue);
-	pros::lcd::print(1, "ULTRA Left: %d", leftSonic);
-	pros::lcd::print(2, "ULTRA Right: %d", rightSonic);
+	pros::lcd::print(1, "VoltIndex %d", currentVoltageIndex);
+	pros::lcd::print(2, "Limit Switch %d", launcherLimit);
 	pros::lcd::print(3, "Gyro: %d", gyroAngle);
 }
 
@@ -221,7 +221,7 @@ void Robot::displayDataOnController() {
  controller.setText(2, 0, "Auto 3");
 }
 
-void Robot::aux(){
+void Robot::updateUserInterface(){
 	displaySensorValuesOnBrain();
 	displayDataOnController();
 
@@ -476,10 +476,10 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 
 	return std::vector<bool>{leftSet, rightSet};
 }
-// Returns true if x is in range [low..high], else false
-bool inRange(unsigned low, unsigned high, unsigned x)
+// Returns true if x is in range
+bool inRange(float low, float high, float x)
 {
-    return  ((x-low) <= (high-low));
+		return x < high && x > low;
 }
 //AUTO FUNCTIONS THAT CAN BE USED IN AUTONOMOUS OR IN DRIVER CONTROL
 //adjustDistance should be used where the moveVoltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
@@ -488,8 +488,8 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	std::vector<bool> setSides;
 
 	while(!completed){
-		if (!inRange(-10, 10, controller.getAnalog(ControllerAnalog::leftY)) ||
-				!inRange(-10, 10, controller.getAnalog(ControllerAnalog::rightY)) {
+		if (!inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::leftY)) ||
+				!inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::rightY))) {
 			completed = true; 	// User interrupt
 		}
 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
@@ -505,12 +505,14 @@ void opcontrol() {
 	while (true) {
 
 		//Everything needed for manual control
-		robot.aux();
+		robot.updateUserInterface();
+		robot.updateSensors();
 
-		float leftAnalogDrive = controller.getAnalog(ControllerAnalog::LeftY);
-		float rightAnalogDrive = controller.getAnalog(ControllerAnalog::LeftY);
-	  leftAnalogDrive = (inRange(-5, 5, leftAnalogDrive) ? 0 : leftAnalogDrive;
-		rightAnalogDrive = (inRange(-5, 5, leftAnalogDrive)) ? 0 : rightAnalogDrive;
+		float leftAnalogDrive = controller.getAnalog(ControllerAnalog::leftY);
+		float rightAnalogDrive = controller.getAnalog(ControllerAnalog::rightY);
+	  leftAnalogDrive = (inRange(-0.05, 0.05, leftAnalogDrive)) ? 0 : leftAnalogDrive;
+		rightAnalogDrive = (inRange(-0.05, 0.05, rightAnalogDrive)) ? 0 : rightAnalogDrive;
+
 		robot.manualControl(leftAnalogDrive, rightAnalogDrive);
 
 		//EXTRA FUNCTIONALITY (not needed for normal manual operation)
