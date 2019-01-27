@@ -12,10 +12,11 @@ Motor driveLeftB(DRIVETRAIN_L_B);
 Motor driveRightF(DRIVETRAIN_R_F);
 Motor driveRightB(DRIVETRAIN_R_B);
 
-Vision visionSensor1(VISION_1, pros::E_VISION_ZERO_TOPLEFT);
-Vision visionSensor2(VISION_2, pros::E_VISION_ZERO_TOPLEFT);
-Vision visionSensor3(VISION_3, pros::E_VISION_ZERO_TOPLEFT);
-Vision visionSensor4(VISION_4, pros::E_VISION_ZERO_TOPLEFT);
+//Vision sensor definitions
+Vision visionSensor1(VISION_1, pros::E_VISION_ZERO_CENTER);
+Vision visionSensor2(VISION_2, pros::E_VISION_ZERO_CENTER);
+Vision visionSensor3(VISION_3, pros::E_VISION_ZERO_CENTER);
+Vision visionSensor4(VISION_4, pros::E_VISION_ZERO_CENTER);
 
 //Controller
 Controller controller;
@@ -39,6 +40,7 @@ pros::ADIPotentiometer liftPotentiometer (LIFT_POTENTIOMETER_PORT);
 pros::ADIUltrasonic ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
 pros::ADIUltrasonic ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT);
 
+//All following code relates to the Robot object
 Robot::Robot(){
 	leftSonic = ultrasonicLeft.get_value();
 	rightSonic = ultrasonicRight.get_value();
@@ -81,6 +83,11 @@ void Robot::updateSensors(){
 	gyroAngle = gyro.get_value();
 	potValue = liftPotentiometer.get_value();
 	launcherLimit = launcherLimitSwitch.isPressed();
+}
+
+//Vision sensor data updating and reading
+void Robot::updateVisionData(){
+
 }
 
 //All methods relating to autonomous choosing
@@ -142,8 +149,6 @@ void Robot::displaySensorValuesOnBrain() {
 									 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 									 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 
-	pros::lcd::print(0, "LIFT PID (pros): %d", potValue);
-	pros::lcd::print(1, "lift index: %d", liftIndex);
 	pros::lcd::print(3, "Gyro: %d", gyroAngle);
 	pros::lcd::print(4, "Vision 1: %d", gyroAngle);
 	pros::lcd::print(5, "Vision 2: %d", gyroAngle);
@@ -267,9 +272,10 @@ void Robot::launcherSubsystem(){
 void Robot::lift(){
 	if (btnUp.isPressed()) {
 		liftMotor.move_voltage(12000);
-	}
-	if (btnDown.isPressed()) {
+	} else if (btnDown.isPressed()) {
 		liftMotor.move_voltage(-12000);
+	} else if(liftSet){
+		liftMotor.move_voltage(400);
 	}
 }
 
@@ -312,6 +318,7 @@ void Robot::updateLiftIndex(){
 void Robot::updateLiftPosition(){
 	int diff = 0;
 	if(potValue > liftPositions[liftIndex] + 10){
+		liftSet = false;
 		diff = potValue - liftPositions[liftIndex];
 		if(diff > 100){
 			liftMotor.move_voltage(-6000);
@@ -319,6 +326,7 @@ void Robot::updateLiftPosition(){
 			liftMotor.move_voltage(-300);
 		}
   } else if(potValue < liftPositions[liftIndex] - 10){
+		liftSet = false;
 		diff = liftPositions[liftIndex] - potValue;
 		if(diff > 100){
 			liftMotor.move_voltage(12000);
@@ -326,14 +334,14 @@ void Robot::updateLiftPosition(){
 			liftMotor.move_voltage(8000);
 		}
 	} else if(!btnUp.isPressed() && !btnDown.isPressed()){
-		liftMotor.move_voltage(400);
+		liftSet = true;
 	}
 }
 
 void Robot::liftSubsystem(){
-	lift();
 	updateLiftIndex();
 	updateLiftPosition();
+  lift();
 }
 
 //Forklift subsystem of methods

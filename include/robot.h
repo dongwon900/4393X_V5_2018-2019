@@ -55,6 +55,8 @@ public:
 	void updateLiftIndex();
 	void toggleMaxSpeed();
 	void toggleDriveState();
+	//vision sensor METHODS
+	void updateVisionData();
 	//Action Methods
 	std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
 	void adjustDistance(int lefTarget, int rightTarget);
@@ -86,6 +88,11 @@ private:
 	int gyroAngle;
 	int potValue;
 	int launcherLimit;
+	//vision sensor data
+	std::vector<pros::vision_object_s_t> vision1Data;
+	std::vector<pros::vision_object_s_t> vision2Data;
+	std::vector<pros::vision_object_s_t> vision3Data;
+	std::vector<pros::vision_object_s_t> vision4Data;
 	//Motor target positions (encoder values)
   const int ticksRed = 1800;
   const int ticksGreen = 900;
@@ -95,6 +102,7 @@ private:
   const std::vector<int> liftPositions {1610, 2100, 2600, 2900};
 	//different conditions of the robot
 	int liftIndex;
+	bool liftSet;
 	bool capInPossession;
 	int ballsLoaded;
 	bool performingAutoFunction;
