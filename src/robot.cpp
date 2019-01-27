@@ -4,7 +4,7 @@
 
 //Motor definitions
 Motor liftMotor(LIFT_MOTOR);
-Motor forkMotor(FORK_MOTOR);
+//Motor forkMotor(FORK_MOTOR);
 Motor intakeMotor(INTAKE_MOTOR);
 Motor launcherMotor(LAUNCH_MOTOR);
 Motor driveLeftF(DRIVETRAIN_L_F);
@@ -32,6 +32,7 @@ ControllerButton autoButton(ControllerDigital::right);
 ControllerButton driveReverseButton(ControllerDigital::X);
 ControllerButton toggleMaxSpeedButton(ControllerDigital::up);
 ControllerButton toggleIntakeButton(ControllerDigital::B);
+ControllerButton autoDistanceButton2(ControllerDigital::Y);
 
 // Legacy Sensor Initialization
 ADIButton launcherLimitSwitch(LIMIT_PORT);
@@ -39,6 +40,27 @@ pros::ADIGyro gyro(GYRO_PORT);
 pros::ADIPotentiometer liftPotentiometer (LIFT_POTENTIOMETER_PORT);
 pros::ADIUltrasonic ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
 pros::ADIUltrasonic ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT);
+
+Forklift::Forklift()
+:forkMotor{FORK_MOTOR}{
+
+}
+
+Forklift::~Forklift(){
+	forkMotor.move_voltage(0);
+}
+
+void Forklift::update(){
+	if(forkUp.isPressed() && forkDown.isPressed()){
+		forkMotor.move_voltage(0);
+	} else if (forkUp.isPressed()){
+		forkMotor.move_voltage(12000);
+  } else if (forkDown.isPressed()){
+		forkMotor.move_voltage(-12000);
+	} else if (!forkUp.isPressed() && !forkDown.isPressed()){
+		forkMotor.move_voltage(0);
+	}
+}
 
 //All following code relates to the Robot object
 Robot::Robot(){
@@ -148,7 +170,8 @@ void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 									 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 									 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-
+  pros::lcd::print(1, "Ultrasonic left: %d", leftSonic);
+  pros::lcd::print(2, "Ultrasonic right: %d", rightSonic);
 	pros::lcd::print(3, "Gyro: %d", gyroAngle);
 	pros::lcd::print(4, "Vision 1: %d", gyroAngle);
 	pros::lcd::print(5, "Vision 2: %d", gyroAngle);
@@ -275,7 +298,7 @@ void Robot::lift(){
 	} else if (btnDown.isPressed()) {
 		liftMotor.move_voltage(-12000);
 	} else if(liftSet){
-		liftMotor.move_voltage(400);
+		liftMotor.move_voltage(370);
 	}
 }
 
@@ -321,17 +344,17 @@ void Robot::updateLiftPosition(){
 		liftSet = false;
 		diff = potValue - liftPositions[liftIndex];
 		if(diff > 100){
-			liftMotor.move_voltage(-6000);
+			liftMotor.move_voltage(-4000);
 		} else {
-			liftMotor.move_voltage(-300);
+			liftMotor.move_voltage(-200);
 		}
   } else if(potValue < liftPositions[liftIndex] - 10){
 		liftSet = false;
 		diff = liftPositions[liftIndex] - potValue;
-		if(diff > 100){
+		if(diff > 50){
 			liftMotor.move_voltage(12000);
 		} else {
-			liftMotor.move_voltage(8000);
+			liftMotor.move_voltage(11000);
 		}
 	} else if(!btnUp.isPressed() && !btnDown.isPressed()){
 		liftSet = true;
@@ -344,6 +367,7 @@ void Robot::liftSubsystem(){
   lift();
 }
 
+/*
 //Forklift subsystem of methods
 void Robot::forklift(){
 	if(forkUp.isPressed() && forkDown.isPressed()){
@@ -360,6 +384,7 @@ void Robot::forklift(){
 void Robot::forkliftSubsystem(){
 	forklift();
 }
+*/
 
 void Robot::manualControl(float leftJoy, float rightJoy){
   //Driving related
@@ -370,7 +395,8 @@ void Robot::manualControl(float leftJoy, float rightJoy){
 	intakeSubsystem();
 	launcherSubsystem();
 	liftSubsystem();
-	forkliftSubsystem();
+	//forkliftSubsystem();
+	forklift.update();
 }
 
 //THE FOLLOWING METHODS ARE ALL RELATED TO AUTO BEHAVIOR
@@ -444,8 +470,11 @@ void Robot::run(){
 
   //EXTRA FUNCTIONALITY (not needed for normal manual operation)
   if (autoDistanceButton.isPressed()) {
-    adjustDistance(400, 400);
+    adjustDistance(360, 360);
   }
+	if (autoDistanceButton2.isPressed()) {
+		adjustDistance(150, 150);
+	}
 
   if (autoButton.isPressed() && shootButton.isPressed()) {
     autonomous();

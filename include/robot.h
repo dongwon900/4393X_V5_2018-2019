@@ -2,6 +2,8 @@
 #include "definitions.h"
 #include <vector>
 
+extern Motor liftMotor;
+
 //These actions can be added to a vector to determine what the robot has been doing
 enum RobotActions{
 	initialized,
@@ -31,6 +33,15 @@ enum StartingTile{
 	back,
 };
 
+class Forklift{
+private:
+	Motor forkMotor;
+public:
+	Forklift();
+	~Forklift();
+	void update();
+};
+
 //ROBOT CLASS IS USED TO STORE ALL THE SENSOR DATA
 class Robot{
 public:
@@ -41,7 +52,7 @@ public:
 	void driveRight(int voltage);
 	void driveAll(int leftVoltage, int rightVoltage);
 	void launcher();
-	void forklift();
+	//void forklift();
 	void intake();
 	void lift();
 	//Updating Sensors/States/Values Methods
@@ -67,7 +78,7 @@ public:
 	//These next methods all relate to manual control
 	//Subsystem Methods (For basic manual control)
 	void intakeSubsystem();
-	void forkliftSubsystem();
+	//void forkliftSubsystem();
 	void liftSubsystem();
 	void launcherSubsystem();
 	void driveSubsystem(int leftVoltage, int rightVoltage);
@@ -99,7 +110,7 @@ private:
   const int ticksBlue = 300;
   const int forkMoveDownFromAuto = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
   const int forkToggle = forkMoveDownFromAuto * .4; //also wrong
-  const std::vector<int> liftPositions {1610, 2100, 2600, 2900};
+  const std::vector<int> liftPositions {1630, 2100, 2600, 2900};
 	//different conditions of the robot
 	int liftIndex;
 	bool liftSet;
@@ -115,4 +126,5 @@ private:
 	StartingTile startingTile;
 	//Action log using enums (for debugging)
 	std::vector<RobotActions> actionLog;
+  Forklift forklift;
 };
