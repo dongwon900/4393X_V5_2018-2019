@@ -78,9 +78,12 @@
 # Robot Software
 
 ## To-do List
+* **Autoaim** **Finish by 2/1**
+* **Merge Vision to Master**
 * Include gearing information in the robot constructor
-* Divide different functionalities into discrete classes
+* Divide different functionalities into discrete classes (refactorization)
 * Potentially change structure so that there is a parent robot class and child classes robot_driver and robot_auto
+* Autonomous tuning (PID)
 
 ## Intake System
 ### Current Version
