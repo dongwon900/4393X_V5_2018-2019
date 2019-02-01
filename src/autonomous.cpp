@@ -16,6 +16,7 @@
 
  Motor launcherMotorAuto(LAUNCH_MOTOR);
  Motor intakeMotorAuto(INTAKE_MOTOR);
+ Motor forkMotorAuto(FORK_MOTOR);
  ADIGyro gyroAuto(6, 1);
 
 void autonomous() {
@@ -35,33 +36,78 @@ void autonomous() {
     myChassis // Chassis Controller
   );
 
-	// Right Front
  auto launcherController = AsyncControllerFactory::posIntegrated(LAUNCH_MOTOR);
+ auto forkController = AsyncControllerFactory::posIntegrated(FORK_MOTOR);
 
  myChassis.setMaxVoltage(3000);
- // Low flag
- myChassis.moveDistanceAsync(3.5_ft);
- myChassis.waitUntilSettled();
- // High flag
- myChassis.moveDistanceAsync(-0.2_ft);
- myChassis.waitUntilSettled();
- launcherController.setTarget(launcherMotorAuto.getPosition() + 500);
+
+ // Forward
+ // Shoot high flag (+2)
+ myChassis.moveDistanceAsync(3_ft);
+ launcherController.setTarget(launcherMotorAuto.getPosition() + 700);
  launcherController.waitUntilSettled();
- // Ground cap
- myChassis.moveDistanceAsync(-1.5_ft);
+ // Do 180
+ // Extend fork halfway
+ // Forward into low flag (+1)
+ // Put fork back up
+ myChassis.turnAngleAsync(180_deg);
  myChassis.waitUntilSettled();
+ forkController.setTarget(forkMotorAuto.getPosition() - 500);
+ forkController.waitUntilSettled();
+ forkController.setTarget(forkMotorAuto.getPosition() + 500);
+ forkController.waitUntilSettled();
 
- myChassis.turnAngleAsync(-100_deg);
+ // Back up
+ // Do 90 Turn to cap
+ // Move fork down
+ // Move to cap
+ // Flip fork up
+ // Forward, hope it flips cap (+1)
+ myChassis.turnAngleAsync(100_deg);
  myChassis.waitUntilSettled();
-
- intakeMotorAuto.moveVoltage(12000);
+ forkController.setTarget(forkMotorAuto.getPosition() - 700);
+ forkController.waitUntilSettled();
+ myChassis.moveDistanceAsync(1_ft);
+ myChassis.waitUntilSettled();
+ forkController.setTarget(forkMotorAuto.getPosition() + 700);
+ myChassis.moveDistanceAsync(-0.5_ft);
+ myChassis.waitUntilSettled();
+ // Do 90
+ // Move to platform (+3)
  myChassis.moveDistanceAsync(2.5_ft);
  myChassis.waitUntilSettled();
- intakeMotorAuto.moveVoltage(0);
-
- myChassis.turnAngleAsync(-100_deg);
+ myChassis.turnAngleAsync(100_deg);
  myChassis.waitUntilSettled();
 
  robot.driveAll(12000, -12000);
  pros::Task::delay(2500);
+
+
+
+
+ // Low flag
+ // myChassis.moveDistanceAsync(3.5_ft);
+ // myChassis.waitUntilSettled();
+ // // High flag
+ // myChassis.moveDistanceAsync(-0.2_ft);
+ // myChassis.waitUntilSettled();
+ // launcherController.setTarget(launcherMotorAuto.getPosition() + 700);
+ // launcherController.waitUntilSettled();
+ // // Ground cap
+ // myChassis.moveDistanceAsync(-1.5_ft);
+ // myChassis.waitUntilSettled();
+ //
+ // myChassis.turnAngleAsync(-100_deg);
+ // myChassis.waitUntilSettled();
+ //
+ // intakeMotorAuto.moveVoltage(12000);
+ // myChassis.moveDistanceAsync(2.5_ft);
+ // myChassis.waitUntilSettled();
+ // intakeMotorAuto.moveVoltage(0);
+ //
+ // myChassis.turnAngleAsync(-100_deg);
+ // myChassis.waitUntilSettled();
+ //
+ // robot.driveAll(12000, -12000);
+ // pros::Task::delay(2500);
 }
