@@ -17,15 +17,21 @@ Robot::~Robot(){
 	Display.~Display();
 }
 
+bool Robot::inRange(float low, float high, float x){
+		return x < high && x > low;
+}
+
 void Robot::manualControl(float leftJoy, float rightJoy){
-	float voltTarget = (float) currentVoltageIndex;
-	float leftVoltage = leftJoy * voltTarget;
-	float rightVoltage = rightJoy * voltTarget;
+	float leftAnalogDrive = controller.getAnalog(ControllerAnalog::leftY);
+  float rightAnalogDrive = controller.getAnalog(ControllerAnalog::rightY);
+  leftAnalogDrive = (inRange(-0.05, 0.05, leftAnalogDrive)) ? 0 : leftAnalogDrive;
+  rightAnalogDrive = (inRange(-0.05, 0.05, rightAnalogDrive)) ? 0 : rightAnalogDrive;
+
 	forklift.update();
 	lift.update();
 	launcher.update();
 	intake.update();
-	drive.update(leftVoltage, rightVoltage);
+	drive.update(leftAnalogDrive, rightAnalogDrive);
 }
 
 //The function that does everything. Run this one function in the opcontrol

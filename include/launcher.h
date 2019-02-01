@@ -1,4 +1,5 @@
 #include "main.h"
+#include "definitions.h"
 
 extern Motor launcherMotor;
 

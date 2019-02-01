@@ -1,27 +1,27 @@
-#include "drive.h"
+#include "drivetrain.h"
 
-Drive::Drive(){
+Drivetrain::Drivetrain(){
 :driveLeftF{DRIVETRAIN_L_F};
 :driveLeftB{DRIVETRAIN_L_B};
 :driveRightF{DRIVETRAIN_R_F};
 :driveRightB{DRIVETRAIN_R_B};
-pros::ADIGyro gyro(GYRO_PORT);
-pros::ADIUltrasonic ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
-pros::ADIUltrasonic ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT);
+:gyro(GYRO_PORT);
+:ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT);
+:ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
 }
 
-Drive::~Drive(){
+Drivetrain::~Drivetrain(){
   driveLeftF.move_voltage(0);
-  driveLeftB.move_votlage(0);
+  driveLeftB.move_voltage(0);
   driveRightF.move_voltage(0);
   driveRightB.move_voltage(0);
 }
 
-void Drive::updateGyro(){
+void Drivetrain::updateGyro(){
   gyroAngle = gyro.get_value();
 }
 
-void Drive::updateSonics(){
+void Drivetrain::updateSonics(){
   if(ultrasonicLeft.get_value() != -1){
 		leftSonic = ultrasonicLeft.get_value();
 	}
@@ -30,7 +30,7 @@ void Drive::updateSonics(){
 	}
 }
 
-void Drive::driveLeft(int voltage){
+void Drivetrain::driveLeft(int voltage){
   if(voltage > currentVoltageIndex){
     driveLeftF.moveVoltage(currentVoltageIndex);
     driveLeftB.moveVoltage(currentVoltageIndex);
@@ -40,7 +40,7 @@ void Drive::driveLeft(int voltage){
   }
 }
 
-void Drive::driveRight(int voltage){
+void Drivetrain::driveRight(int voltage){
   if(voltage > currentVoltageIndex){
     driveRightF.moveVoltage(-currentVoltageIndex);
     driveRightB.moveVoltage(-currentVoltageIndex);
@@ -50,7 +50,7 @@ void Drive::driveRight(int voltage){
   }
 }
 
-void Drive::driveAll(int leftVoltage, int rightVoltage){
+void Drivetrain::driveAll(int leftVoltage, int rightVoltage){
   if(driveState == 1){
     driveLeft(leftVoltage);
     driveRight(rightVoltage);
@@ -60,7 +60,7 @@ void Drive::driveAll(int leftVoltage, int rightVoltage){
   }
 }
 
-void Drive::toggleMaxSpeed(){
+void Drivetrain::toggleMaxSpeed(){
   if (toggleMaxSpeedButton.changedToPressed()) {
     if(currentVoltageIndex == 10000){
       currentVoltageIndex = 12000;
@@ -70,15 +70,19 @@ void Drive::toggleMaxSpeed(){
   }
 }
 
-void Drive::toggleDriveState(){
+void Drivetrain::toggleDriveState(){
   if (driveReverseButton.changedToPressed()) {
     driveState = driveState * -1;
   }
 }
 
+bool Drivetrain::inRange(float low, float high, float x){
+		return x < high && x > low;
+}
+
 //returns a vector of bools that are true if the ultrasonic is in the correct position ([0] for left and [1] for right)
 //The driveRight goes to left ultrasonic because the drive direction is relative to the intake and the ultrasonic direction is relative to the forklift
-std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance) {
+std::vector<bool> Drivetrain::sonicDistanceAdjust(int leftDistance, int rightDistance) {
 	updateSonics();
 	bool leftSet = false;
 	bool rightSet = false;
@@ -120,23 +124,24 @@ std::vector<bool> Robot::sonicDistanceAdjust(int leftDistance, int rightDistance
 }
 
 //adjustDistance should be used where the moveVoltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
-void Robot::adjustDistance(int leftTarget, int rightTarget){
+void Drivetrain::adjustDistance(int leftTarget, int rightTarget){
 	bool completed = false;
 	std::vector<bool> setSides;
 
-	while(!completed){
-		if (controller.getAnalog(ControllerAnalog::leftY) != 0 || controller.getAnalog(ControllerAnalog::rightY) != 0) {
+  while(!completed){
+		if (!inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::leftY)) ||
+				!inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::rightY))) {
 			completed = true; 	// User interrupt
 		}
 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
 		if(setSides[0] == true && setSides[1] == true) {
 			completed = true;
 		}
-		pros::delay(2);
+    pros::delay(2);
 	}
 }
 
-void Drive::update(int leftVoltage, int rightVoltage){
+void Drivetrain::update(int leftVoltage, int rightVoltage){
   updateGyro();
   updateSonics();
   toggleMaxSpeed();

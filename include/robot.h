@@ -29,6 +29,7 @@ public:
 	//Action log using enums (for debugging)
 	std::vector<RobotActions> actionLog;
 	//Manual handles all methods for manual control
+	bool inRange(float low, float high, float x);
 	void manualControl(float leftJoy, float rightJoy);
 	//Run is the method to be called in opcontrol
 	//includes the display functionality, autonomous and auto distance

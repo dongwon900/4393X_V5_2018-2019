@@ -9,6 +9,7 @@ Display::~Display(){
 
 }
 
+/*
 void Display::displaySensorValuesOnBrain(){
   pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
                    (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
@@ -21,6 +22,7 @@ void Display::displaySensorValuesOnBrain(){
   pros::lcd::print(6, "Vision 3: %d", gyroAngle);
   pros::lcd::print(7, "Vision 4: %d", gyroAngle);
 }
+*/
 
 void Display::displayDataOnController(){
   controller.clear();
@@ -82,7 +84,7 @@ void Display::chooseAuto(){
 }
 
 void Display::update(){
-  displaySensorValuesOnBrain();
+  //displaySensorValuesOnBrain();
   displayDataOnController();
 
   printf("%s\n", "I am running");

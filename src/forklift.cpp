@@ -1,7 +1,7 @@
 #include "forklift.h"
 
-Forklift::Forklift()
-:forkMotor{FORK_MOTOR}{
+Forklift::Forklift(){
+:forkMotor{FORK_MOTOR}
 }
 
 Forklift::~Forklift(){
