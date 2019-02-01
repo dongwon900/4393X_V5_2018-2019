@@ -1,8 +1,9 @@
 #include "launcher.h"
 
 Launcher::Launcher()
-  :launcherMotor(LAUNCH_MOTOR), launcherLimit(LIMIT_PORT) {
-  //launcherLimit = launcherLimit.isPressed();
+  :launcherMotor(LAUNCH_MOTOR),
+  launcherLimitSwitch(LIMIT_PORT) {
+  launcherLimit = launcherLimitSwitch.isPressed();
 }
 
 Launcher::~Launcher(){
@@ -10,7 +11,7 @@ Launcher::~Launcher(){
 }
 
 void Launcher::updateLimit(){
-  launcherLimit = launcherLimit.isPressed();
+  launcherLimit = launcherLimitSwitch.isPressed();
 }
 
 void Launcher::launcherAutoMovement(){

@@ -1,6 +1,4 @@
-#include "main.h"
 #include "robot.h"
-#include "definitions.h"
 
 Robot::Robot(){
   std::vector<RobotActions> startSet;
@@ -9,12 +7,6 @@ Robot::Robot(){
 }
 
 Robot::~Robot(){
-	drivetrain.~drivetrain();
-	lift.~lift();
-	intake.~intake();
-	launcher.~launcher();
-	forklift.~forklift();
-	Display.~Display();
 }
 
 bool Robot::inRange(float low, float high, float x){
@@ -36,15 +28,15 @@ void Robot::manualControl(float leftJoy, float rightJoy){
 
 //The function that does everything. Run this one function in the opcontrol
 void Robot::update(){
-  Display.update();
+  display.update();
   manualControl(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog(ControllerAnalog::rightY));
 
   //EXTRA FUNCTIONALITY (not needed for normal manual operation)
   if (autoDistanceButton.isPressed()) {
-    drive.adjustDistance(360, 360);
+    drivetrain.adjustDistance(360, 360);
   }
 	if (autoDistanceButton2.isPressed()) {
-		drive.adjustDistance(150, 150);
+		drivetrain.adjustDistance(150, 150);
 	}
 
   if (autoButton.isPressed() && shootButton.isPressed()) {

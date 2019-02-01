@@ -14,7 +14,7 @@ extern ControllerButton autoButton;
 extern ControllerButton driveReverseButton;
 extern ControllerButton toggleMaxSpeedButton;
 extern ControllerButton toggleIntakeButton;
-extern ControllerButton autoDistanceButton;
+extern ControllerButton autoDistanceButton2;
 
 class SmartController{
 private:

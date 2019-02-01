@@ -10,6 +10,7 @@
 class Launcher{
 private:
   Motor launcherMotor;
+  ADIButton launcherLimitSwitch;
   int launcherLimit;
 public:
   Launcher();

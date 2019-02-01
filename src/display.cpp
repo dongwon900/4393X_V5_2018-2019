@@ -1,5 +1,4 @@
 #include "display.h"
-#include "smartController.h"
 
 Display::Display(){
 

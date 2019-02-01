@@ -5,6 +5,9 @@
 #include "enums.h"
 #include "smartController.h"
 #include "definitions.h"
+#include "lift.h"
+#include "launcher.h"
+#include "drivetrain.h"
 
 class Display{
 private:

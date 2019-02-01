@@ -10,6 +10,7 @@
 class Lift{
 private:
   Motor liftMotor;
+  pros::ADIPotentiometer liftPotentiometer;
   int potValue;
   int liftIndex;
 	bool liftSet;
