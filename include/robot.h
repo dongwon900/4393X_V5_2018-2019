@@ -62,6 +62,7 @@ public:
 	void toggleIntake();
 	void updateLiftPosition();
 	void flipScoredEnemyCap();
+	void engageLauncher();
 	//These next methods all relate to manual control
 	//Subsystem Methods (For basic manual control)
 	void intakeSubsystem();
@@ -79,6 +80,11 @@ public:
 	void aux();
 	//Run is the method to be called in opcontrol
 	void run();
+
+	// These are Getter functions for accessing the robot state outside of robot.cpp
+	int getLauncherLimit();
+
+	void testAutoRoutine();
 private:
 	//sensor readouts
 	int leftSonic;
@@ -86,13 +92,15 @@ private:
 	int gyroAngle;
 	int potValue;
 	int launcherLimit;
+	bool launcherEnabled;
+
 	//Motor target positions (encoder values)
   const int ticksRed = 1800;
   const int ticksGreen = 900;
   const int ticksBlue = 300;
   const int forkMoveDownFromAuto = ticksGreen*13.32; //wrong not measured (used napkin math on my phone calculator and an estimated total rotation)
   const int forkToggle = forkMoveDownFromAuto * .4; //also wrong
-  const std::vector<int> liftPositions {1610, 2100, 2600, 2900};
+  const std::vector<int> liftPositions {1677, 2100, 2600, 2900};
 	//different conditions of the robot
 	int liftIndex;
 	bool capInPossession;

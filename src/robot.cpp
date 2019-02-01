@@ -27,7 +27,8 @@ ControllerButton forkUp(ControllerDigital::L1);
 ControllerButton forkDown(ControllerDigital::L2);
 ControllerButton shootButton(ControllerDigital::A);
 ControllerButton autoDistanceButton(ControllerDigital::down);
-ControllerButton autoButton(ControllerDigital::right);
+ControllerButton autoButton1(ControllerDigital::right);
+ControllerButton autoButton2(ControllerDigital::Y);
 ControllerButton driveReverseButton(ControllerDigital::X);
 ControllerButton toggleMaxSpeedButton(ControllerDigital::up);
 ControllerButton toggleIntakeButton(ControllerDigital::B);
@@ -45,10 +46,11 @@ Robot::Robot(){
 	gyroAngle = gyro.get_value();
 	potValue = liftPotentiometer.get_value();
 	launcherLimit = launcherLimitSwitch.isPressed();
+	launcherEnabled = false;
 	capInPossession = false;
 	performingAutoFunction = false;
 	driveState = 1;
-	currentVoltageIndex = 10000;
+	currentVoltageIndex = 9500;
 	intakeDirection = 1;
 	intakeOn = false;
 	isForkDown = false; //should probably be an if statement chekcing the encoder value of the motor
@@ -56,7 +58,7 @@ Robot::Robot(){
 
 	if(pros::competition::is_connected()){
 		ballsLoaded = 1;
-	} else{
+	} else {
 		ballsLoaded = 0;
 	}
 
@@ -153,9 +155,7 @@ void Robot::displaySensorValuesOnBrain() {
 
 void Robot::displayDataOnController() {
  controller.clear();
- controller.setText(0, 0, "Auto 1");
- controller.setText(1, 0, "Auto 2");
- controller.setText(2, 0, "Auto 3");
+ controller.setText(2,0, std::to_string(currentVoltageIndex));
 }
 
 void Robot::aux(){
@@ -198,10 +198,10 @@ void Robot::driveAll(int leftVoltage, int rightVoltage){
 
 void Robot::toggleMaxSpeed(){
 	if (toggleMaxSpeedButton.changedToPressed()) {
-		if(currentVoltageIndex == 10000){
+		if(currentVoltageIndex == 9500) {
 			currentVoltageIndex = 12000;
-		} else if (currentVoltageIndex == 12000){
-			currentVoltageIndex = 10000;
+		} else if (currentVoltageIndex == 12000) {
+			currentVoltageIndex = 95000;
 		}
 	}
 }
@@ -230,7 +230,7 @@ void Robot::toggleIntake() {
 }
 
 void Robot::intake(){
-	if (toggleIntakeButton.isPressed()){
+	if (toggleIntakeButton.isPressed()) {
 		intakeMotor.move_voltage(-12000*intakeDirection);
 	} else {
 		intakeMotor.move_voltage(0);
@@ -247,14 +247,20 @@ void Robot::intakeSubsystem(){
 
 //Launcher subsystem methods
 void Robot::launcher(){
-	if(launcherLimit == 1){
-		if(shootButton.isPressed()){
+	if (shootButton.changedToPressed()) {
+		launcherEnabled = true;
+	}
+
+	if (launcherEnabled) {
+		if(launcherLimit == 1){
+			if(shootButton.isPressed()){
+				launcherMotor.move_voltage(12000);
+			} else {
+				launcherMotor.move_voltage(500);
+			}
+		}	else {
 			launcherMotor.move_voltage(12000);
-		} else {
-			launcherMotor.move_voltage(500);
 		}
-	}	else {
-		launcherMotor.move_voltage(12000);
 	}
 }
 
@@ -316,7 +322,7 @@ void Robot::updateLiftPosition(){
 		if(diff > 100){
 			liftMotor.move_voltage(-6000);
 		} else {
-			liftMotor.move_voltage(-300);
+			liftMotor.move_voltage(-800);
 		}
   } else if(potValue < liftPositions[liftIndex] - 10){
 		diff = liftPositions[liftIndex] - potValue;
@@ -331,9 +337,9 @@ void Robot::updateLiftPosition(){
 }
 
 void Robot::liftSubsystem(){
-	lift();
 	updateLiftIndex();
 	updateLiftPosition();
+	lift();
 }
 
 //Forklift subsystem of methods
@@ -429,7 +435,7 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 }
 
 //The function that does everything. Run this one function in the opcontrol
-void Robot::run(){
+void Robot::run() {
   updateSensors();
   aux();
   manualControl(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog(ControllerAnalog::rightY));
@@ -439,7 +445,7 @@ void Robot::run(){
     adjustDistance(400, 400);
   }
 
-  if (autoButton.isPressed() && shootButton.isPressed()) {
-    autonomous();
+  if (autoButton1.isPressed() && autoButton2.isPressed()) {
+		autonomous();
   }
 }
