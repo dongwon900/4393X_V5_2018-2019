@@ -1,8 +1,8 @@
 #include "lift.h"
 
-Lift::Lift(){
-  :liftMotor{LIFT_MOTOR};
-  pros::ADIPotentiometer liftPotentiometer (LIFT_POTENTIOMETER_PORT);
+Lift::Lift()
+  :liftMotor(LIFT_MOTOR),
+  liftPotentiometer(LIFT_POTENTIOMETER_PORT) {
   potValue = liftPotentiometer.get_value();
   liftIndex = 0;
   liftSet = false;
@@ -86,9 +86,9 @@ void Lift::updateLiftPosition(){
 	}
 }
 
-void Robot::update(){
+void Lift::update(){
   updatePot();
 	updateLiftIndex();
 	updateLiftPosition();
-  lift();
+  manualLiftControl();
 }

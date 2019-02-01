@@ -1,13 +1,17 @@
 #include "drivetrain.h"
 
-Drivetrain::Drivetrain(){
-:driveLeftF{DRIVETRAIN_L_F};
-:driveLeftB{DRIVETRAIN_L_B};
-:driveRightF{DRIVETRAIN_R_F};
-:driveRightB{DRIVETRAIN_R_B};
-:gyro(GYRO_PORT);
-:ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT);
-:ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT);
+Drivetrain::Drivetrain()
+:driveLeftF(DRIVETRAIN_L_F),
+driveLeftB(DRIVETRAIN_L_B),
+driveRightF(DRIVETRAIN_R_F),
+driveRightB(DRIVETRAIN_R_B),
+gyro(GYRO_PORT),
+ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT),
+ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT)
+{
+  gyroAngle = gyro.get_value();
+  leftSonic = ultrasonicLeft.get_value();
+  rightSonic = ultrasonicRight.get_value();
 }
 
 Drivetrain::~Drivetrain(){

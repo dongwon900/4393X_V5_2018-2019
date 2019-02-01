@@ -1,7 +1,10 @@
+#ifndef _DRIVETRAIN_H_
+#define _DRIVETRAIN_H_
+
 #include "main.h"
 #include "definitions.h"
 #include "smartController.h"
-
+/*
 extern Motor driveLeftF;
 extern Motor driveLeftB;
 extern Motor driveRightF;
@@ -9,7 +12,7 @@ extern Motor driveRightB;
 extern pros::ADIGyro gyro;
 extern pros::ADIUltrasonic ultrasonicLeft;
 extern pros::ADIUltrasonic ultrasonicRight;
-
+*/
 class Drivetrain{
 private:
   Motor driveLeftF;
@@ -39,3 +42,5 @@ public:
   void adjustDistance(int lefTarget, int rightTarget);
   void update(int leftVoltage, int rightVoltage);
 };
+
+#endif

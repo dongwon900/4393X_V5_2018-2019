@@ -6,7 +6,7 @@ void opcontrol(){
 	Robot robot;
 	while (true) {
 		//Everything needed for manual control
-		robot.run();
+		robot.update();
 		pros::delay(5);
 	}
 }

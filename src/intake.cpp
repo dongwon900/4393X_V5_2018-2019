@@ -1,7 +1,8 @@
 #include "intake.h"
 
-Intake::Intake(){
-  :intakeMotor{INTAKE_MOTOR};
+Intake::Intake()
+  :intakeMotor(INTAKE_MOTOR)
+{
 }
 
 Intake::~Intake(){
@@ -29,7 +30,7 @@ void Intake::intakeManualControl(){
 	}
 }
 
-void Intake::intakeSubsystem(){
+void Intake::update(){
 	toggleIntake();
-	intake();
+	intakeManualControl();
 }

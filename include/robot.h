@@ -1,7 +1,10 @@
+#ifndef _ROBOT_H_
+#define _ROBOT_H_
+
 #include "main.h"
 #include "definitions.h"
 #include "enums.h"
-#include "drive.h"
+#include "drivetrain.h"
 #include "forklift.h"
 #include "intake.h"
 #include "launcher.h"
@@ -16,7 +19,7 @@ private:
 	Lift lift;
 	Launcher launcher;
 	Intake intake;
-	Drive drive;
+	Drivetrain drivetrain;
 	Display display;
 public:
 	//Constructors
@@ -35,3 +38,5 @@ public:
 	//includes the display functionality, autonomous and auto distance
 	void update();
 };
+
+#endif

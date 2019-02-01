@@ -1,3 +1,6 @@
+#ifndef _ENUMS_H_
+#define _ENUMS_H_
+
 enum RobotActions{
 	initialized,
 	inAuto,
@@ -25,3 +28,5 @@ enum StartingTile{
 	front,
 	back,
 };
+
+#endif

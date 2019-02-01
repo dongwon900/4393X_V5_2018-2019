@@ -9,7 +9,7 @@ Robot::Robot(){
 }
 
 Robot::~Robot(){
-	drive.~drive();
+	drivetrain.~drivetrain();
 	lift.~lift();
 	intake.~intake();
 	launcher.~launcher();
@@ -31,7 +31,7 @@ void Robot::manualControl(float leftJoy, float rightJoy){
 	lift.update();
 	launcher.update();
 	intake.update();
-	drive.update(leftAnalogDrive, rightAnalogDrive);
+	drivetrain.update(leftAnalogDrive, rightAnalogDrive);
 }
 
 //The function that does everything. Run this one function in the opcontrol

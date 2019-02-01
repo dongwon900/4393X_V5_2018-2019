@@ -1,13 +1,16 @@
 #include "launcher.h"
 
-Launcher::Launcher(){
-  :launcherMotor{LAUNCH_MOTOR};
-  ADIButton launcherLimitSwitch(LIMIT_PORT);
-  launcherLimit = launcherLimitSwitch.isPressed();
+Launcher::Launcher()
+  :launcherMotor(LAUNCH_MOTOR), launcherLimit(LIMIT_PORT) {
+  //launcherLimit = launcherLimit.isPressed();
 }
 
 Launcher::~Launcher(){
   launcherMotor.move_voltage(0);
+}
+
+void Launcher::updateLimit(){
+  launcherLimit = launcherLimit.isPressed();
 }
 
 void Launcher::launcherAutoMovement(){
@@ -23,6 +26,6 @@ void Launcher::launcherAutoMovement(){
 }
 
 void Launcher::update(){
-  launcherLimit = launcherLimitSwitch.isPressed();
+  updateLimit();
 	launcherAutoMovement();
 }

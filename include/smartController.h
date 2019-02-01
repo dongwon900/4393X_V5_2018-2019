@@ -1,3 +1,6 @@
+#ifndef _SMARTCONTROLLER_H_
+#define _SMARTCONTROLLER_H_
+
 #include "main.h"
 
 extern Controller controller;
@@ -18,3 +21,5 @@ private:
 
 public:
 };
+
+#endif

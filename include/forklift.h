@@ -1,6 +1,11 @@
-#include "main.h"
+#ifndef _FORKLIFT_H_
+#define _FORKLIFT_H_
 
-extern Motor forkMotor;
+#include "main.h"
+#include "definitions.h"
+#include "smartController.h"
+
+//extern Motor forkMotor;
 
 class Forklift{
 private:
@@ -10,3 +15,5 @@ public:
 	~Forklift();
 	void update();
 };
+
+#endif

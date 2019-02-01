@@ -1,6 +1,11 @@
-#include "main.h"
+#ifndef _INTAKE_H_
+#define _INTAKE_H_
 
-extern Motor intakeMotor;
+#include "main.h"
+#include "definitions.h"
+#include "smartController.h"
+
+//extern Motor intakeMotor;
 
 class Intake{
 private:
@@ -14,3 +19,5 @@ public:
   void intakeManualControl();
   void update();
 };
+
+#endif

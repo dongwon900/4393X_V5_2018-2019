@@ -1,5 +1,10 @@
+#ifndef _DISPLAY_H_
+#define _DISPLAY_H_
+
 #include "main.h"
 #include "enums.h"
+#include "smartController.h"
+#include "definitions.h"
 
 class Display{
 private:
@@ -15,3 +20,5 @@ public:
   void chooseAuto();
   void update();
 };
+
+#endif

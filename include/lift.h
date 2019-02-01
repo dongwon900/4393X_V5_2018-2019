@@ -1,7 +1,11 @@
+#ifndef _LIFT_H_
+#define _LIFT_H_
+
 #include "main.h"
 #include "definitions.h"
+#include "smartController.h"
 
-extern Motor liftMotor;
+//extern Motor liftMotor;
 
 class Lift{
 private:
@@ -21,3 +25,5 @@ public:
   void updateLiftPosition();
   void update();
 };
+
+#endif
