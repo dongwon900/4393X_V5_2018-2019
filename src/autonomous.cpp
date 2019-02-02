@@ -64,7 +64,7 @@ void autonomous() {
  myChassis.waitUntilSettled();
  intakeMotorAuto.moveVoltage(-12000);
  // Forward into low flag (+1)
- robot.driveAll(8000, -8000);
+ robot.drivetrain.driveAll(8000, -8000);
  pros::Task::delay(650);
  intakeMotorAuto.moveVoltage(0);
 
@@ -77,7 +77,7 @@ void autonomous() {
  myChassis.waitUntilSettled();
  myChassis.turnAngleAsync(-turn90);
  myChassis.waitUntilSettled();
- robot.driveAll(8000, -8000);
+ robot.drivetrain.driveAll(8000, -8000);
  pros::Task::delay(500);
  forkController.setTarget(forkMotorAuto.getPosition() - 2500);
  forkController.waitUntilSettled();
