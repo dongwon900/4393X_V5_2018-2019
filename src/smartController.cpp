@@ -15,3 +15,4 @@ ControllerButton driveReverseButton(ControllerDigital::X);
 ControllerButton toggleMaxSpeedButton(ControllerDigital::up);
 ControllerButton toggleIntakeButton(ControllerDigital::B);
 ControllerButton autoDistanceButton2(ControllerDigital::Y);
+ControllerButton toggleDrivePolarityButton(ControllerDigital::left);

@@ -33,6 +33,7 @@ public:
   std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
   void adjustDistance(int lefTarget, int rightTarget);
   void update(float leftVoltage, float rightVoltage);
+  void toggleDrivePolarity();
 };
 
 #endif

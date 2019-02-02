@@ -81,6 +81,18 @@ void Drivetrain::toggleDriveState(){
   }
 }
 
+void Drivetrain::toggleDrivePolarity() {
+	if (toggleDrivePolarityButton.changedToPressed()) {
+		if (!driveRightF.is_reversed() && !driveRightB.is_reversed()) {
+			driveRightF.set_reversed(true);
+			driveRightB.set_reversed(true);
+		} else 	if (driveRightF.is_reversed() && driveRightB.is_reversed()) {
+			driveRightF.set_reversed(false);
+			driveRightB.set_reversed(false);
+		}
+	}
+}
+
 bool Drivetrain::inRange(float low, float high, float x){
 		return x < high && x > low;
 }
@@ -151,6 +163,7 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
   updateSonics();
   toggleMaxSpeed();
 	toggleDriveState();
+  toggleDrivePolarity();
 
   float leftV =  leftVoltage * (float) currentVoltageIndex;
   float rightV = rightVoltage * (float) currentVoltageIndex;
