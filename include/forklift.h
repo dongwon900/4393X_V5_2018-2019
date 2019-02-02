@@ -8,7 +8,7 @@
 //extern Motor forkMotor;
 
 class Forklift{
-private:
+public:
 	Motor forkMotor;
 public:
 	Forklift();

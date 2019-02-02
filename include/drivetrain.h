@@ -6,7 +6,7 @@
 #include "smartController.h"
 
 class Drivetrain{
-private:
+public:
   Motor driveLeftF;
   Motor driveLeftB;
   Motor driveRightF;

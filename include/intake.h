@@ -8,7 +8,7 @@
 //extern Motor intakeMotor;
 
 class Intake{
-private:
+public:
   Motor intakeMotor;
   int intakeDirection;
   bool intakeOn;

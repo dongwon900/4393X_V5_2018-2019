@@ -25,11 +25,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/opcontrol.cpp.o",
             "src/opcontrol.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/opcontrol.cpp"
+=======
+            "bin/launcher.cpp.o",
+            "src\\launcher.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\launcher.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -57,11 +65,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/launcher.cpp.o",
             "src/launcher.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/launcher.cpp"
+=======
+            "bin/smartController.cpp.o",
+            "src\\smartController.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\smartController.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -89,11 +105,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/intake.cpp.o",
             "src/intake.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/intake.cpp"
+=======
+            "bin/drivetrain.cpp.o",
+            "src\\drivetrain.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\drivetrain.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -121,11 +145,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/forklift.cpp.o",
             "src/forklift.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/forklift.cpp"
+=======
+            "bin/initialize.cpp.o",
+            "src\\initialize.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\initialize.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -153,11 +185,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/robot.cpp.o",
             "src/robot.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/robot.cpp"
+=======
+            "bin/autonomous.cpp.o",
+            "src\\autonomous.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\autonomous.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -188,8 +228,13 @@
             "bin/smartController.cpp.o",
             "src/smartController.cpp"
         ],
+<<<<<<< HEAD
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/smartController.cpp"
+=======
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\forklift.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -218,10 +263,17 @@
             "--std=gnu++17",
             "-o",
             "bin/lift.cpp.o",
+<<<<<<< HEAD
             "src/lift.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/lift.cpp"
+=======
+            "src\\lift.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\lift.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -249,11 +301,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/drivetrain.cpp.o",
             "src/drivetrain.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/drivetrain.cpp"
+=======
+            "bin/intake.cpp.o",
+            "src\\intake.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\intake.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -281,11 +341,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/initialize.cpp.o",
             "src/initialize.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/initialize.cpp"
+=======
+            "bin/display.cpp.o",
+            "src\\display.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\display.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -313,11 +381,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/autonomous.cpp.o",
             "src/autonomous.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/autonomous.cpp"
+=======
+            "bin/opcontrol.cpp.o",
+            "src\\opcontrol.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\opcontrol.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     },
     {
         "arguments": [
@@ -348,7 +424,12 @@
             "bin/display.cpp.o",
             "src/display.cpp"
         ],
+<<<<<<< HEAD
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/display.cpp"
+=======
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\robot.cpp"
+>>>>>>> 4821181a21adfe34c6c56e7f92b26dc42c172a5c
     }
 ]
