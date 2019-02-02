@@ -345,13 +345,13 @@ void Robot::liftSubsystem(){
 //Forklift subsystem of methods
 void Robot::forklift(){
 	if(forkUp.isPressed() && forkDown.isPressed()){
-		forkMotor.move_voltage(0);
+		forkMotor.move_voltage(50);
 	} else if (forkUp.isPressed()){
 		forkMotor.move_voltage(12000);
   } else if (forkDown.isPressed()){
 		forkMotor.move_voltage(-12000);
 	} else if (!forkUp.isPressed() && !forkDown.isPressed()){
-		forkMotor.move_voltage(0);
+		forkMotor.move_voltage(50);
 	}
 }
 
