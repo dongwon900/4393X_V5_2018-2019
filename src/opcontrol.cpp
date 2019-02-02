@@ -2,7 +2,7 @@
 #include "definitions.h"
 #include "robot.h"
 
-void opcontrol(){
+void opcontrol() {
 	Robot robot;
 	while (true) {
 		//Everything needed for manual control

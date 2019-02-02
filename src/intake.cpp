@@ -1,17 +1,18 @@
 #include "intake.h"
 
 Intake::Intake()
-  :intakeMotor(INTAKE_MOTOR)
-{
+  :intakeMotor(INTAKE_MOTOR) {
+    intakeDirection = 1;
+    intakeOn = false;
 }
 
-Intake::~Intake(){
+Intake::~Intake() {
   intakeMotor.move_voltage(0);
 }
 
 void Intake::toggleIntake() {
-	if(toggleIntakeButton.changedToPressed()){
-		if(intakeOn){
+	if(toggleIntakeButton.changedToPressed()) {
+		if(intakeOn) {
 			intakeOn = false;
 		} else {
 			intakeOn = true;

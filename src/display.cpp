@@ -86,5 +86,5 @@ void Display::update(){
   //displaySensorValuesOnBrain();
   displayDataOnController();
 
-  printf("%s\n", "I am running");
+  //printf("%s\n", "I am running");
 }

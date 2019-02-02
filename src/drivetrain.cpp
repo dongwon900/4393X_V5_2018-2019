@@ -7,11 +7,12 @@ driveRightF(DRIVETRAIN_R_F),
 driveRightB(DRIVETRAIN_R_B),
 gyro(GYRO_PORT),
 ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT),
-ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT)
-{
+ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT) {
   gyroAngle = gyro.get_value();
   leftSonic = ultrasonicLeft.get_value();
   rightSonic = ultrasonicRight.get_value();
+  driveState = 1;
+  currentVoltageIndex = 10000;
 }
 
 Drivetrain::~Drivetrain(){
@@ -59,8 +60,8 @@ void Drivetrain::driveAll(int leftVoltage, int rightVoltage){
     driveLeft(leftVoltage);
     driveRight(rightVoltage);
   } else if(driveState == -1){
-    driveLeft(-rightVoltage);
-    driveRight(-leftVoltage);
+   driveLeft(-rightVoltage);
+   driveRight(-leftVoltage);
   }
 }
 
@@ -145,10 +146,14 @@ void Drivetrain::adjustDistance(int leftTarget, int rightTarget){
 	}
 }
 
-void Drivetrain::update(int leftVoltage, int rightVoltage){
+void Drivetrain::update(float leftVoltage, float rightVoltage){
   updateGyro();
   updateSonics();
   toggleMaxSpeed();
 	toggleDriveState();
-	driveAll(leftVoltage, rightVoltage);
+
+  float leftV =  leftVoltage * (float) currentVoltageIndex;
+  float rightV = rightVoltage * (float) currentVoltageIndex;
+
+	driveAll((int) leftV, (int) rightV);
 }

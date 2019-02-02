@@ -12,10 +12,10 @@ const std::uint8_t  LIFT_MOTOR = 7;
 const std::uint8_t  LAUNCH_MOTOR = 8;
 
 //Vision sensor definitions
-#define VISION_1 11
-#define VISION_2 12
-#define VISION_3 13
-#define VISION_4 14
+const std::uint8_t VISION_1  = 11;
+const std::uint8_t VISION_2  = 12;
+const std::uint8_t VISION_3  = 13;
+const std::uint8_t VISION_4 = 14;
 
 // Legacy port definitions - A-H (1-8)
 #define ULTRA_ECHO_PORT_LEFT 1

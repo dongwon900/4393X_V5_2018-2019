@@ -4,15 +4,7 @@
 #include "main.h"
 #include "definitions.h"
 #include "smartController.h"
-/*
-extern Motor driveLeftF;
-extern Motor driveLeftB;
-extern Motor driveRightF;
-extern Motor driveRightB;
-extern pros::ADIGyro gyro;
-extern pros::ADIUltrasonic ultrasonicLeft;
-extern pros::ADIUltrasonic ultrasonicRight;
-*/
+
 class Drivetrain{
 private:
   Motor driveLeftF;
@@ -40,7 +32,7 @@ public:
   bool inRange(float low, float high, float x);
   std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
   void adjustDistance(int lefTarget, int rightTarget);
-  void update(int leftVoltage, int rightVoltage);
+  void update(float leftVoltage, float rightVoltage);
 };
 
 #endif

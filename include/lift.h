@@ -22,6 +22,8 @@ public:
   void manualLiftControl();
   void raiseLiftIndex();
 	void lowerLiftIndex();
+  int upPVal(int liftIndex);
+  int lowerPVal (int liftIndex);
 	void updateLiftIndex();
   void updateLiftPosition();
   void update();

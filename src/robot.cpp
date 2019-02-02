@@ -16,14 +16,14 @@ bool Robot::inRange(float low, float high, float x){
 void Robot::manualControl(float leftJoy, float rightJoy){
 	float leftAnalogDrive = controller.getAnalog(ControllerAnalog::leftY);
   float rightAnalogDrive = controller.getAnalog(ControllerAnalog::rightY);
-  leftAnalogDrive = (inRange(-0.05, 0.05, leftAnalogDrive)) ? 0 : leftAnalogDrive;
-  rightAnalogDrive = (inRange(-0.05, 0.05, rightAnalogDrive)) ? 0 : rightAnalogDrive;
+  leftAnalogDrive = (inRange(-0.02, 0.02, leftAnalogDrive)) ? 0 : leftAnalogDrive;
+  rightAnalogDrive = (inRange(-0.02, 0.02, rightAnalogDrive)) ? 0 : rightAnalogDrive;
 
 	forklift.update();
 	lift.update();
 	launcher.update();
 	intake.update();
-	drivetrain.update(leftAnalogDrive, rightAnalogDrive);
+  drivetrain.update(leftAnalogDrive, rightAnalogDrive);
 }
 
 //The function that does everything. Run this one function in the opcontrol
