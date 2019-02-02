@@ -434,6 +434,10 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	}
 }
 
+void Robot::enableLauncher() {
+	launcherEnabled = true;
+}
+
 //The function that does everything. Run this one function in the opcontrol
 void Robot::run() {
   updateSensors();

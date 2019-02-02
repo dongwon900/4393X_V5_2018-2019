@@ -85,6 +85,7 @@ public:
 	int getLauncherLimit();
 
 	void testAutoRoutine();
+	void enableLauncher();
 private:
 	//sensor readouts
 	int leftSonic;
