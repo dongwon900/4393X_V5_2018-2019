@@ -12,6 +12,7 @@ public:
   Motor launcherMotor;
   ADIButton launcherLimitSwitch;
   int launcherLimit;
+  bool launcherEnabled;
 public:
   Launcher();
   ~Launcher();

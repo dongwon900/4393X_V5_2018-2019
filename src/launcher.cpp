@@ -4,6 +4,7 @@ Launcher::Launcher()
   :launcherMotor(LAUNCH_MOTOR),
   launcherLimitSwitch(LIMIT_PORT) {
   launcherLimit = launcherLimitSwitch.isPressed();
+  launcherEnabled = false;
 }
 
 Launcher::~Launcher(){
@@ -15,15 +16,21 @@ void Launcher::updateLimit(){
 }
 
 void Launcher::launcherAutoMovement(){
-	if(launcherLimit == 1){
-		if(shootButton.isPressed()){
-			launcherMotor.move_voltage(12000);
-		} else {
-			launcherMotor.move_voltage(500);
-		}
-	}	else {
-		launcherMotor.move_voltage(12000);
-	}
+  if (shootButton.changedToPressed()) {
+    launcherEnabled = true;
+  }
+
+  if (launcherEnabled) {
+  	if(launcherLimit == 1){
+  		if(shootButton.isPressed()){
+  			launcherMotor.move_voltage(12000);
+  		} else {
+  			launcherMotor.move_voltage(500);
+  		}
+  	}	else {
+  		launcherMotor.move_voltage(12000);
+  	}
+  }
 }
 
 void Launcher::update(){
