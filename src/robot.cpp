@@ -1,10 +1,6 @@
 #include "main.h"
 #include "robot.h"
-#include "eyes.h"
 #include "definitions.h"
-
-// eyes defined
-eyes boi;
 
 //Motor definitions
 Motor liftMotor(LIFT_MOTOR);
@@ -15,6 +11,11 @@ Motor driveLeftF(DRIVETRAIN_L_F);
 Motor driveLeftB(DRIVETRAIN_L_B);
 Motor driveRightF(DRIVETRAIN_R_F);
 Motor driveRightB(DRIVETRAIN_R_B);
+
+Vision visionSensor1(VISION_1, pros::E_VISION_ZERO_TOPLEFT);
+Vision visionSensor2(VISION_2, pros::E_VISION_ZERO_TOPLEFT);
+Vision visionSensor3(VISION_3, pros::E_VISION_ZERO_TOPLEFT);
+Vision visionSensor4(VISION_4, pros::E_VISION_ZERO_TOPLEFT);
 
 //Controller
 Controller controller;
@@ -146,8 +147,10 @@ void Robot::displaySensorValuesOnBrain() {
 	pros::lcd::print(0, "LIFT PID (pros): %d", potValue);
 	pros::lcd::print(1, "lift index: %d", liftIndex);
 	pros::lcd::print(3, "Gyro: %d", gyroAngle);
-	pros::lcd::print(4, "Nearest Ball: (%d, %d)", boi.find_nearest_ball()[0], boi.find_nearest_ball()[1]);
-	pros::lcd::print(5, "Nearest Cap: %d, coord: (%d, %d)", boi.find_nearest_cap()[2], boi.find_nearest_cap()[0], boi.return_cap_color());
+	pros::lcd::print(4, "Vision 1: %d", gyroAngle);
+	pros::lcd::print(5, "Vision 2: %d", gyroAngle);
+	pros::lcd::print(6, "Vision 3: %d", gyroAngle);
+	pros::lcd::print(7, "Vision 4: %d", gyroAngle);
 }
 
 void Robot::displayDataOnController() {
@@ -218,7 +221,7 @@ void Robot::driveSubsystem(int leftVoltage, int rightVoltage){
 //Intake subsystem of methods
 void Robot::toggleIntake() {
 	if(toggleIntakeButton.changedToPressed()){
-		if(intakeOn){
+		if(intakeOn) {
 			intakeOn = false;
 		} else {
 			intakeOn = true;

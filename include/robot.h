@@ -85,6 +85,12 @@ public:
 	int getLauncherLimit();
 
 	void testAutoRoutine();
+<<<<<<< HEAD
+
+	void autoaim();
+
+=======
+>>>>>>> 9f1a414a97b0f3e69aec1e06e44e3296f051292d
 	void enableLauncher();
 private:
 	//sensor readouts
