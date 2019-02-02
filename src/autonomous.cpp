@@ -14,16 +14,10 @@
  * from where it left off.
  */
 
- Motor launcherMotorAuto(LAUNCH_MOTOR);
- Motor intakeMotorAuto(INTAKE_MOTOR);
- Motor forkMotorAuto(FORK_MOTOR);
- Motor liftMotorAuto(LIFT_MOTOR);
- ADIGyro gyroAuto(6, 1);
-
 void autonomous() {
-  Robot robot;
+  Robot robotAuto;
   auto myChassis = ChassisControllerFactory::create(
-    {1, 2}, // Left motors
+    {robotAuto.drivetrain.driveLeftF, robotAuto.drivetrain.driveLeftB}, // Left motors
     {-3, -4},   // Right motors
     AbstractMotor::gearset::green, // Torque gearset
     {4.25_in, 13_in} // 4 inch wheels, 13 inch wheelbase width
@@ -46,10 +40,10 @@ void autonomous() {
  int sideMod = (leftSide)? 1 : -1;
 
  myChassis.setMaxVoltage(2300);
- launcherController.setTarget(launcherMotorAuto.getPosition() + 450);
- intakeMotorAuto.moveVoltage(-12000);
+ launcherController.setTarget(robotAuto.launcher.launcherMotor.getPosition() + 450);
+ robotAuto.intake.intakeMotor.moveVoltage(-12000);
  launcherController.waitUntilSettled();
- intakeMotorAuto.moveVoltage(0);
+ robotAuto.intake.intakeMotor.moveVoltage(0);
 
  // Left Front
  // Forward
@@ -58,15 +52,15 @@ void autonomous() {
  myChassis.waitUntilSettled();
  myChassis.turnAngle(popSquat);
  myChassis.waitUntilSettled();
- launcherController.setTarget(launcherMotorAuto.getPosition() + 700);
+ launcherController.setTarget(robotAuto.launcher.launcherMotor.getPosition() + 700);
  launcherController.waitUntilSettled();
  myChassis.turnAngle(-popSquat);
  myChassis.waitUntilSettled();
- intakeMotorAuto.moveVoltage(-12000);
+ robotAuto.intake.intakeMotor.moveVoltage(-12000);
  // Forward into low flag (+1)
- robot.drivetrain.driveAll(8000, -8000);
+ robotAuto.drivetrain.driveAll(8000, -8000);
  pros::Task::delay(650);
- intakeMotorAuto.moveVoltage(0);
+ robotAuto.intake.intakeMotor.moveVoltage(0);
 
  // Back up
  // Do 90 Turn to cap
@@ -77,15 +71,15 @@ void autonomous() {
  myChassis.waitUntilSettled();
  myChassis.turnAngleAsync(-turn90);
  myChassis.waitUntilSettled();
- robot.drivetrain.driveAll(8000, -8000);
+ robotAuto.drivetrain.driveAll(8000, -8000);
  pros::Task::delay(500);
- forkController.setTarget(forkMotorAuto.getPosition() - 2500);
+ forkController.setTarget(robotAuto.forklift.forkMotor.getPosition() - 2500);
  forkController.waitUntilSettled();
- liftMotorAuto.moveVoltage(-5000);
+ robotAuto.lift.liftMotor.moveVoltage(-5000);
  myChassis.moveDistanceAsync(-1.5_ft);
  myChassis.waitUntilSettled();
- liftMotorAuto.moveVoltage(0);
- forkController.setTarget(forkMotorAuto.getPosition() + 2500);
+ robotAuto.lift.liftMotor.moveVoltage(0);
+ forkController.setTarget(robotAuto.forklift.forkMotor.getPosition() + 2500);
  pros::Task::delay(100);
  myChassis.moveDistanceAsync(-8_in);
  myChassis.waitUntilSettled();
@@ -94,12 +88,11 @@ void autonomous() {
  // Move to platform (+3)
  myChassis.moveDistanceAsync(-8_in);
  myChassis.waitUntilSettled();
- myChassis.turnAngleAsync(sideMod*120_deg);
+ myChassis.turnAngleAsync(sideMod*150_deg);
  myChassis.waitUntilSettled();
 
- robot.driveAll(-12000, 12000);
+ robotAuto.drivetrain.driveAll(-12000, 12000);
  pros::Task::delay(2500);
-
 
  // Low flag
  // myChassis.moveDistanceAsync(3.5_ft);
@@ -107,7 +100,7 @@ void autonomous() {
  // // High flag
  // myChassis.moveDistanceAsync(-0.2_ft);
  // myChassis.waitUntilSettled();
- // launcherController.setTarget(launcherMotorAuto.getPosition() + 700);
+ // launcherController.setTarget(robotAuto.launcher.launcherMotor.getPosition() + 700);
  // launcherController.waitUntilSettled();
  // // Ground cap
  // myChassis.moveDistanceAsync(-1.5_ft);
@@ -116,14 +109,14 @@ void autonomous() {
  // myChassis.turnAngleAsync(-100_deg);
  // myChassis.waitUntilSettled();
  //
- // intakeMotorAuto.moveVoltage(12000);
+ // robotAuto.intake..moveVoltage(12000);
  // myChassis.moveDistanceAsync(2.5_ft);
  // myChassis.waitUntilSettled();
- // intakeMotorAuto.moveVoltage(0);
+ // robotAuto.intake..moveVoltage(0);
  //
  // myChassis.turnAngleAsync(-100_deg);
  // myChassis.waitUntilSettled();
  //
- // robot.driveAll(12000, -12000);
+ // robotAuto.driveAll(12000, -12000);
  // pros::Task::delay(2500);
 }

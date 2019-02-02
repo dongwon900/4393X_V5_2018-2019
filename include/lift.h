@@ -8,7 +8,7 @@
 //extern Motor liftMotor;
 
 class Lift{
-private:
+public:
   Motor liftMotor;
   pros::ADIPotentiometer liftPotentiometer;
   int potValue;

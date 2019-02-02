@@ -13,7 +13,7 @@
 #include "smartController.h"
 
 class Robot{
-private:
+public:
 	//Subclasses
 	Forklift forklift;
 	Lift lift;

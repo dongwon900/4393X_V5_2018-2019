@@ -8,7 +8,7 @@
 //extern Motor launcherMotor;
 
 class Launcher{
-private:
+public:
   Motor launcherMotor;
   ADIButton launcherLimitSwitch;
   int launcherLimit;
