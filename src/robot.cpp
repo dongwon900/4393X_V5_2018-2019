@@ -431,15 +431,9 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	}
 }
 
-<<<<<<< HEAD
-void autoaim(){
-
-};
-=======
 void Robot::enableLauncher() {
 	launcherEnabled = true;
 }
->>>>>>> 5aacd526e3c7468a446405d8025cc67883644a2b
 
 //The function that does everything. Run this one function in the opcontrol
 void Robot::run() {
