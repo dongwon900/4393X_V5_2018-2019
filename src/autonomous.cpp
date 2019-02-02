@@ -17,6 +17,7 @@
  Motor launcherMotorAuto(LAUNCH_MOTOR);
  Motor intakeMotorAuto(INTAKE_MOTOR);
  Motor forkMotorAuto(FORK_MOTOR);
+ Motor liftMotorAuto(LIFT_MOTOR);
  ADIGyro gyroAuto(6, 1);
 
 void autonomous() {
@@ -30,62 +31,73 @@ void autonomous() {
 
 
   auto profileController = AsyncControllerFactory::motionProfile(
-    10.0,  // Maximum linear velocity of the Chassis in m/s
-    20.0,  // Maximum linear acceleration of the Chassis in m/s/s
-    100.0, // Maximum linear jerk of the Chassis in m/s/s/s
+    1.0,  // Maximum linear velocity of the Chassis in m/s
+    5.0,  // Maximum linear acceleration of the Chassis in m/s/s
+    10.0, // Maximum linear jerk of the Chassis in m/s/s/s
     myChassis // Chassis Controller
   );
 
  auto launcherController = AsyncControllerFactory::posIntegrated(LAUNCH_MOTOR);
  auto forkController = AsyncControllerFactory::posIntegrated(FORK_MOTOR);
 
- bool leftSide = false;
+ bool leftSide = true;
+ QAngle popSquat = (leftSide)? 7_deg : -7_deg;
  QAngle turn90 = (leftSide)? 100_deg : -100_deg;
  QAngle turn180 = (leftSide)? 200_deg : -200_deg;
 
 
- myChassis.setMaxVoltage(3000);
+ myChassis.setMaxVoltage(2300);
+
+ robot.enableLauncher();
+ intakeMotorAuto.moveVoltage(12000);
+ pros::Task::delay(200);
+ intakeMotorAuto.moveVoltage(0);
 
  // Left Front
  // Forward
  // Shoot high flag (+2)
  myChassis.moveDistanceAsync(3_ft);
+ myChassis.waitUntilSettled();
+ myChassis.turnAngle(popSquat);
+ myChassis.waitUntilSettled();
  launcherController.setTarget(launcherMotorAuto.getPosition() + 700);
  launcherController.waitUntilSettled();
- // Do 180
- // Extend fork halfway
- // Forward into low flag (+1)
- // Put fork back up
- myChassis.turnAngleAsync(turn180);
+ myChassis.turnAngle(-popSquat);
+ myChassis.turnAngle(-popSquat);
  myChassis.waitUntilSettled();
- forkController.setTarget(forkMotorAuto.getPosition() - 500);
- forkController.waitUntilSettled();
- forkController.setTarget(forkMotorAuto.getPosition() + 500);
- forkController.waitUntilSettled();
+ // Forward into low flag (+1)
+ robot.driveAll(8000, -8000);
+ pros::Task::delay(650);
 
  // Back up
  // Do 90 Turn to cap
- // Move fork down
  // Move to cap
  // Flip fork up
  // Forward, hope it flips cap (+1)
- myChassis.turnAngleAsync(turn90);
+ myChassis.moveDistanceAsync(-2.5_ft);
  myChassis.waitUntilSettled();
- forkController.setTarget(forkMotorAuto.getPosition() - 700);
+ myChassis.turnAngleAsync(-turn90);
+ myChassis.waitUntilSettled();
+ robot.driveAll(8000, -8000);
+ pros::Task::delay(500);
+ forkController.setTarget(forkMotorAuto.getPosition() - 2500);
  forkController.waitUntilSettled();
- myChassis.moveDistanceAsync(1_ft);
+ liftMotorAuto.moveVoltage(-5000);
+ myChassis.moveDistanceAsync(-1.5_ft);
  myChassis.waitUntilSettled();
- forkController.setTarget(forkMotorAuto.getPosition() + 700);
- myChassis.moveDistanceAsync(-0.5_ft);
+ liftMotorAuto.moveVoltage(0);
+ forkController.setTarget(forkMotorAuto.getPosition() + 2500);
+ pros::Task::delay(100);
+ myChassis.moveDistanceAsync(-8_in);
  myChassis.waitUntilSettled();
  // Do 90
  // Move to platform (+3)
- myChassis.moveDistanceAsync(2.5_ft);
+ myChassis.moveDistanceAsync(-8_in);
  myChassis.waitUntilSettled();
  myChassis.turnAngleAsync(turn90);
  myChassis.waitUntilSettled();
 
- robot.driveAll(12000, -12000);
+ robot.driveAll(-12000, 12000);
  pros::Task::delay(2500);
 
 

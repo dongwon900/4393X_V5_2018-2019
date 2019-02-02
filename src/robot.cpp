@@ -342,13 +342,13 @@ void Robot::liftSubsystem(){
 //Forklift subsystem of methods
 void Robot::forklift(){
 	if(forkUp.isPressed() && forkDown.isPressed()){
-		forkMotor.move_voltage(0);
+		forkMotor.move_voltage(50);
 	} else if (forkUp.isPressed()){
 		forkMotor.move_voltage(12000);
   } else if (forkDown.isPressed()){
 		forkMotor.move_voltage(-12000);
 	} else if (!forkUp.isPressed() && !forkDown.isPressed()){
-		forkMotor.move_voltage(0);
+		forkMotor.move_voltage(50);
 	}
 }
 
@@ -431,9 +431,15 @@ void Robot::adjustDistance(int leftTarget, int rightTarget){
 	}
 }
 
+<<<<<<< HEAD
 void autoaim(){
 
 };
+=======
+void Robot::enableLauncher() {
+	launcherEnabled = true;
+}
+>>>>>>> 5aacd526e3c7468a446405d8025cc67883644a2b
 
 //The function that does everything. Run this one function in the opcontrol
 void Robot::run() {

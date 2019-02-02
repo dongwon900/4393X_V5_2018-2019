@@ -57,11 +57,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/opcontrol.cpp.o",
             "src/opcontrol.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/opcontrol.cpp"
+=======
+            "bin/initialize.cpp.o",
+            "src\\initialize.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\initialize.cpp"
+>>>>>>> 5aacd526e3c7468a446405d8025cc67883644a2b
     },
     {
         "arguments": [
@@ -89,11 +97,19 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/initialize.cpp.o",
             "src/initialize.cpp"
         ],
         "directory": "/Users/evilpacket/Documents/vex/4393X_V5_2018-2019",
         "file": "src/initialize.cpp"
+=======
+            "bin/opcontrol.cpp.o",
+            "src\\opcontrol.cpp"
+        ],
+        "directory": "C:\\Users\\lyana\\Documents\\~Development\\~Vex\\4393X_V5_2018-2019",
+        "file": "src\\opcontrol.cpp"
+>>>>>>> 5aacd526e3c7468a446405d8025cc67883644a2b
     },
     {
         "arguments": [
