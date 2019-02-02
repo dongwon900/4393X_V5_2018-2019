@@ -2,6 +2,13 @@
 #include "definitions.h"
 #include <vector>
 
+extern Vision visionSensor1;
+// vision sensor on the midsection
+extern Vision visionSensor2;
+
+extern Vision visionSensor3;
+extern Vision visionSensor4;
+
 class eyes{
 private:
   pros::vision_object_s_t closest_ball;
