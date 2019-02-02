@@ -1,9 +1,8 @@
 // Motor Definitions
-#define DRIVETRAIN_L_B 1
+#define DRIVETRAIN_R_F 3
+#define DRIVETRAIN_R_B 4
 #define DRIVETRAIN_L_F 2
-#define DRIVETRAIN_R_B 3
-#define DRIVETRAIN_R_F 4
-
+#define DRIVETRAIN_L_B 1
 #define FORK_MOTOR 20
 #define INTAKE_MOTOR 6
 #define LIFT_MOTOR 7
@@ -13,11 +12,6 @@
 #define VISION_2 12
 #define VISION_3 13
 #define VISION_4 14
-
-#define RED_SIG 0
-#define BLUE_SIG 1
-#define GREEN_SIG 2
-#define YELLOW_SIG 3
 
 // Legacy port definitions - A-H (1-8)
 #define ULTRA_ECHO_PORT_LEFT 1
