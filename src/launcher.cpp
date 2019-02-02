@@ -15,6 +15,10 @@ void Launcher::updateLimit(){
   launcherLimit = launcherLimitSwitch.isPressed();
 }
 
+void Launcher::enableLauncher() {
+  launcherEnabled = true;
+}
+
 void Launcher::launcherAutoMovement(){
   if (shootButton.changedToPressed()) {
     launcherEnabled = true;

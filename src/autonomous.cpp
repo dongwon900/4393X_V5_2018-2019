@@ -16,6 +16,7 @@
 
 void autonomous() {
  //  Robot robotAuto;
+ //  robotAuto.launcher.enableLauncher();
  //  auto myChassis = ChassisControllerFactory::create(
  //    {robotAuto.drivetrain.driveLeftF, robotAuto.drivetrain.driveLeftB}, // Left motors
  //    {-3, -4},   // Right motors
@@ -33,7 +34,7 @@ void autonomous() {
  // auto launcherController = AsyncControllerFactory::posIntegrated(LAUNCH_MOTOR);
  // auto forkController = AsyncControllerFactory::posIntegrated(FORK_MOTOR);
  //
- // bool leftSide = true;
+ // bool leftSide = false;
  // QAngle popSquat = (leftSide)? 9_deg : -9_deg;
  // QAngle turn90 = (leftSide)? 100_deg : -100_deg;
  // QAngle turn180 = (leftSide)? 200_deg : -200_deg;
@@ -93,30 +94,4 @@ void autonomous() {
  //
  // robotAuto.drivetrain.driveAll(-12000, 12000);
  // pros::Task::delay(2500);
- //
- // // Low flag
- // // myChassis.moveDistanceAsync(3.5_ft);
- // // myChassis.waitUntilSettled();
- // // // High flag
- // // myChassis.moveDistanceAsync(-0.2_ft);
- // // myChassis.waitUntilSettled();
- // // launcherController.setTarget(robotAuto.launcher.launcherMotor.getPosition() + 700);
- // // launcherController.waitUntilSettled();
- // // // Ground cap
- // // myChassis.moveDistanceAsync(-1.5_ft);
- // // myChassis.waitUntilSettled();
- // //
- // // myChassis.turnAngleAsync(-100_deg);
- // // myChassis.waitUntilSettled();
- // //
- // // robotAuto.intake..moveVoltage(12000);
- // // myChassis.moveDistanceAsync(2.5_ft);
- // // myChassis.waitUntilSettled();
- // // robotAuto.intake..moveVoltage(0);
- // //
- // // myChassis.turnAngleAsync(-100_deg);
- // // myChassis.waitUntilSettled();
- // //
- // // robotAuto.driveAll(12000, -12000);
- // // pros::Task::delay(2500);
 }
