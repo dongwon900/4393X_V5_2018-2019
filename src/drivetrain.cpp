@@ -146,6 +146,24 @@ void Drivetrain::adjustDistance(int leftTarget, int rightTarget){
 	}
 }
 
+// //adjustDistance should be used where the moveVoltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
+// void Drivetrain::autoaim(){
+// 	bool completed = false;
+// 	std::vector<bool> setSides;
+//
+//   while(!completed){
+// 		if (!inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::leftY)) ||
+// 				!inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::rightY))) {
+// 			completed = true; 	// User interrupt
+// 		}
+// 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
+// 		if(setSides[0] == true && setSides[1] == true) {
+// 			completed = true;
+// 		}
+//     pros::delay(2);
+// 	}
+// }
+
 void Drivetrain::update(float leftVoltage, float rightVoltage){
   updateGyro();
   updateSonics();
