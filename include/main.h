@@ -50,8 +50,8 @@
  * concurrently! The okapi namespace will export all symbols inside the pros
  * namespace.
  */
-// using namespace pros;
-// using namespace pros::literals;
+//using namespace pros;
+//using namespace pros::literals;
 using namespace okapi;
 
 /**
@@ -67,25 +67,6 @@ void initialize(void);
 void disabled(void);
 void competition_initialize(void);
 void opcontrol(void);
-
-// Motor Definitions
-#define DRIVETRAIN_R_F 1
-#define DRIVETRAIN_R_B 2
-#define LIFT_MOTOR 13
-#define LAUNCH_MOTOR 4
-#define FORK_MOTOR 20
-#define INTAKE_MOTOR 6
-#define DRIVETRAIN_L_F 9
-#define DRIVETRAIN_L_B 10
-
-// Legacy port definitions - A-H (1-8)
-#define ULTRA_ECHO_PORT_LEFT 1
-#define ULTRA_PING_PORT_LEFT 2
-#define ULTRA_ECHO_PORT 3
-#define ULTRA_PING_PORT 4
-#define LIFT_POTENTIOMETER_PORT 5
-#define GYRO_PORT 6
-#define LIMIT_PORT 8
 
 #ifdef __cplusplus
 }
