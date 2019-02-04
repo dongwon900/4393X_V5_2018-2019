@@ -6,7 +6,7 @@
 #include "enums.h"
 
 class Drivetrain{
-public:
+private:
   Motor driveLeftF;
   Motor driveLeftB;
   Motor driveRightF;

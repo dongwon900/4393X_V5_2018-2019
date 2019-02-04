@@ -7,7 +7,7 @@
 #include "smartController.h"
 
 class Lift{
-public:
+private:
   Motor liftMotor;
   pros::ADIPotentiometer liftPotentiometer;
   int potValue;

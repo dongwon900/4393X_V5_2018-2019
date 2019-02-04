@@ -6,7 +6,6 @@
 
 class SmartController{
 private:
-  //pros::Controller controller;
   Controller controller;
   ControllerButton forkUp;
   ControllerButton forkDown;
@@ -37,14 +36,29 @@ private:
   controllerButtonState B;
   controllerButtonState Y;
   controllerButtonState A;
+  //Stores data for use in simulating opcontrol in auto
+  int startMillis;
+  int currentMillis;
+  bool parsedData;
+  int timestampDiff;
+  //The first four indexes are the floats converted to integral form
+  //the following twelve save the controllerButtonState from 0-2 with isPressed = 1 going down the enum
+  //The final int is the timestamp which is the time elapsed (in milliseconds) since the smartController class was initialized
+  std::vector<std::vector<int>> autoLog;
 public:
   SmartController();
   ~SmartController();
   controllerButtonState updateButton(ControllerButton button);
+  bool inRange(int low, int high, int x);
+  bool vectorDataCloseEnough(std::vector<int> newData);
+  void saveDataToAutoLog();
   void update();
   controllerButtonState getButtonState(controllerButtonNames button);
   float getJoystickAxis(controllerAxisNames axis);
   bool isButtonState(controllerButtonNames button, controllerButtonState state);
+  void autoLogParser(std::vector<std::vector<int>>& autoData);
+  controllerButtonState intToButtonState(int x);
+  void autonomousUpdate(std::vector<std::vector<int>>& autoData);
 };
 
 #endif

@@ -7,7 +7,7 @@
 #include "smartController.h"
 
 class Launcher{
-public:
+private:
   Motor launcherMotor;
   ADIButton launcherLimitSwitch;
   int launcherLimit;

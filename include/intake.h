@@ -7,7 +7,7 @@
 #include "smartController.h"
 
 class Intake{
-public:
+private:
   Motor intakeMotor;
   int intakeDirection;
   bool intakeOn;

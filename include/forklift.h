@@ -7,7 +7,7 @@
 #include "smartController.h"
 
 class Forklift{
-public:
+private:
 	Motor forkMotor;
 public:
 	Forklift();
