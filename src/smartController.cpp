@@ -1,35 +1,36 @@
 #include "smartController.h"
 
 SmartController::SmartController()
-:Controller controller(),
-ControllerButton btnUp(ControllerDigital::R1),
-ControllerButton btnDown(ControllerDigital::R2),
-ControllerButton forkUp(ControllerDigital::L1),
-ControllerButton forkDown(ControllerDigital::L2),
-ControllerButton shootButton(ControllerDigital::A),
-ControllerButton autoDistanceButton(ControllerDigital::down),
-ControllerButton autoButton(ControllerDigital::right),
-ControllerButton driveReverseButton(ControllerDigital::X),
-ControllerButton toggleMaxSpeedButton(ControllerDigital::up),
-ControllerButton toggleIntakeButton(ControllerDigital::B),
-ControllerButton autoDistanceButton2(ControllerDigital::Y),
-ControllerButton toggleDrivePolarityButton(ControllerDigital::left) {
+:controller(),
+btnUp(ControllerDigital::R1, false),
+btnDown(ControllerDigital::R2, false),
+forkUp(ControllerDigital::L1, false),
+forkDown(ControllerDigital::L2, false),
+shootButton(ControllerDigital::up, false),
+autoDistanceButton(ControllerDigital::down, false),
+autoButton(ControllerDigital::left, false),
+driveReverseButton(ControllerDigital::right, false),
+toggleMaxSpeedButton(ControllerDigital::X, false),
+toggleIntakeButton(ControllerDigital::B, false),
+autoDistanceButton2(ControllerDigital::Y, false),
+toggleDrivePolarityButton(ControllerDigital::A, false)
+{
   leftY = 0;
   leftX = 0;
   rightY = 0;
   rightX = 0;
-  L1 = ControllerButtonState::notPressed;
-  L2 = ControllerButtonState::notPressed;
-  R1 = ControllerButtonState::notPressed;
-  R2 = ControllerButtonState::notPressed;
-  up = ControllerButtonState::notPressed;
-  down = ControllerButtonState::notPressed;
-  left = ControllerButtonState::notPressed;
-  right = ControllerButtonState::notPressed;
-  X = ControllerButtonState::notPressed;
-  B = ControllerButtonState::notPressed;
-  Y = ControllerButtonState::notPressed;
-  A = ControllerButtonState::notPressed;
+  L1 = controllerButtonState::notPressed;
+  L2 = controllerButtonState::notPressed;
+  R1 = controllerButtonState::notPressed;
+  R2 = controllerButtonState::notPressed;
+  up = controllerButtonState::notPressed;
+  down = controllerButtonState::notPressed;
+  left = controllerButtonState::notPressed;
+  right = controllerButtonState::notPressed;
+  X = controllerButtonState::notPressed;
+  B = controllerButtonState::notPressed;
+  Y = controllerButtonState::notPressed;
+  A = controllerButtonState::notPressed;
 }
 
 SmartController::~SmartController(){
@@ -37,18 +38,18 @@ SmartController::~SmartController(){
   leftX = 0;
   rightY = 0;
   rightX = 0;
-  L1 = ControllerButtonState::notPressed;
-  L2 = ControllerButtonState::notPressed;
-  R1 = ControllerButtonState::notPressed;
-  R2 = ControllerButtonState::notPressed;
-  up = ControllerButtonState::notPressed;
-  down = ControllerButtonState::notPressed;
-  left = ControllerButtonState::notPressed;
-  right = ControllerButtonState::notPressed;
-  X = ControllerButtonState::notPressed;
-  B = ControllerButtonState::notPressed;
-  Y = ControllerButtonState::notPressed;
-  A = ControllerButtonState::notPressed;
+  L1 = controllerButtonState::notPressed;
+  L2 = controllerButtonState::notPressed;
+  R1 = controllerButtonState::notPressed;
+  R2 = controllerButtonState::notPressed;
+  up = controllerButtonState::notPressed;
+  down = controllerButtonState::notPressed;
+  left = controllerButtonState::notPressed;
+  right = controllerButtonState::notPressed;
+  X = controllerButtonState::notPressed;
+  B = controllerButtonState::notPressed;
+  Y = controllerButtonState::notPressed;
+  A = controllerButtonState::notPressed;
 }
 
 controllerButtonState SmartController::updateButton(ControllerButton button){
@@ -122,7 +123,7 @@ float SmartController::getJoystickAxis(controllerAxisNames axis){
   }
 }
 
-bool SmartController::isbuttonState(controllerButtonNames button, controllerButtonState state){
+bool SmartController::isButtonState(controllerButtonNames button, controllerButtonState state){
   controllerButtonState buttonState = getButtonState(button);
   if(buttonState == state){
     return true;

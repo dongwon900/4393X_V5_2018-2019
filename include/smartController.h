@@ -6,6 +6,7 @@
 
 class SmartController{
 private:
+  //pros::Controller controller;
   Controller controller;
   ControllerButton btnUp;
   ControllerButton btnDown;
@@ -39,7 +40,7 @@ private:
 public:
   SmartController();
   ~SmartController();
-  void updateButton(ControllerButton button);
+  controllerButtonState updateButton(ControllerButton button);
   void update();
   controllerButtonState getButtonState(controllerButtonNames button);
   float getJoystickAxis(controllerAxisNames axis);
