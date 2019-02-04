@@ -8,10 +8,10 @@ class SmartController{
 private:
   //pros::Controller controller;
   Controller controller;
-  ControllerButton btnUp;
-  ControllerButton btnDown;
   ControllerButton forkUp;
   ControllerButton forkDown;
+  ControllerButton btnUp;
+  ControllerButton btnDown;
   ControllerButton shootButton;
   ControllerButton autoDistanceButton;
   ControllerButton autoButton;

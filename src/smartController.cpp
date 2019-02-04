@@ -2,10 +2,10 @@
 
 SmartController::SmartController()
 :controller(),
-btnUp(ControllerDigital::R1, false),
-btnDown(ControllerDigital::R2, false),
 forkUp(ControllerDigital::L1, false),
 forkDown(ControllerDigital::L2, false),
+btnUp(ControllerDigital::R1, false),
+btnDown(ControllerDigital::R2, false),
 shootButton(ControllerDigital::up, false),
 autoDistanceButton(ControllerDigital::down, false),
 autoButton(ControllerDigital::left, false),
@@ -67,18 +67,18 @@ void SmartController::update(){
   leftX = controller.getAnalog(ControllerAnalog::leftX);
   rightY = controller.getAnalog(ControllerAnalog::rightY);
   rightX = controller.getAnalog(ControllerAnalog::rightY);
-  updateButton(forkUp);
-  updateButton(forkDown);
-  updateButton(btnUp);
-  updateButton(btnDown);
-  updateButton(toggleMaxSpeedButton);
-  updateButton(autoDistanceButton);
-  updateButton(toggleDrivePolarityButton);
-  updateButton(autoButton);
-  updateButton(driveReverseButton);
-  updateButton(toggleIntakeButton);
-  updateButton(autoDistanceButton2);
-  updateButton(shootButton);
+  L1 = updateButton(forkUp);
+  L2 = updateButton(forkDown);
+  R1 = updateButton(btnUp);
+  R2 = updateButton(btnDown);
+  up = updateButton(toggleMaxSpeedButton);
+  down = updateButton(autoDistanceButton);
+  left = updateButton(toggleDrivePolarityButton);
+  right = updateButton(autoButton);
+  X = updateButton(driveReverseButton);
+  B = updateButton(toggleIntakeButton);
+  Y = updateButton(autoDistanceButton2);
+  A = updateButton(shootButton);
 }
 
 controllerButtonState SmartController::getButtonState(controllerButtonNames button){
