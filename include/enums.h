@@ -29,9 +29,9 @@ enum StartingTile{
 	back,
 };
 
-enum controllerButtonState{
-  isPressed,
+enum class controllerButtonState{
   notPressed,
+	isPressed,
   changedToPressed
 };
 

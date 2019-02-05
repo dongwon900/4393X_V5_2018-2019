@@ -6,14 +6,14 @@ forkUp(ControllerDigital::L1, false),
 forkDown(ControllerDigital::L2, false),
 btnUp(ControllerDigital::R1, false),
 btnDown(ControllerDigital::R2, false),
-shootButton(ControllerDigital::up, false),
+toggleMaxSpeedButton(ControllerDigital::up, false),
 autoDistanceButton(ControllerDigital::down, false),
-autoButton(ControllerDigital::left, false),
-driveReverseButton(ControllerDigital::right, false),
-toggleMaxSpeedButton(ControllerDigital::X, false),
+recordAutoDataButton(ControllerDigital::left, false),
+autoButton(ControllerDigital::right, false),
+toggleDriveStateButton(ControllerDigital::X, false),
 toggleIntakeButton(ControllerDigital::B, false),
 autoDistanceButton2(ControllerDigital::Y, false),
-toggleDrivePolarityButton(ControllerDigital::A, false)
+shootButton(ControllerDigital::A, false)
 {
   leftY = 0;
   leftX = 0;
@@ -32,10 +32,12 @@ toggleDrivePolarityButton(ControllerDigital::A, false)
   Y = controllerButtonState::notPressed;
   A = controllerButtonState::notPressed;
   startMillis = pros::millis();
-  currentMillis = pros::millis();
+  currentMillis = startMillis;
   parsedData = false;
   timestampDiff = 0;
   isRecording = false;
+  isButtonChangedToPressed.resize(12);
+  isButtonPressed.resize(12);
 }
 
 SmartController::~SmartController(){
@@ -57,17 +59,48 @@ SmartController::~SmartController(){
   A = controllerButtonState::notPressed;
 }
 
-controllerButtonState SmartController::updateButton(ControllerButton button, controllerButtonNames buttonName){
-  if(button.isPressed()){
-    return controllerButtonState::isPressed;
-  }
-  if(button.changedToPressed()){
-    return controllerButtonState::changedToPressed;
-  }
+controllerButtonState SmartController::evaluateButton(int buttonIndex){
+
+
   // if(button.isPressed()){
   //   return controllerButtonState::isPressed;
   // }
-  return controllerButtonState::notPressed;
+  // if(button.changedToPressed()){
+  //   return controllerButtonState::changedToPressed;
+  // }
+  // // if(button.isPressed()){
+  // //   return controllerButtonState::isPressed;
+  // // }
+  // return controllerButtonState::notPressed;
+}
+
+controllerButtonState SmartController::updateButton(controllerButtonNames button){
+  switch(button){
+    case 0:
+      return evaluateButton(button);
+    case 1:
+      return evaluateButton(button);
+    case 2:
+      return evaluateButton(button);
+    case 3:
+      return evaluateButton(button);
+    case 4:
+      return evaluateButton(button);
+    case 5:
+      return evaluateButton(button);
+    case 6:
+      return evaluateButton(button);
+    case 7:
+      return evaluateButton(button);
+    case 8:
+      return evaluateButton(button);
+    case 9:
+      return evaluateButton(button);
+    case 10:
+      return evaluateButton(button);
+    case 11:
+      return evaluateButton(button);
+  }
 }
 
 bool SmartController::inRange(int low, int high, int x){
@@ -108,7 +141,7 @@ void SmartController::saveDataToAutoLog(){
   float Xleft = leftX * 12000;
   float Yright = rightY * 12000;
   float Xright = rightX * 12000;
-  std::vector<int> internalStorage {(int)Yleft, (int)Xleft, (int)Yright, (int)Xright, L1, L2, R1, R2, up, down, left, right, X, B, Y, A, currentMillis - startMillis};
+  std::vector<int> internalStorage {(int)Yleft, (int)Xleft, (int)Yright, (int)Xright, L1, L2, R1, R2, up, down, left, right, X, B, Y, A, (currentMillis - startMillis)};
 
   if(vectorDataCloseEnough(internalStorage)){
     return;
