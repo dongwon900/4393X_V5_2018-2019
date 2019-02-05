@@ -1,6 +1,8 @@
 #ifndef _DEFINITIONS_H_
 #define _DEFINITIONS_H_
 
+#include "main.h"
+
 // Motor Definitions
 const std::uint8_t DRIVETRAIN_R_F = 3;
 const std::uint8_t DRIVETRAIN_R_B = 4;
