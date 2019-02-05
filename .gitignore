@@ -1,1 +1,5 @@
 /.vscode
+/bin
+compile_commands.json
+Makefile
+common.mk
