@@ -127,3 +127,7 @@ void Lift::update(bool liftUpPressed, bool liftDownPressed, bool liftUpChangedTo
 	updateLiftPosition(liftUpPressed, liftDownPressed);
   manualLiftControl(liftUpPressed, liftDownPressed);
 }
+
+int Lift::getLiftIndex(){
+  return liftIndex;
+}

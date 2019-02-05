@@ -26,6 +26,7 @@ public:
 	void updateLiftIndex(bool liftUpChangedToPressed, bool liftDownChangedToPressed);
   void updateLiftPosition(bool liftUpPressed, bool liftDownPressed);
   void update(bool liftUpPressed, bool liftDownPressed, bool liftUpChangedToPressed, bool liftDownChangedToPressed);
+  int getLiftIndex();
 };
 
 #endif

@@ -31,14 +31,20 @@ void Robot::manualControl(float leftJoy, float rightJoy){
     smartController.isButtonState(controllerButtonNames::B, controllerButtonState::changedToPressed));
   drivetrain.update(leftAnalogDrive, rightAnalogDrive,
     smartController.isButtonState(controllerButtonNames::up, controllerButtonState::changedToPressed),
-    smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed),
-    smartController.isButtonState(controllerButtonNames::left, controllerButtonState::changedToPressed));
+    smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed));
+
+  pros::lcd::print(0, "liftIndex: %d", lift.getLiftIndex());
+  pros::lcd::print(1, "liftUpPressed: %d", smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed));
+  pros::lcd::print(2, "liftDownPressed: %d", smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed));
+  pros::lcd::print(3, "liftUpChangedToPressed: %d", smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed));
+  pros::lcd::print(4, "liftDownChangedToPressed: %d", smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed));
+  pros::lcd::print(5, "liftIndex: %d", lift.getLiftIndex());
 }
 
 //The function that does everything. Run this one function in the opcontrol
 void Robot::update(){
   smartController.update();
-  display.update();
+  //display.update();
   manualControl(smartController.getJoystickAxis(controllerAxisNames::leftY), smartController.getJoystickAxis(controllerAxisNames::rightY));
 
   //EXTRA FUNCTIONALITY (not needed for normal manual operation)

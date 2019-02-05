@@ -7,7 +7,8 @@ const std::uint8_t DRIVETRAIN_R_B = 4;
 const std::uint8_t DRIVETRAIN_L_F = 1;
 const std::uint8_t DRIVETRAIN_L_B  = 2;
 //const std::uint8_t FORK_MOTOR = 20;
-const std::uint8_t FORK_MOTOR = 19;
+//const std::uint8_t FORK_MOTOR = 19;
+const std::uint8_t FORK_MOTOR = 18;
 const std::uint8_t  INTAKE_MOTOR = 6;
 const std::uint8_t  LIFT_MOTOR = 7;
 const std::uint8_t  LAUNCH_MOTOR = 8;
@@ -34,7 +35,7 @@ const std::uint8_t LIMIT_PORT = 8;
 // R2 btnDown
 // up toggleMaxSpeedButton
 // down autoDistanceButton
-// left toggleDrivePolarity
+// left recordAutoData
 // right autoButton
 // X toggleDriveStateButton
 // B toggleIntakeButton

@@ -10,8 +10,8 @@ Intake::~Intake() {
   intakeMotor.move_voltage(0);
 }
 
-void Intake::toggleIntake(bool intakeButtonPressed) {
-	if(intakeButtonPressed) {
+void Intake::toggleIntake(bool intakeButtonChangedToPressed) {
+	if(intakeButtonChangedToPressed) {
 		if(intakeOn) {
 			intakeOn = false;
 		} else {
@@ -20,8 +20,8 @@ void Intake::toggleIntake(bool intakeButtonPressed) {
 	}
 }
 
-void Intake::intakeManualControl(bool intakeButtonChangedToPressed){
-	if (intakeButtonChangedToPressed){
+void Intake::intakeManualControl(bool intakeButtonPressed){
+	if (intakeButtonPressed){
 		intakeMotor.move_voltage(-12000*intakeDirection);
 	} else {
 		intakeMotor.move_voltage(0);
@@ -32,6 +32,6 @@ void Intake::intakeManualControl(bool intakeButtonChangedToPressed){
 }
 
 void Intake::update(bool intakeButtonPressed, bool intakeButtonChangedToPressed){
-	toggleIntake(intakeButtonPressed);
-	intakeManualControl(intakeButtonChangedToPressed);
+	toggleIntake(intakeButtonChangedToPressed);
+	intakeManualControl(intakeButtonPressed);
 }
