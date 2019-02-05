@@ -37,21 +37,21 @@ void Drivetrain::updateSonics(){
 
 void Drivetrain::driveLeft(int voltage){
   if(voltage > currentVoltageIndex){
-    driveLeftF.moveVoltage(currentVoltageIndex);
-    driveLeftB.moveVoltage(currentVoltageIndex);
+    driveLeftF.move_voltage(currentVoltageIndex);
+    driveLeftB.move_voltage(currentVoltageIndex);
   } else {
-    driveLeftF.moveVoltage(voltage);
-    driveLeftB.moveVoltage(voltage);
+    driveLeftF.move_voltage(voltage);
+    driveLeftB.move_voltage(voltage);
   }
 }
 
 void Drivetrain::driveRight(int voltage){
   if(voltage > currentVoltageIndex){
-    driveRightF.moveVoltage(-currentVoltageIndex);
-    driveRightB.moveVoltage(-currentVoltageIndex);
+    driveRightF.move_voltage(-currentVoltageIndex);
+    driveRightB.move_voltage(-currentVoltageIndex);
   } else {
-    driveRightF.moveVoltage(-voltage);
-    driveRightB.moveVoltage(-voltage);
+    driveRightF.move_voltage(-voltage);
+    driveRightB.move_voltage(-voltage);
   }
 }
 
@@ -79,18 +79,6 @@ void Drivetrain::toggleDriveState(){
   if (driveReverseButton.changedToPressed()) {
     driveState = driveState * -1;
   }
-}
-
-void Drivetrain::toggleDrivePolarity() {
-	if (toggleDrivePolarityButton.changedToPressed()) {
-		if (!driveRightF.is_reversed() && !driveRightB.is_reversed()) {
-			driveRightF.set_reversed(true);
-			driveRightB.set_reversed(true);
-		} else 	if (driveRightF.is_reversed() && driveRightB.is_reversed()) {
-			driveRightF.set_reversed(false);
-			driveRightB.set_reversed(false);
-		}
-	}
 }
 
 bool Drivetrain::inRange(float low, float high, float x){
@@ -140,7 +128,7 @@ std::vector<bool> Drivetrain::sonicDistanceAdjust(int leftDistance, int rightDis
 	return std::vector<bool>{leftSet, rightSet};
 }
 
-//adjustDistance should be used where the moveVoltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
+//adjustDistance should be used where the move_voltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
 void Drivetrain::adjustDistance(int leftTarget, int rightTarget){
 	bool completed = false;
 	std::vector<bool> setSides;
@@ -163,7 +151,6 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
   updateSonics();
   toggleMaxSpeed();
 	toggleDriveState();
-  toggleDrivePolarity();
 
   float leftV =  leftVoltage * (float) currentVoltageIndex;
   float rightV = rightVoltage * (float) currentVoltageIndex;
