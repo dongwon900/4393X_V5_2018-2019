@@ -37,21 +37,21 @@ void Drivetrain::updateSonics(){
 
 void Drivetrain::driveLeft(int voltage){
   if(voltage > currentVoltageIndex){
-    driveLeftF.moveVoltage(currentVoltageIndex);
-    driveLeftB.moveVoltage(currentVoltageIndex);
+    driveLeftF.move_voltage(currentVoltageIndex);
+    driveLeftB.move_voltage(currentVoltageIndex);
   } else {
-    driveLeftF.moveVoltage(voltage);
-    driveLeftB.moveVoltage(voltage);
+    driveLeftF.move_voltage(voltage);
+    driveLeftB.move_voltage(voltage);
   }
 }
 
 void Drivetrain::driveRight(int voltage){
   if(voltage > currentVoltageIndex){
-    driveRightF.moveVoltage(-currentVoltageIndex);
-    driveRightB.moveVoltage(-currentVoltageIndex);
+    driveRightF.move_voltage(-currentVoltageIndex);
+    driveRightB.move_voltage(-currentVoltageIndex);
   } else {
-    driveRightF.moveVoltage(-voltage);
-    driveRightB.moveVoltage(-voltage);
+    driveRightF.move_voltage(-voltage);
+    driveRightB.move_voltage(-voltage);
   }
 }
 
@@ -128,7 +128,7 @@ std::vector<bool> Drivetrain::sonicDistanceAdjust(int leftDistance, int rightDis
 	return std::vector<bool>{leftSet, rightSet};
 }
 
-//adjustDistance should be used where the moveVoltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
+//adjustDistance should be used where the move_voltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
 void Drivetrain::adjustDistance(int leftTarget, int rightTarget){
 	bool completed = false;
 	std::vector<bool> setSides;
