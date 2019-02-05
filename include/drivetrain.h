@@ -29,11 +29,11 @@ public:
 	void driveAll(int leftVoltage, int rightVoltage);
   void toggleMaxSpeed(bool toggleVoltageIndexButton);
 	void toggleDriveState(bool toggleDriveStateButton);
-  void toggleDrivePolarity(bool toggleDrivePolarityButton);
+  //void toggleDrivePolarity(bool toggleDrivePolarityButton);
   bool inRange(float low, float high, float x);
   std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
   void adjustDistance(int lefTarget, int rightTarget, float leftY, float rightY);
-  void update(float leftVoltage, float rightVoltage, bool toggleVoltageIndexButton, bool toggleDriveStateButton, bool toggleDrivePolarityButton);
+  void update(float leftVoltage, float rightVoltage, bool toggleVoltageIndexButton, bool toggleDriveStateButton);
 };
 
 #endif

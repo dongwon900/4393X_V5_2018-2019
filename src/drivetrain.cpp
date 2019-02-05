@@ -80,7 +80,7 @@ void Drivetrain::toggleDriveState(bool toggleDriveStateButton){
     driveState = driveState * -1;
   }
 }
-
+/*
 void Drivetrain::toggleDrivePolarity(bool toggleDrivePolarityButton) {
 	if (toggleDrivePolarityButton) {
 		if (!driveRightF.is_reversed() && !driveRightB.is_reversed()) {
@@ -92,7 +92,7 @@ void Drivetrain::toggleDrivePolarity(bool toggleDrivePolarityButton) {
 		}
 	}
 }
-
+*/
 bool Drivetrain::inRange(float low, float high, float x){
 		return x < high && x > low;
 }
@@ -158,12 +158,12 @@ void Drivetrain::adjustDistance(int leftTarget, int rightTarget, float leftY, fl
 	}
 }
 
-void Drivetrain::update(float leftVoltage, float rightVoltage, bool toggleVoltageIndexButton, bool toggleDriveStateButton, bool toggleDrivePolarityButton){
+void Drivetrain::update(float leftVoltage, float rightVoltage, bool toggleVoltageIndexButton, bool toggleDriveStateButton){
   updateGyro();
   updateSonics();
   toggleMaxSpeed(toggleVoltageIndexButton);
 	toggleDriveState(toggleDriveStateButton);
-  toggleDrivePolarity(toggleDrivePolarityButton);
+  //toggleDrivePolarity(toggleDrivePolarityButton);
 
   float leftV =  leftVoltage * (float) currentVoltageIndex;
   float rightV = rightVoltage * (float) currentVoltageIndex;

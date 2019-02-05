@@ -8,6 +8,8 @@
 #include "lift.h"
 #include "launcher.h"
 #include "drivetrain.h"
+#include "forklift.h"
+#include "robot.h"
 
 class Display{
 private:
@@ -16,7 +18,7 @@ private:
 public:
   Display();
   ~Display();
-  void displaySensorValuesOnBrain();
+  void displaySensorValueOnBrain(int line, char text, int data);
   void displayDataOnController();
   bool chooseAlliance(); //takes a button press on the lcd emulator
   bool chooseTile(); //takes a button press on the lcd emulator

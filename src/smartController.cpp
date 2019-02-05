@@ -33,8 +33,9 @@ toggleDrivePolarityButton(ControllerDigital::A, false)
   A = controllerButtonState::notPressed;
   startMillis = pros::millis();
   currentMillis = pros::millis();
-  bool parsedData = false;
+  parsedData = false;
   timestampDiff = 0;
+  isRecording = false;
 }
 
 SmartController::~SmartController(){
@@ -56,13 +57,16 @@ SmartController::~SmartController(){
   A = controllerButtonState::notPressed;
 }
 
-controllerButtonState SmartController::updateButton(ControllerButton button){
-  if(button.changedToPressed()){
-    return controllerButtonState::changedToPressed;
-  }
+controllerButtonState SmartController::updateButton(ControllerButton button, controllerButtonNames buttonName){
   if(button.isPressed()){
     return controllerButtonState::isPressed;
   }
+  if(button.changedToPressed()){
+    return controllerButtonState::changedToPressed;
+  }
+  // if(button.isPressed()){
+  //   return controllerButtonState::isPressed;
+  // }
   return controllerButtonState::notPressed;
 }
 
@@ -118,20 +122,31 @@ void SmartController::update(){
   leftX = controller.getAnalog(ControllerAnalog::leftX);
   rightY = controller.getAnalog(ControllerAnalog::rightY);
   rightX = controller.getAnalog(ControllerAnalog::rightY);
-  L1 = updateButton(forkUp);
-  L2 = updateButton(forkDown);
-  R1 = updateButton(btnUp);
-  R2 = updateButton(btnDown);
-  up = updateButton(toggleMaxSpeedButton);
-  down = updateButton(autoDistanceButton);
-  left = updateButton(toggleDrivePolarityButton);
-  right = updateButton(autoButton);
-  X = updateButton(driveReverseButton);
-  B = updateButton(toggleIntakeButton);
-  Y = updateButton(autoDistanceButton2);
-  A = updateButton(shootButton);
+  L1 = updateButton(forkUp, controllerButtonNames::L1);
+  L2 = updateButton(forkDown, controllerButtonNames::L2);
+  R1 = updateButton(btnUp, controllerButtonNames::R1);
+  R2 = updateButton(btnDown, controllerButtonNames::R2);
+  up = updateButton(toggleMaxSpeedButton, controllerButtonNames::up);
+  down = updateButton(autoDistanceButton, controllerButtonNames::down);
+  left = updateButton(toggleDrivePolarityButton, controllerButtonNames::left);
+  right = updateButton(autoButton, controllerButtonNames::right);
+  X = updateButton(driveReverseButton, controllerButtonNames::X);
+  B = updateButton(toggleIntakeButton, controllerButtonNames::B);
+  Y = updateButton(autoDistanceButton2, controllerButtonNames::Y);
+  A = updateButton(shootButton, controllerButtonNames::A);
   currentMillis = pros::millis();
-  saveDataToAutoLog();
+
+  if(left == controllerButtonState::changedToPressed){
+    if(isRecording){
+      isRecording = false;
+    } else {
+      isRecording = true;
+    }
+  }
+
+  if(isRecording){
+    saveDataToAutoLog();
+  }
 }
 
 controllerButtonState SmartController::getButtonState(controllerButtonNames button){
@@ -192,7 +207,7 @@ controllerButtonState intToButtonState(int x){
   if(x == 1){
     return controllerButtonState::notPressed;
   }
-  if(x == 3){
+  if(x == 2){
     return controllerButtonState::changedToPressed;
   }
 }

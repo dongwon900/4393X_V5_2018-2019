@@ -41,6 +41,7 @@ private:
   int currentMillis;
   bool parsedData;
   int timestampDiff;
+  bool isRecording;
   //The first four indexes are the floats converted to integral form
   //the following twelve save the controllerButtonState from 0-2 with isPressed = 1 going down the enum
   //The final int is the timestamp which is the time elapsed (in milliseconds) since the smartController class was initialized
@@ -48,7 +49,7 @@ private:
 public:
   SmartController();
   ~SmartController();
-  controllerButtonState updateButton(ControllerButton button);
+  controllerButtonState updateButton(ControllerButton button, controllerButtonNames buttonName);
   bool inRange(int low, int high, int x);
   bool vectorDataCloseEnough(std::vector<int> newData);
   void saveDataToAutoLog();

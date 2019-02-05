@@ -35,7 +35,7 @@ const std::uint8_t LIMIT_PORT = 8;
 // R2 btnDown
 // up toggleMaxSpeedButton
 // down autoDistanceButton
-// left toggleDrivePolarity
+// left recordAutoData
 // right autoButton
 // X toggleDriveStateButton
 // B toggleIntakeButton
