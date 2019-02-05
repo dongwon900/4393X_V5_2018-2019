@@ -57,11 +57,11 @@ SmartController::~SmartController(){
 }
 
 controllerButtonState SmartController::updateButton(ControllerButton button){
-  if(button.isPressed()){
-    return controllerButtonState::isPressed;
-  }
   if(button.changedToPressed()){
     return controllerButtonState::changedToPressed;
+  }
+  if(button.isPressed()){
+    return controllerButtonState::isPressed;
   }
   return controllerButtonState::notPressed;
 }

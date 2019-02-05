@@ -33,6 +33,8 @@ void Robot::manualControl(float leftJoy, float rightJoy){
     smartController.isButtonState(controllerButtonNames::up, controllerButtonState::changedToPressed),
     smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed),
     smartController.isButtonState(controllerButtonNames::left, controllerButtonState::changedToPressed));
+
+  printf("%u\n", smartController.isButtonState(controllerButtonNames::B, controllerButtonState::changedToPressed));
 }
 
 //The function that does everything. Run this one function in the opcontrol
