@@ -1,3 +1,10 @@
 /.vscode
+<<<<<<< HEAD
 /bin
 compile_commands.json
+=======
+firmware/
+/.compile_commands.json
+bin/
+common.mk
+>>>>>>> b266459bc9c01b2b2f43ffa402c4539ec7039283

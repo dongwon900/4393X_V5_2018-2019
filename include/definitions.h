@@ -1,3 +1,4 @@
+#include <iostream>
 #ifndef _DEFINITIONS_H_
 #define _DEFINITIONS_H_
 
@@ -19,6 +20,11 @@ const std::uint8_t VISION_1  = 11;
 const std::uint8_t VISION_2  = 12;
 const std::uint8_t VISION_3  = 13;
 const std::uint8_t VISION_4 = 14;
+
+const std::uint8_t RED_SIG  = 0;
+const std::uint8_t BLUE_SIG  = 1;
+const std::uint8_t GREEN_SIG  = 2;
+const std::uint8_t YELLOW_SIG = 3;
 
 // Legacy port definitions - A-H (1-8)
 #define ULTRA_ECHO_PORT_LEFT 1
