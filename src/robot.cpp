@@ -1,5 +1,7 @@
 #include "robot.h"
 
+Robot* Robot::inst{nullptr};
+
 Robot::Robot(){
   std::vector<RobotActions> startSet;
 	startSet.push_back(initialized);
@@ -42,4 +44,12 @@ void Robot::update(){
   if (autoButton.isPressed() && !pros::competition::is_connected()) {
     autonomous();
   }
+}
+
+Robot& Robot::instance(){
+  if(!inst){
+    inst = new Robot;
+    return *inst;
+  }
+  return *inst;
 }
