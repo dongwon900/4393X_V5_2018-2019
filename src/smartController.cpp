@@ -12,25 +12,14 @@ recordAutoDataButton(ControllerDigital::left, false),
 autoButton(ControllerDigital::right, false),
 toggleDriveStateButton(ControllerDigital::X, false),
 toggleIntakeButton(ControllerDigital::B, false),
-autoDistanceButton2(ControllerDigital::Y, false),
+miscButton(ControllerDigital::Y, false),
 shootButton(ControllerDigital::A, false)
 {
   leftY = 0;
   leftX = 0;
   rightY = 0;
   rightX = 0;
-  L1 = controllerButtonState::notPressed;
-  L2 = controllerButtonState::notPressed;
-  R1 = controllerButtonState::notPressed;
-  R2 = controllerButtonState::notPressed;
-  up = controllerButtonState::notPressed;
-  down = controllerButtonState::notPressed;
-  left = controllerButtonState::notPressed;
-  right = controllerButtonState::notPressed;
-  X = controllerButtonState::notPressed;
-  B = controllerButtonState::notPressed;
-  Y = controllerButtonState::notPressed;
-  A = controllerButtonState::notPressed;
+  buttonStates.resize(12);
   startMillis = pros::millis();
   currentMillis = startMillis;
   parsedData = false;
@@ -45,61 +34,92 @@ SmartController::~SmartController(){
   leftX = 0;
   rightY = 0;
   rightX = 0;
-  L1 = controllerButtonState::notPressed;
-  L2 = controllerButtonState::notPressed;
-  R1 = controllerButtonState::notPressed;
-  R2 = controllerButtonState::notPressed;
-  up = controllerButtonState::notPressed;
-  down = controllerButtonState::notPressed;
-  left = controllerButtonState::notPressed;
-  right = controllerButtonState::notPressed;
-  X = controllerButtonState::notPressed;
-  B = controllerButtonState::notPressed;
-  Y = controllerButtonState::notPressed;
-  A = controllerButtonState::notPressed;
+  for(unsigned int i = 0; i < 12; i++){
+    buttonStates[i] = controllerButtonState::notPressed;
+  }
+}
+
+controllerButtonState SmartController::buttonStatefromControllerButton(ControllerButton button){
+  if(button.isPressed()){
+    return controllerButtonState::isPressed;
+  } else {
+    return controllerButtonState::notPressed;
+  }
+}
+
+controllerButtonState SmartController::buttonStateFromButtonIndex(int buttonIndex){
+  switch(buttonIndex){
+    case 0:
+      return buttonStatefromControllerButton(forkUp);
+    case 1:
+      return buttonStatefromControllerButton(forkDown);
+    case 2:
+      return buttonStatefromControllerButton(btnUp);
+    case 3:
+      return buttonStatefromControllerButton(btnDown);
+    case 4:
+      return buttonStatefromControllerButton(toggleMaxSpeedButton);
+    case 5:
+      return buttonStatefromControllerButton(autoDistanceButton);
+    case 6:
+      return buttonStatefromControllerButton(recordAutoDataButton);
+    case 7:
+      return buttonStatefromControllerButton(autoButton);
+    case 8:
+      return buttonStatefromControllerButton(toggleDriveStateButton);
+    case 9:
+      return buttonStatefromControllerButton(toggleIntakeButton);
+    case 10:
+      return buttonStatefromControllerButton(miscButton);
+    case 11:
+      return buttonStatefromControllerButton(shootButton);
+  }
 }
 
 controllerButtonState SmartController::evaluateButton(int buttonIndex){
-
-
-  // if(button.isPressed()){
-  //   return controllerButtonState::isPressed;
-  // }
-  // if(button.changedToPressed()){
-  //   return controllerButtonState::changedToPressed;
-  // }
-  // // if(button.isPressed()){
-  // //   return controllerButtonState::isPressed;
-  // // }
-  // return controllerButtonState::notPressed;
+  if(buttonStateFromButtonIndex(buttonIndex) == controllerButtonState::isPressed){
+    if(!isButtonChangedToPressed[buttonIndex]){
+      isButtonChangedToPressed[buttonIndex] = true;
+      return controllerButtonState::changedToPressed;
+    } else if(isButtonChangedToPressed[buttonIndex]){
+      isButtonChangedToPressed = false;
+      isButtonPressed[buttonIndex] = true;
+      return controllerButtonState::isPressed;
+    }
+  } else {
+    isButtonChangedToPressed[buttonIndex] = false;
+    isButtonPressed[buttonIndex] = false;
+    return controllerButtonState::notPressed;
+  }
 }
 
 controllerButtonState SmartController::updateButton(controllerButtonNames button){
-  switch(button){
+  int buttonIndex = (int) button;
+  switch(buttonIndex){
     case 0:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 1:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 2:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 3:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 4:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 5:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 6:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 7:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 8:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 9:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 10:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
     case 11:
-      return evaluateButton(button);
+      return evaluateButton(buttonIndex);
   }
 }
 
@@ -155,18 +175,11 @@ void SmartController::update(){
   leftX = controller.getAnalog(ControllerAnalog::leftX);
   rightY = controller.getAnalog(ControllerAnalog::rightY);
   rightX = controller.getAnalog(ControllerAnalog::rightY);
-  L1 = updateButton(forkUp, controllerButtonNames::L1);
-  L2 = updateButton(forkDown, controllerButtonNames::L2);
-  R1 = updateButton(btnUp, controllerButtonNames::R1);
-  R2 = updateButton(btnDown, controllerButtonNames::R2);
-  up = updateButton(toggleMaxSpeedButton, controllerButtonNames::up);
-  down = updateButton(autoDistanceButton, controllerButtonNames::down);
-  left = updateButton(toggleDrivePolarityButton, controllerButtonNames::left);
-  right = updateButton(autoButton, controllerButtonNames::right);
-  X = updateButton(driveReverseButton, controllerButtonNames::X);
-  B = updateButton(toggleIntakeButton, controllerButtonNames::B);
-  Y = updateButton(autoDistanceButton2, controllerButtonNames::Y);
-  A = updateButton(shootButton, controllerButtonNames::A);
+
+  for(unsigned int i = 0; i < 12; i++){
+    buttonStates[i] = updateButton(i);
+  }
+
   currentMillis = pros::millis();
 
   if(left == controllerButtonState::changedToPressed){

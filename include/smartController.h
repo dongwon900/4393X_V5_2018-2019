@@ -17,25 +17,14 @@ private:
   ControllerButton toggleMaxSpeedButton;
   ControllerButton toggleDriveStateButton;
   ControllerButton toggleIntakeButton;
-  ControllerButton autoDistanceButton2;
+  ControllerButton miscButton;
   ControllerButton recordAutoDataButton;
   //Button and joystick state storage
   float leftY;
   float leftX;
   float rightY;
   float rightX;
-  controllerButtonState L1;
-  controllerButtonState L2;
-  controllerButtonState R1;
-  controllerButtonState R2;
-  controllerButtonState up;
-  controllerButtonState down;
-  controllerButtonState left;
-  controllerButtonState right;
-  controllerButtonState X;
-  controllerButtonState B;
-  controllerButtonState Y;
-  controllerButtonState A;
+  std::vector<controllerButtonState> buttonStates;
   //Stores data for use in simulating opcontrol in auto
   int startMillis;
   int currentMillis;
@@ -51,6 +40,8 @@ private:
 public:
   SmartController();
   ~SmartController();
+  controllerButtonState buttonStatefromControllerButton(ControllerButton button);
+  controllerButtonState buttonStateFromButtonIndex(int buttonIndex);
   controllerButtonState evaluateButton(int buttonIndex);
   controllerButtonState updateButton(controllerButtonNames button);
   bool inRange(int low, int high, int x);
