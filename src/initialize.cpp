@@ -10,6 +10,7 @@
  */
 void initialize() {
 	pros::lcd::initialize();
+	Robot& robot = Robot::instance();
 }
 
 /**

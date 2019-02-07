@@ -13,6 +13,9 @@
 #include "smartController.h"
 
 class Robot{
+private:
+	Robot();
+	static Robot* inst;
 public:
 	//Subclasses
 	Forklift forklift;
@@ -23,7 +26,6 @@ public:
 	Display display;
 public:
 	//Constructors
-	Robot();
 	~Robot();
 	//Motor target positions (encoder values)
 	const int ticksRed = 1800;
@@ -37,6 +39,8 @@ public:
 	//Run is the method to be called in opcontrol
 	//includes the display functionality, autonomous and auto distance
 	void update();
+
+	static Robot& instance();
 };
 
 #endif

@@ -15,7 +15,7 @@
  */
 
 void autonomous() {
- //  Robot robotAuto;
+     Robot& robot = Robot::instance();
  //  robotAuto.launcher.enableLauncher();
  //  auto myChassis = ChassisControllerFactory::create(
  //    {robotAuto.drivetrain.driveLeftF, robotAuto.drivetrain.driveLeftB}, // Left motors
