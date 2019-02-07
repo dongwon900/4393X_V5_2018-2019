@@ -39,7 +39,7 @@ void Robot::update(){
 		drivetrain.adjustDistance(150, 150);
 	}
 
-  if (autoButton.isPressed() && shootButton.isPressed()) {
+  if (autoButton.isPressed() && !pros::competition::is_connected()) {
     autonomous();
   }
 }

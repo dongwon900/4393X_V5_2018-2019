@@ -2,7 +2,7 @@
 
 Forklift::Forklift()
 :forkMotor(FORK_MOTOR)
-{	
+{
 }
 
 Forklift::~Forklift(){

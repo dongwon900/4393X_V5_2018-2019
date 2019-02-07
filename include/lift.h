@@ -14,7 +14,7 @@ public:
   int potValue;
   int liftIndex;
 	bool liftSet;
-  const std::vector<int> liftPositions {1630, 2100, 2600, 2900};
+  const std::vector<int> liftPositions {1700, 2100, 2600, 2900};
 public:
   Lift();
   ~Lift();
