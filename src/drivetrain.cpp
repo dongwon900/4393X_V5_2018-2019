@@ -186,10 +186,27 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
 	driveAll((int) leftV, (int) rightV);
 }
 
-void Drivetrain::turnWithGyro(double degrees){
+void Drivetrain::turnWithGyro(int tenthDegrees){
   updateGyro();
+  
+
+  int targetDegrees = gyroAngle + tenthDegrees;
+  bool completed = false;
+
+  while(!completed){
+    updateGyro();
 
 
+
+    if(tenthDegrees < 0){
+      driveLeft(-6000);
+      driveRight(6000);
+    } else {
+      driveLeft(6000);
+      driveRight(-6000);
+    }
+    pros::delay(2);
+  }
 }
 
 int Drivetrain::velocityBasedOnDistanceLeft(double ticksRemaining){
@@ -197,13 +214,13 @@ int Drivetrain::velocityBasedOnDistanceLeft(double ticksRemaining){
 }
 
 void Drivetrain::driveLeftDistance(int tickCount, int velocity){
-  driveLeftF.move_relative()
-  driveLeftB.move_voltage(0);
+  driveLeftF.move_relative(tickCount, velocity);
+  driveLeftB.move_relative(tickCount, velocity);
 }
 
 void Drivetrain::driveRightDistance(int tickCount, int velocity){
-  driveRightF.move_voltage(0);
-  driveRightB.move_voltage(0);
+  driveRightF.move_relative(tickCount, velocity);
+  driveRightB.move_relative(tickCount, velocity);
 }
 
 void Drivetrain::driveDistance(double inches){
@@ -217,7 +234,7 @@ void Drivetrain::driveDistance(double inches){
   int currentMillis = startMillis;
   while(!completed){
 
-    
+
 
     driveLeftDistance(leftTickCount, leftVelocity);
     driveRightDistance(rightTickCount, rightVelocity);
