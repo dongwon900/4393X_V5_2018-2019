@@ -186,30 +186,48 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
 	driveAll((int) leftV, (int) rightV);
 }
 
-void Drivetrain::turnWithGyro(int tenthDegrees){
+void Drivetrain::turnWithGyro(int degrees){
   updateGyro();
-  
-
+  int tenthDegrees = degrees * 10;
   int targetDegrees = gyroAngle + tenthDegrees;
+
+  int startMillis = pros::millis();
+  int currentMillis = startMillis;
   bool completed = false;
-
   while(!completed){
-    updateGyro();
-
-
-
-    if(tenthDegrees < 0){
-      driveLeft(-6000);
-      driveRight(6000);
+    if((gyroAngle - targetDegrees) < 100){
+      if(tenthDegrees < 0){
+        driveLeft(-3000);
+        driveRight(3000);
+      } else {
+        driveLeft(3000);
+        driveRight(-3000);
+      }
     } else {
-      driveLeft(6000);
-      driveRight(-6000);
+      if(tenthDegrees < 0){
+        driveLeft(-6000);
+        driveRight(6000);
+      } else {
+        driveLeft(6000);
+        driveRight(-6000);
+      }
     }
+
+    updateGyro();
+    if(abs(gyroAngle - targetDegrees) < 20){
+      completed = true;
+    }
+
+    currentMillis = pros::millis();
+    if(currentMillis - startMillis > 100){
+      completed = true;
+    }
+
     pros::delay(2);
   }
 }
 
-int Drivetrain::velocityBasedOnDistanceLeft(double ticksRemaining){
+int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
 
 }
 
@@ -225,20 +243,32 @@ void Drivetrain::driveRightDistance(int tickCount, int velocity){
 
 void Drivetrain::driveDistance(double inches){
   double wheelCircumference = 4.25 * 3.1415;
+  double tickMultiplier = inches / wheelCircumference;
+  int ticksToMove = ticksGreen * tickMultiplier; //ticksgreen is the tiks per rev on 18:1 motor
 
-  int leftVelocity = 200;
-  int rightVelocity = 200;
+  int leftTicksRemaining = ticksToMove;
+  int rightTicksRemaining = ticksToMove;
+
+  int leftVelocity;
+  int rightVelocity;
 
   bool completed = false;
   int startMillis = pros::millis();
   int currentMillis = startMillis;
   while(!completed){
+    leftVelocity = velocityBasedOnDistanceLeft(leftTicksRemaining);
+    rightVelocity = velocityBasedOnDistanceLeft(rightTicksRemaining);
 
+    driveLeftDistance(ticksToMove, leftVelocity);
+    driveRightDistance(ticksToMove, rightVelocity);
 
+    leftTicksRemaining = driveLeftB.get_target_position() - driveLeftB.get_position();
+    rightTicksRemaining = driveRightB.get_target_position() - driveRightB.get_position();
 
-    driveLeftDistance(leftTickCount, leftVelocity);
-    driveRightDistance(rightTickCount, rightVelocity);
-
+    currentMillis = pros::millis();
+    if(currentMillis - startMillis > 3000){
+      completed = true;
+    }
 
     pros::delay(2);
   }

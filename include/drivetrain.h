@@ -41,8 +41,8 @@ public:
   void adjustDistance(int lefTarget, int rightTarget);
   void autoaim();
   void update(float leftVoltage, float rightVoltage);
-  void turnWithGyro(int tenthDegrees);
-  int velocityBasedOnDistanceLeft(double ticksRemaining);
+  void turnWithGyro(int degrees);
+  int velocityBasedOnDistanceLeft(int ticksRemaining);
   void driveLeftDistance(int tickCount, int velocity);
   void driveRightDistance(int tickCount, int velocity);
   void driveDistance(double inches);
