@@ -18,46 +18,22 @@ void autonomous() {
   Robot& robot = Robot::instance();
   robot.launcher.enableLauncher();
 
-  auto myChassis = ChassisControllerFactory::create(
-    {robot.drivetrain.driveLeftF, robot.drivetrain.driveLeftB}, // Left motors
-    {robot.drivetrain.driveRightF, robot.drivetrain.driveRightB},   // Right motors
-    AbstractMotor::gearset::green, // Torque gearset
-    {4.25_in, 13_in} // 4 inch wheels, 13 inch wheelbase width
-  );
+   bool leftSide = false;
+   int popSquat = (leftSide)? 9 : -9;
+   int turn90 = (leftSide)? 90 : -90;
+   int turn180 = (leftSide)? 180 : -180;
+   int sideMod = (leftSide)? 1 : -1;
 
-  auto profileController = AsyncControllerFactory::motionProfile(
-    1.0,  // Maximum linear velocity of the Chassis in m/s
-    5.0,  // Maximum linear acceleration of the Chassis in m/s/s
-    10.0, // Maximum linear jerk of the Chassis in m/s/s/s
-    myChassis // Chassis Controller
-  );
-
- auto launcherController = AsyncControllerFactory::posIntegrated(LAUNCH_MOTOR);
- auto forkController = AsyncControllerFactory::posIntegrated(FORK_MOTOR);
-
- bool leftSide = false;
- QAngle popSquat = (leftSide)? 9_deg : -9_deg;
- QAngle turn90 = (leftSide)? 100_deg : -100_deg;
- QAngle turn180 = (leftSide)? 200_deg : -200_deg;
- int sideMod = (leftSide)? 1 : -1;
-
- myChassis.setMaxVoltage(2300);
- launcherController.setTarget(robot.launcher.launcherMotor.getPosition() + 450);
- robot.intake.intakeMotor.moveVoltage(-12000);
- launcherController.waitUntilSettled();
- robot.intake.intakeMotor.moveVoltage(0);
+ robot.launcher.launcherMotor.move_relative(450);
+ robot.intake.intakeMotor.move_relative(3000);
 
  // Left Front
  // Forward
  // Shoot high flag (+2)
- myChassis.moveDistanceAsync(3_ft);
- myChassis.waitUntilSettled();
- myChassis.turnAngle(popSquat);
- myChassis.waitUntilSettled();
- launcherController.setTarget(robot.launcher.launcherMotor.getPosition() + 700);
- launcherController.waitUntilSettled();
- myChassis.turnAngle(-popSquat);
- myChassis.waitUntilSettled();
+ robot.drivetrain.driveDistance(36);
+ robot.drivetrain.turnWithGyro(popSquat);
+ robot.launcher.launcherMotor.move_relative(700);
+ robot.drivetrain.turnWithGyro(-popSquat);
  robot.intake.intakeMotor.moveVoltage(-12000);
  // Forward into low flag (+1)
  robot.drivetrain.driveAll(8000, 8000);
@@ -70,31 +46,24 @@ void autonomous() {
  // Move to cap
  // Flip fork up
  // Forward, hope it flips cap (+1)
- myChassis.moveDistanceAsync(-2.5_ft);
- myChassis.waitUntilSettled();
- myChassis.turnAngleAsync(-turn90);
- myChassis.waitUntilSettled();
+ robot.drivetrain.driveDistance(-30);
+ robot.drivetrain.turnWithGyro(-turn90);
  robot.drivetrain.driveAll(8000, 8000);
  pros::Task::delay(500);
  robot.drivetrain.driveAll(0, 0);
- forkController.setTarget(robot.forklift.forkMotor.getPosition() - 2200);
- forkController.waitUntilSettled();
+ robot.forklift.forkMotor.move_relative(2200);
  robot.lift.liftMotor.moveVoltage(-5000);
- myChassis.moveDistanceAsync(-1.5_ft);
- myChassis.waitUntilSettled();
+ robot.drivetrain.driveDistance(-18);
  robot.lift.liftMotor.moveVoltage(0);
- forkController.setTarget(robot.forklift.forkMotor.getPosition() + 2200);
+ robot.forklift.forkMotor.move_relative(2200);
  pros::Task::delay(100);
- myChassis.moveDistanceAsync(-8_in);
- myChassis.waitUntilSettled();
- forkController.waitUntilSettled();
+ robot.drivetrain.drive_distance(-8);
+
  // Do 90
  // Move to platform (+3)
- myChassis.moveDistanceAsync(-8_in);
- myChassis.waitUntilSettled();
- myChassis.turnAngleAsync(sideMod*100_deg);
- myChassis.waitUntilSettled();
-
+ robot.drivetrain.driveDistance(-8);
+ robot.drivetrain.turnWithGyro(sideMod*90);
  robot.drivetrain.driveAll(-12000, -12000);
  pros::Task::delay(2500);
+ robot.drivetrain.driveAll(0, 0);
 }
