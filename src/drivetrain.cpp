@@ -230,7 +230,7 @@ void Drivetrain::turnWithGyro(int degrees){
 
 int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
   int revolutionsRemaining = ticksRemaining / ticksGreen;
-  double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159
+  double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
   if (distanceRemaining <= 18.0) {
     return (distanceRemaining/18.0) * (double) currentVoltageIndex;
   } else {
@@ -249,7 +249,7 @@ void Drivetrain::driveRightDistance(int tickCount, int velocity){
 }
 
 void Drivetrain::driveDistance(double inches){
-  double wheelCircumference = 4.25 * 3.1415;
+  double wheelCircumference = 4.25 * 3.14159;
   double tickMultiplier = inches / wheelCircumference;
   int ticksToMove = ticksGreen * tickMultiplier; //ticksgreen is the tiks per rev on 18:1 motor
 
