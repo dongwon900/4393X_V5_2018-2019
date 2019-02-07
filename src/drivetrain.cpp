@@ -3,8 +3,8 @@
 Drivetrain::Drivetrain()
 :driveLeftF(DRIVETRAIN_L_F),
 driveLeftB(DRIVETRAIN_L_B),
-driveRightF(DRIVETRAIN_R_F),
-driveRightB(DRIVETRAIN_R_B),
+driveRightF(-DRIVETRAIN_R_F),
+driveRightB(-DRIVETRAIN_R_B),
 gyro(GYRO_PORT),
 ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT),
 ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT) {
@@ -47,11 +47,11 @@ void Drivetrain::driveLeft(int voltage){
 
 void Drivetrain::driveRight(int voltage){
   if(voltage > currentVoltageIndex){
-    driveRightF.move_voltage(-currentVoltageIndex);
-    driveRightB.move_voltage(-currentVoltageIndex);
+    driveRightF.move_voltage(currentVoltageIndex);
+    driveRightB.move_voltage(currentVoltageIndex);
   } else {
-    driveRightF.move_voltage(-voltage);
-    driveRightB.move_voltage(-voltage);
+    driveRightF.move_voltage(voltage);
+    driveRightB.move_voltage(voltage);
   }
 }
 
