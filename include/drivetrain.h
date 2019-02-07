@@ -25,6 +25,7 @@ public:
   const int ticksRed = 1800;
   const int ticksGreen = 900;
   const int ticksBlue = 300;
+  double wheelDiameter = 4.25;
 public:
   void initialize();
   Drivetrain();

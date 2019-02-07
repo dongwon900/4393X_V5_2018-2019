@@ -192,8 +192,14 @@ void Drivetrain::turnWithGyro(double degrees){
 
 }
 
-int Drivetrain::velocityBasedOnDistanceLeft(double ticksRemaining){
-
+int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
+  int revolutionsRemaining = ticksRemaining / ticksGreen;
+  double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159
+  if (distanceRemaining <= 18.0) {
+    return (distanceRemaining/18.0) * (double) currentVoltageIndex;
+  } else {
+    return currentVoltageIndex;
+  }
 }
 
 void Drivetrain::driveLeftDistance(int tickCount, int velocity){
