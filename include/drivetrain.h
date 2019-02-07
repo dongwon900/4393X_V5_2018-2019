@@ -19,7 +19,14 @@ public:
   int gyroAngle;
   int leftSonic;
   int rightSonic;
+  double leftTarget;
+  double rightTarget;
+  //Motor target positions (encoder values)
+  const int ticksRed = 1800;
+  const int ticksGreen = 900;
+  const int ticksBlue = 300;
 public:
+  void initialize();
   Drivetrain();
   ~Drivetrain();
   void updateGyro();
@@ -34,6 +41,11 @@ public:
   void adjustDistance(int lefTarget, int rightTarget);
   void autoaim();
   void update(float leftVoltage, float rightVoltage);
+  void turnWithGyro(double degrees);
+  int velocityBasedOnDistanceLeft(double ticksRemaining);
+  void driveLeftDistance(int tickCount);
+  void driveRightDistance(int tickCount);
+  void driveDistance(double inches);
 };
 
 #endif

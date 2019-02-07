@@ -2,10 +2,19 @@
 
 Robot* Robot::inst{nullptr};
 
+void Robot::initialize(){
+  forklift.initialize();
+  lift.initialize();
+  launcher.initialize();
+  intake.initialize();
+  drivetrain.initialize();
+  display.initialize();
+}
+
 Robot::Robot(){
   std::vector<RobotActions> startSet;
 	startSet.push_back(initialized);
-	actionLog = startSet;
+	initialize();
 }
 
 Robot::~Robot(){

@@ -1,7 +1,11 @@
 #include "display.h"
 
-Display::Display(){
+void Display::initialize(){
 
+}
+
+Display::Display(){
+  initialize();
 }
 
 Display::~Display(){

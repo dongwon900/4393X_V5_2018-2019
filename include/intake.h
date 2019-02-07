@@ -13,6 +13,7 @@ public:
   int intakeDirection;
   bool intakeOn;
 public:
+  void initialize();
   Intake();
   ~Intake();
   void toggleIntake();

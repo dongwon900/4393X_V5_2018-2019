@@ -1,5 +1,19 @@
 #include "drivetrain.h"
 
+void Drivetrain::initialize(){
+  gyroAngle = gyro.get_value();
+  leftSonic = ultrasonicLeft.get_value();
+  rightSonic = ultrasonicRight.get_value();
+  driveState = 1;
+  currentVoltageIndex = 10000;
+  leftTarget = 0;
+  rightTarget = 0;
+  driveLeftF.move_voltage(0);
+  driveLeftB.move_voltage(0);
+  driveRightF.move_voltage(0);
+  driveRightB.move_voltage(0);
+}
+
 Drivetrain::Drivetrain()
 :driveLeftF(DRIVETRAIN_L_F),
 driveLeftB(DRIVETRAIN_L_B),
@@ -8,11 +22,7 @@ driveRightB(-DRIVETRAIN_R_B),
 gyro(GYRO_PORT),
 ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT),
 ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT) {
-  gyroAngle = gyro.get_value();
-  leftSonic = ultrasonicLeft.get_value();
-  rightSonic = ultrasonicRight.get_value();
-  driveState = 1;
-  currentVoltageIndex = 10000;
+  initialize();
 }
 
 Drivetrain::~Drivetrain(){
@@ -174,4 +184,46 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
   float rightV = rightVoltage * (float) currentVoltageIndex;
 
 	driveAll((int) leftV, (int) rightV);
+}
+
+void Drivetrain::turnWithGyro(double degrees){
+  updateGyro();
+
+
+}
+
+int Drivetrain::velocityBasedOnDistanceLeft(double ticksRemaining){
+
+}
+
+void Drivetrain::driveLeftDistance(int tickCount, int velocity){
+  driveLeftF.move_relative()
+  driveLeftB.move_voltage(0);
+}
+
+void Drivetrain::driveRightDistance(int tickCount, int velocity){
+  driveRightF.move_voltage(0);
+  driveRightB.move_voltage(0);
+}
+
+void Drivetrain::driveDistance(double inches){
+  double wheelCircumference = 4.25 * 3.1415;
+
+  int leftVelocity = 200;
+  int rightVelocity = 200;
+
+  bool completed = false;
+  int startMillis = pros::millis();
+  int currentMillis = startMillis;
+  while(!completed){
+
+    
+
+    driveLeftDistance(leftTickCount, leftVelocity);
+    driveRightDistance(rightTickCount, rightVelocity);
+
+
+    pros::delay(2);
+  }
+
 }

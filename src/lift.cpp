@@ -1,11 +1,16 @@
 #include "lift.h"
 
-Lift::Lift()
-  :liftMotor(LIFT_MOTOR),
-  liftPotentiometer(LIFT_POTENTIOMETER_PORT) {
+void Lift::initialize(){
   potValue = liftPotentiometer.get_value();
   liftIndex = 0;
   liftSet = false;
+  liftMotor.move_voltage(0);
+}
+
+Lift::Lift()
+  :liftMotor(LIFT_MOTOR),
+  liftPotentiometer(LIFT_POTENTIOMETER_PORT) {
+  initialize();
 }
 
 Lift::~Lift(){

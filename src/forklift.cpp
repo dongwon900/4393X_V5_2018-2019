@@ -1,8 +1,13 @@
 #include "forklift.h"
 
+void Forklift::initialize(){
+	forkMotor.move_voltage(0);
+}
+
 Forklift::Forklift()
 :forkMotor(FORK_MOTOR)
 {
+	initialize();
 }
 
 Forklift::~Forklift(){

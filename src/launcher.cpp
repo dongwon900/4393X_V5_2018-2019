@@ -1,14 +1,19 @@
 #include "launcher.h"
 
+void Launcher::initialize(){
+  launcherLimit = launcherLimitSwitch.isPressed();
+  launcherEnabled = false;
+  launcherMotor.move_voltage(0);
+}
+
 Launcher::Launcher()
   :launcherMotor(LAUNCH_MOTOR),
   launcherLimitSwitch(LIMIT_PORT) {
-  launcherLimit = launcherLimitSwitch.isPressed();
-  launcherEnabled = false;
+  initialize();
 }
 
 Launcher::~Launcher(){
-  launcherMotor.move_voltage(0);
+  launcherMotor.move_voltage(-12000);
 }
 
 void Launcher::updateLimit(){

@@ -14,6 +14,7 @@
 
 class Robot{
 private:
+	void initialize();
 	Robot();
 	static Robot* inst;
 public:

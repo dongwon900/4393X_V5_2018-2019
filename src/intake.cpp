@@ -1,9 +1,14 @@
 #include "intake.h"
 
+void Intake::initialize(){
+  intakeDirection = 1;
+  intakeOn = false;
+  intakeMotor.move_voltage(0);
+}
+
 Intake::Intake()
   :intakeMotor(INTAKE_MOTOR) {
-    intakeDirection = 1;
-    intakeOn = false;
+  initialize();
 }
 
 Intake::~Intake() {

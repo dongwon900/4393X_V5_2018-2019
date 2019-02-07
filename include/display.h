@@ -14,6 +14,7 @@ private:
   Alliance alliance;
   StartingTile startingTile;
 public:
+  void initialize();
   Display();
   ~Display();
   void displaySensorValuesOnBrain();

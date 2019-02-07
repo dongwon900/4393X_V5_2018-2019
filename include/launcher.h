@@ -14,6 +14,7 @@ public:
   int launcherLimit;
   bool launcherEnabled;
 public:
+  void initialize();
   Launcher();
   ~Launcher();
   void updateLimit();

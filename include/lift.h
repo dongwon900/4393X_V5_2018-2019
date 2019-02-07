@@ -16,6 +16,7 @@ public:
 	bool liftSet;
   const std::vector<int> liftPositions {1700, 2100, 2600, 2900};
 public:
+  void initialize();
   Lift();
   ~Lift();
   void updatePot();

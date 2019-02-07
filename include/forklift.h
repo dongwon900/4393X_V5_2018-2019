@@ -11,6 +11,7 @@ class Forklift{
 public:
 	Motor forkMotor;
 public:
+	void initialize();
 	Forklift();
 	~Forklift();
 	void update();
