@@ -42,10 +42,10 @@ public:
   void adjustDistance(int lefTarget, int rightTarget);
   void autoaim();
   void update(float leftVoltage, float rightVoltage);
-  void turnWithGyro(double degrees);
-  int velocityBasedOnDistanceLeft(double ticksRemaining);
-  void driveLeftDistance(int tickCount);
-  void driveRightDistance(int tickCount);
+  void turnWithGyro(int degrees);
+  int velocityBasedOnDistanceLeft(int ticksRemaining);
+  void driveLeftDistance(int tickCount, int velocity);
+  void driveRightDistance(int tickCount, int velocity);
   void driveDistance(double inches);
 };
 

@@ -186,13 +186,49 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
 	driveAll((int) leftV, (int) rightV);
 }
 
-void Drivetrain::turnWithGyro(double degrees){
+void Drivetrain::turnWithGyro(int degrees){
   updateGyro();
+  int tenthDegrees = degrees * 10;
+  int targetDegrees = gyroAngle + tenthDegrees;
 
+  int startMillis = pros::millis();
+  int currentMillis = startMillis;
+  bool completed = false;
+  while(!completed){
+    if((gyroAngle - targetDegrees) < 100){
+      if(tenthDegrees < 0){
+        driveLeft(-3000);
+        driveRight(3000);
+      } else {
+        driveLeft(3000);
+        driveRight(-3000);
+      }
+    } else {
+      if(tenthDegrees < 0){
+        driveLeft(-6000);
+        driveRight(6000);
+      } else {
+        driveLeft(6000);
+        driveRight(-6000);
+      }
+    }
 
+    updateGyro();
+    if(abs(gyroAngle - targetDegrees) < 20){
+      completed = true;
+    }
+
+    currentMillis = pros::millis();
+    if(currentMillis - startMillis > 100){
+      completed = true;
+    }
+
+    pros::delay(2);
+  }
 }
 
 int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
+<<<<<<< HEAD
   int revolutionsRemaining = ticksRemaining / ticksGreen;
   double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159
   if (distanceRemaining <= 18.0) {
@@ -200,34 +236,49 @@ int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
   } else {
     return currentVoltageIndex;
   }
+=======
+
+>>>>>>> 50eb07ec8d7e9b48f0f33bc9204c0fbc7013375b
 }
 
 void Drivetrain::driveLeftDistance(int tickCount, int velocity){
-  driveLeftF.move_relative()
-  driveLeftB.move_voltage(0);
+  driveLeftF.move_relative(tickCount, velocity);
+  driveLeftB.move_relative(tickCount, velocity);
 }
 
 void Drivetrain::driveRightDistance(int tickCount, int velocity){
-  driveRightF.move_voltage(0);
-  driveRightB.move_voltage(0);
+  driveRightF.move_relative(tickCount, velocity);
+  driveRightB.move_relative(tickCount, velocity);
 }
 
 void Drivetrain::driveDistance(double inches){
   double wheelCircumference = 4.25 * 3.1415;
+  double tickMultiplier = inches / wheelCircumference;
+  int ticksToMove = ticksGreen * tickMultiplier; //ticksgreen is the tiks per rev on 18:1 motor
 
-  int leftVelocity = 200;
-  int rightVelocity = 200;
+  int leftTicksRemaining = ticksToMove;
+  int rightTicksRemaining = ticksToMove;
+
+  int leftVelocity;
+  int rightVelocity;
 
   bool completed = false;
   int startMillis = pros::millis();
   int currentMillis = startMillis;
   while(!completed){
+    leftVelocity = velocityBasedOnDistanceLeft(leftTicksRemaining);
+    rightVelocity = velocityBasedOnDistanceLeft(rightTicksRemaining);
 
-    
+    driveLeftDistance(ticksToMove, leftVelocity);
+    driveRightDistance(ticksToMove, rightVelocity);
 
-    driveLeftDistance(leftTickCount, leftVelocity);
-    driveRightDistance(rightTickCount, rightVelocity);
+    leftTicksRemaining = driveLeftB.get_target_position() - driveLeftB.get_position();
+    rightTicksRemaining = driveRightB.get_target_position() - driveRightB.get_position();
 
+    currentMillis = pros::millis();
+    if(currentMillis - startMillis > 3000){
+      completed = true;
+    }
 
     pros::delay(2);
   }
