@@ -6,6 +6,7 @@
 
 class SmartController{
 private:
+  static SmartController* inst;
   Controller controller;
   ControllerButton forkUp;
   ControllerButton forkDown;
