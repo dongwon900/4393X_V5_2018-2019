@@ -56,7 +56,7 @@ public:
   void autoLogParser(std::vector<std::vector<int>>& autoData);
   controllerButtonState intToButtonState(int x);
   void autonomousUpdate(std::vector<std::vector<int>>& autoData);
-
+  
   static SmartController& instance();
 };
 

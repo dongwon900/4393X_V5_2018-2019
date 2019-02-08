@@ -4,6 +4,7 @@ Robot::Robot(){
   std::vector<RobotActions> startSet;
 	startSet.push_back(initialized);
 	actionLog = startSet;
+  smartController = SmartController::instance();
 }
 
 Robot::~Robot(){
@@ -43,7 +44,7 @@ void Robot::manualControl(float leftJoy, float rightJoy){
 
 //The function that does everything. Run this one function in the opcontrol
 void Robot::update(){
-  smartController.update();
+  //smartController.update();
   //display.update();
   manualControl(smartController.getJoystickAxis(controllerAxisNames::leftY), smartController.getJoystickAxis(controllerAxisNames::rightY));
 

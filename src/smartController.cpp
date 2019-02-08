@@ -102,7 +102,7 @@ controllerButtonState SmartController::evaluateButton(int buttonIndex){
       isButtonChangedToPressed[buttonIndex] = true;
       return controllerButtonState::changedToPressed;
     } else if(isButtonChangedToPressed[buttonIndex]){
-      isButtonChangedToPressed = false;
+      isButtonChangedToPressed[buttonIndex] = false;
       isButtonPressed[buttonIndex] = true;
       return controllerButtonState::isPressed;
     }
@@ -115,32 +115,7 @@ controllerButtonState SmartController::evaluateButton(int buttonIndex){
 
 controllerButtonState SmartController::updateButton(controllerButtonNames button){
   int buttonIndex = (int) button;
-  switch(buttonIndex){
-    case 0:
-      return evaluateButton(buttonIndex);
-    case 1:
-      return evaluateButton(buttonIndex);
-    case 2:
-      return evaluateButton(buttonIndex);
-    case 3:
-      return evaluateButton(buttonIndex);
-    case 4:
-      return evaluateButton(buttonIndex);
-    case 5:
-      return evaluateButton(buttonIndex);
-    case 6:
-      return evaluateButton(buttonIndex);
-    case 7:
-      return evaluateButton(buttonIndex);
-    case 8:
-      return evaluateButton(buttonIndex);
-    case 9:
-      return evaluateButton(buttonIndex);
-    case 10:
-      return evaluateButton(buttonIndex);
-    case 11:
-      return evaluateButton(buttonIndex);
-  }
+  return evaluateButton(buttonIndex);
 }
 
 bool SmartController::inRange(int low, int high, int x){
@@ -153,7 +128,7 @@ bool SmartController::vectorDataCloseEnough(std::vector<int> newData){
   }
   std::vector<int> oldData = autoLog[autoLog.size()-1];
 
-  std::vector<int> newDataNoTStamp = newData;
+  std::vector<int> newDataNoTStamp = newData; //doing pop backs here to get rid of the timestamp cause we dont care about it anymore
   newDataNoTStamp.pop_back();
   std::vector<int> oldDataNoTStamp = oldData;
   oldDataNoTStamp.pop_back();
@@ -181,9 +156,10 @@ void SmartController::saveDataToAutoLog(){
   float Xleft = leftX * 12000;
   float Yright = rightY * 12000;
   float Xright = rightX * 12000;
+  //saving to vector
   std::vector<int> internalStorage {(int)Yleft, (int)Xleft, (int)Yright, (int)Xright, L1, L2, R1, R2, up, down, left, right, X, B, Y, A, (currentMillis - startMillis)};
 
-  if(vectorDataCloseEnough(internalStorage)){
+  if(vectorDataCloseEnough(internalStorage)){ //checking to see if the data is "different" enough to justify saving
     return;
   }
 
@@ -216,32 +192,7 @@ void SmartController::update(){
 }
 
 controllerButtonState SmartController::getButtonState(controllerButtonNames button){
-  switch(button){
-    case 0:
-      return L1;
-    case 1:
-      return L2;
-    case 2:
-      return R1;
-    case 3:
-      return R2;
-    case 4:
-      return up;
-    case 5:
-      return down;
-    case 6:
-      return left;
-    case 7:
-      return right;
-    case 8:
-      return X;
-    case 9:
-      return B;
-    case 10:
-      return Y;
-    case 11:
-      return A;
-  }
+  return buttonStates[(int)button];
 }
 
 float SmartController::getJoystickAxis(controllerAxisNames axis){
@@ -279,7 +230,7 @@ controllerButtonState intToButtonState(int x){
 }
 
 void SmartController::autoLogParser(std::vector<std::vector<int>>& autoData){
-  if(autoData.size()-1 < 1){
+  if(autoData.size() == 1){
     return;
   }
 

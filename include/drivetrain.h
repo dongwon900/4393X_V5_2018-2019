@@ -4,6 +4,7 @@
 #include "main.h"
 #include "definitions.h"
 #include "enums.h"
+#include "smartController.h"
 
 class Drivetrain{
 private:
@@ -27,13 +28,13 @@ public:
   void driveLeft(int voltage);
 	void driveRight(int voltage);
 	void driveAll(int leftVoltage, int rightVoltage);
-  void toggleMaxSpeed(bool toggleVoltageIndexButton);
-	void toggleDriveState(bool toggleDriveStateButton);
+  void toggleMaxSpeed();
+	void toggleDriveState();
   //void toggleDrivePolarity(bool toggleDrivePolarityButton);
   bool inRange(float low, float high, float x);
   std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
   void adjustDistance(int lefTarget, int rightTarget, float leftY, float rightY);
-  void update(float leftVoltage, float rightVoltage, bool toggleVoltageIndexButton, bool toggleDriveStateButton);
+  void update(float leftVoltage, float rightVoltage);
 };
 
 #endif
