@@ -2,6 +2,30 @@
 
 SmartController* SmartController::inst{nullptr};
 
+void SmartController::initialize(){
+  leftY = 0;
+  leftX = 0;
+  rightY = 0;
+  rightX = 0;
+  buttonStates.resize(12);
+  startMillis = pros::millis();
+  currentMillis = startMillis;
+  parsedData = false;
+  timestampDiff = 0;
+  isRecording = false;
+  isButtonChangedToPressed.resize(12);
+  isButtonPressed.resize(12);
+  for(unsigned int i = 0; i < 12; i++){
+    buttonStates[i] = controllerButtonState::notPressed;
+  }
+  for(unsigned int i = 0; i < 12; i++){
+    isButtonChangedToPressed[i] = false;
+  }
+  for(unsigned int i = 0; i < 12; i++){
+    isButtonPressed[i] = false;
+  }
+}
+
 SmartController::SmartController()
 :controller(),
 forkUp(ControllerDigital::L1, false),
@@ -15,20 +39,8 @@ autoButton(ControllerDigital::right, false),
 toggleDriveStateButton(ControllerDigital::X, false),
 toggleIntakeButton(ControllerDigital::B, false),
 miscButton(ControllerDigital::Y, false),
-shootButton(ControllerDigital::A, false)
-{
-  leftY = 0;
-  leftX = 0;
-  rightY = 0;
-  rightX = 0;
-  buttonStates.resize(12);
-  startMillis = pros::millis();
-  currentMillis = startMillis;
-  parsedData = false;
-  timestampDiff = 0;
-  isRecording = false;
-  isButtonChangedToPressed.resize(12);
-  isButtonPressed.resize(12);
+shootButton(ControllerDigital::A, false) {
+  initialize();
 }
 
 SmartController::~SmartController(){
@@ -38,6 +50,12 @@ SmartController::~SmartController(){
   rightX = 0;
   for(unsigned int i = 0; i < 12; i++){
     buttonStates[i] = controllerButtonState::notPressed;
+  }
+  for(unsigned int i = 0; i < 12; i++){
+    isButtonChangedToPressed[i] = false;
+  }
+  for(unsigned int i = 0; i < 12; i++){
+    isButtonPressed[i] = false;
   }
 }
 
@@ -286,18 +304,9 @@ void SmartController::autoLogParser(std::vector<std::vector<int>>& autoData){
   rightY = newRightY;
   rightX = newRightX;
 
-  L1 = intToButtonState(newData[4]);
-  L2 = intToButtonState(newData[5]);
-  R1 = intToButtonState(newData[6]);
-  R2 = intToButtonState(newData[7]);
-  up = intToButtonState(newData[8]);
-  down = intToButtonState(newData[9]);
-  left = intToButtonState(newData[10]);
-  right = intToButtonState(newData[11]);
-  X = intToButtonState(newData[12]);
-  B = intToButtonState(newData[13]);
-  Y = intToButtonState(newData[14]);
-  A = intToButtonState(newData[15]);
+  for(unsigned int i = 0; i < newData.size(); i++){
+    buttonStates[i] = intToButtonState(newData[i])
+  }
 
   autoData.erase(autoData.begin());
 }
@@ -305,4 +314,12 @@ void SmartController::autoLogParser(std::vector<std::vector<int>>& autoData){
 void SmartController::autonomousUpdate(std::vector<std::vector<int>>& autoData){
   currentMillis = pros::millis();
   autoLogParser(autoData);
+}
+
+static SmartController::SmartController& instance(){
+  if(!inst){
+    inst = new SmartController;
+    return *inst;
+  }
+  return *inst;
 }

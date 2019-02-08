@@ -39,6 +39,7 @@ private:
   //The final int is the timestamp which is the time elapsed (in milliseconds) since the smartController class was initialized
   std::vector<std::vector<int>> autoLog;
 public:
+  void initialize();
   SmartController();
   ~SmartController();
   controllerButtonState buttonStatefromControllerButton(ControllerButton button);
