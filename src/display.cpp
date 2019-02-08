@@ -80,7 +80,7 @@ void Display::chooseAuto(){
 }
 
 void Display::update(){
-  //displaySensorValuesOnBrain();
+  displaySensorValuesOnBrain();
   displayDataOnController();
 
   //printf("%s\n", "I am running");
