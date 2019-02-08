@@ -1,5 +1,7 @@
 #include "smartController.h"
 
+SmartController* SmartController::inst{nullptr};
+
 SmartController::SmartController()
 :controller(),
 forkUp(ControllerDigital::L1, false),
