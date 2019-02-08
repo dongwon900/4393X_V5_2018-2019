@@ -20,19 +20,25 @@ void Robot::manualControl(float leftJoy, float rightJoy){
   leftAnalogDrive = (inRange(-0.02, 0.02, leftAnalogDrive)) ? 0 : leftAnalogDrive;
   rightAnalogDrive = (inRange(-0.02, 0.02, rightAnalogDrive)) ? 0 : rightAnalogDrive;
 
-	forklift.update(smartController.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed),
-    smartController.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed));
-	lift.update(smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed),
-    smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed),
-    smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed),
-    smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed));
-	launcher.update(smartController.isButtonState(controllerButtonNames::A, controllerButtonState::isPressed),
-    smartController.isButtonState(controllerButtonNames::A, controllerButtonState::changedToPressed));
-	intake.update(smartController.isButtonState(controllerButtonNames::B, controllerButtonState::isPressed),
-    smartController.isButtonState(controllerButtonNames::B, controllerButtonState::changedToPressed));
-  drivetrain.update(leftAnalogDrive, rightAnalogDrive,
-    smartController.isButtonState(controllerButtonNames::up, controllerButtonState::changedToPressed),
-    smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed));
+	// forklift.update(smartController.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed),
+  //   smartController.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed));
+	// lift.update(smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed),
+  //   smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed),
+  //   smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed),
+  //   smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed));
+	// launcher.update(smartController.isButtonState(controllerButtonNames::A, controllerButtonState::isPressed),
+  //   smartController.isButtonState(controllerButtonNames::A, controllerButtonState::changedToPressed));
+	// intake.update(smartController.isButtonState(controllerButtonNames::B, controllerButtonState::isPressed),
+  //   smartController.isButtonState(controllerButtonNames::B, controllerButtonState::changedToPressed));
+  // drivetrain.update(leftAnalogDrive, rightAnalogDrive,
+  //   smartController.isButtonState(controllerButtonNames::up, controllerButtonState::changedToPressed),
+  //   smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed));
+  forklift.update();
+  lift.update();
+  launcher.update();
+  intake.update();
+  drivetrain.update();
+  smartController.update();
 
   pros::lcd::print(0, "liftIndex: %d", lift.getLiftIndex());
   pros::lcd::print(1, "liftUpPressed: %d", smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed));
