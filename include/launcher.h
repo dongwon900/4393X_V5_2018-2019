@@ -9,8 +9,8 @@
 
 class Launcher{
 public:
-  Motor launcherMotor;
-  ADIButton launcherLimitSwitch;
+  pros::Motor launcherMotor;
+  pros::ADIButton launcherLimitSwitch;
   int launcherLimit;
   bool launcherEnabled;
 public:

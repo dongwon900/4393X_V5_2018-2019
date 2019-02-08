@@ -24,21 +24,21 @@ void autonomous() {
    int turn180 = (leftSide)? 180 : -180;
    int sideMod = (leftSide)? 1 : -1;
 
- robot.launcher.launcherMotor.move_relative(450);
- robot.intake.intakeMotor.move_relative(3000);
+ robot.launcher.launcherMotor.move_relative(450, 200);
+ robot.intake.intakeMotor.move_relative(3000, 200);
 
  // Left Front
  // Forward
  // Shoot high flag (+2)
  robot.drivetrain.driveDistance(36);
  robot.drivetrain.turnWithGyro(popSquat);
- robot.launcher.launcherMotor.move_relative(700);
+ robot.launcher.launcherMotor.move_relative(700, 200);
  robot.drivetrain.turnWithGyro(-popSquat);
- robot.intake.intakeMotor.moveVoltage(-12000);
+ robot.intake.intakeMotor.move_voltage(-12000);
  // Forward into low flag (+1)
  robot.drivetrain.driveAll(8000, 8000);
  pros::Task::delay(700);
- robot.intake.intakeMotor.moveVoltage(0);
+ robot.intake.intakeMotor.move_voltage(0);
 
  // Back up
  // Do 90 Turn to cap
@@ -51,13 +51,13 @@ void autonomous() {
  robot.drivetrain.driveAll(8000, 8000);
  pros::Task::delay(500);
  robot.drivetrain.driveAll(0, 0);
- robot.forklift.forkMotor.move_relative(2200);
- robot.lift.liftMotor.moveVoltage(-5000);
+ robot.forklift.forkMotor.move_relative(2200, 200);
+ robot.lift.liftMotor.move_voltage(-5000);
  robot.drivetrain.driveDistance(-18);
- robot.lift.liftMotor.moveVoltage(0);
- robot.forklift.forkMotor.move_relative(2200);
+ robot.lift.liftMotor.move_voltage(0);
+ robot.forklift.forkMotor.move_relative(2200, -200);
  pros::Task::delay(100);
- robot.drivetrain.drive_distance(-8);
+ robot.drivetrain.driveDistance(-8);
 
  // Do 90
  // Move to platform (+3)

@@ -1,7 +1,7 @@
 #include "launcher.h"
 
 void Launcher::initialize(){
-  launcherLimit = launcherLimitSwitch.isPressed();
+  launcherLimit = launcherLimitSwitch.get_value();
   launcherEnabled = false;
   launcherMotor.move_voltage(0);
 }
@@ -17,7 +17,7 @@ Launcher::~Launcher(){
 }
 
 void Launcher::updateLimit(){
-  launcherLimit = launcherLimitSwitch.isPressed();
+  launcherLimit = launcherLimitSwitch.get_value();
 }
 
 void Launcher::enableLauncher() {

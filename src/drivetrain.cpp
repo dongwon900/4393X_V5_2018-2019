@@ -162,8 +162,8 @@ void Drivetrain::adjustDistance(int leftTarget, int rightTarget){
 // 	std::vector<bool> setSides;
 //
 //   while(!completed){
-// 		if (!inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::leftY)) ||
-// 				!inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::rightY))) {
+// 		if (!inRange(-0.1, 0.1, controller.get_analog(ControllerAnalog::leftY)) ||
+// 				!inRange(-0.1, 0.1, controller.get_analog(ControllerAnalog::rightY))) {
 // 			completed = true; 	// User interrupt
 // 		}
 // 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
@@ -229,7 +229,7 @@ void Drivetrain::turnWithGyro(int degrees){
 
 int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
   int revolutionsRemaining = ticksRemaining / ticksGreen;
-  double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159
+  double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
   if (distanceRemaining <= 18.0) {
     return (distanceRemaining/18.0) * (double) currentVoltageIndex;
   } else {
