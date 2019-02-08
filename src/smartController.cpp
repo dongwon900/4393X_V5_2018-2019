@@ -269,7 +269,7 @@ void SmartController::autonomousUpdate(std::vector<std::vector<int>>& autoData){
 
 static SmartController::SmartController& instance(){
   if(!inst){
-    inst = new SmartController;
+    inst = new SmartController();
     return *inst;
   }
   return *inst;

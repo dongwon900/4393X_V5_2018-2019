@@ -10,8 +10,12 @@ Intake::~Intake() {
   intakeMotor.move_voltage(0);
 }
 
-void Intake::toggleIntake(bool intakeButtonChangedToPressed) {
-	if(intakeButtonChangedToPressed) {
+void Forklift::updateController(SmartController smartController){
+  controller = smartController;
+}
+
+void Intake::toggleIntake() {
+	if(controller.isButtonState(controllerButtonNames::B, controllerButtonState::changedToPressed)) {
 		if(intakeOn) {
 			intakeOn = false;
 		} else {
@@ -20,8 +24,8 @@ void Intake::toggleIntake(bool intakeButtonChangedToPressed) {
 	}
 }
 
-void Intake::intakeManualControl(bool intakeButtonPressed){
-	if (intakeButtonPressed){
+void Intake::intakeManualControl(){
+	if (controller.isButtonState(controllerButtonNames::B, controllerButtonState::isPressed)){
 		intakeMotor.move_voltage(-12000*intakeDirection);
 	} else {
 		intakeMotor.move_voltage(0);
@@ -31,7 +35,8 @@ void Intake::intakeManualControl(bool intakeButtonPressed){
 	}
 }
 
-void Intake::update(bool intakeButtonPressed, bool intakeButtonChangedToPressed){
-	toggleIntake(intakeButtonChangedToPressed);
-	intakeManualControl(intakeButtonPressed);
+void Intake::update(SmartController smartController){
+  updateController(smartController);
+	toggleIntake();
+	intakeManualControl();
 }

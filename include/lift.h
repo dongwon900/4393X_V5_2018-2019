@@ -14,18 +14,20 @@ private:
   int liftIndex;
 	bool liftSet;
   const std::vector<int> liftPositions {1630, 2100, 2600, 2900};
+  SmartController controller;
 public:
   Lift();
   ~Lift();
+  void updateController(SmartController controller);
   void updatePot();
-  void manualLiftControl(bool liftUpPressed, bool liftDownPressed);
+  void manualLiftControl();
   void raiseLiftIndex();
 	void lowerLiftIndex();
   int upPVal(int liftIndex);
   int lowerPVal (int liftIndex);
-	void updateLiftIndex(bool liftUpChangedToPressed, bool liftDownChangedToPressed);
-  void updateLiftPosition(bool liftUpPressed, bool liftDownPressed);
-  void update(bool liftUpPressed, bool liftDownPressed, bool liftUpChangedToPressed, bool liftDownChangedToPressed);
+	void updateLiftIndex();
+  void updateLiftPosition();
+  void update();
   int getLiftIndex();
 };
 

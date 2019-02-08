@@ -33,12 +33,12 @@ void Robot::manualControl(float leftJoy, float rightJoy){
   // drivetrain.update(leftAnalogDrive, rightAnalogDrive,
   //   smartController.isButtonState(controllerButtonNames::up, controllerButtonState::changedToPressed),
   //   smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed));
-  forklift.update();
-  lift.update();
-  launcher.update();
-  intake.update();
-  drivetrain.update();
   smartController.update();
+  forklift.update(smartController);
+  lift.update(smartController);
+  launcher.update(smartController);
+  intake.update(smartController);
+  drivetrain.update(leftAnalogDrive, rightAnalogDrive, smartController);
 
   pros::lcd::print(0, "liftIndex: %d", lift.getLiftIndex());
   pros::lcd::print(1, "liftUpPressed: %d", smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed));

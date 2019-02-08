@@ -12,13 +12,15 @@ private:
   ADIButton launcherLimitSwitch;
   int launcherLimit;
   bool launcherEnabled;
+  SmartController controller;
 public:
   Launcher();
   ~Launcher();
+  void updateController(SmartController controller);
   void updateLimit();
   void enableLauncher();
-  void launcherAutoMovement(bool launcherButtonIsPressed, bool launcherButtonChangedToPressed);
-  void update(bool launcherButtonIsPressed, bool launcherButtonChangedToPressed);
+  void launcherAutoMovement();
+  void update();
 };
 
 #endif

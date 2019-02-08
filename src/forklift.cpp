@@ -9,18 +9,23 @@ Forklift::~Forklift(){
 	forkMotor.move_voltage(0);
 }
 
-void Forklift::manualForkControl(bool forkUp, bool forkDown){
-	if(forkUp && forkDown){
+void Forklift::updateController(SmartController smartController){
+  controller = smartController;
+}
+
+void Forklift::manualForkControl(){
+	if(controller.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed) && controller.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(0);
-	} else if (!forkUp && !forkDown){
+	} else if (!controller.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed) && !controller.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(0);
-	} else if (forkUp){
+	} else if (controller.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(12000);
-  } else if (forkDown){
+  } else if (controller.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(-12000);
 	}
 }
 
-void Forklift::update(bool forkUp, bool forkDown){
-	manualForkControl(forkUp, forkDown);
+void Forklift::update(SmartController smartController){
+	updateController(smartController);
+	manualForkControl();
 }

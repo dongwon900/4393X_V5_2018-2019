@@ -22,6 +22,10 @@ Drivetrain::~Drivetrain(){
   driveRightB.move_voltage(0);
 }
 
+void Drivetrain::updateController(SmartController smartController){
+  controller = smartController;
+}
+
 void Drivetrain::updateGyro(){
   gyroAngle = gyro.get_value();
 }
@@ -65,8 +69,8 @@ void Drivetrain::driveAll(int leftVoltage, int rightVoltage){
   }
 }
 
-void Drivetrain::toggleMaxSpeed(bool toggleVoltageIndexButton){
-  if (toggleVoltageIndexButton) {
+void Drivetrain::toggleMaxSpeed(){
+  if (controller.getButtonState(controllerButtonNames::up) == controllerButtonState::changedToPressed) {
     if(currentVoltageIndex == 10000){
       currentVoltageIndex = 12000;
     } else if (currentVoltageIndex == 12000){
@@ -75,24 +79,12 @@ void Drivetrain::toggleMaxSpeed(bool toggleVoltageIndexButton){
   }
 }
 
-void Drivetrain::toggleDriveState(bool toggleDriveStateButton){
-  if (toggleDriveStateButton) {
+void Drivetrain::toggleDriveState(){
+  if (controller.getButtonState(controllerButtonNames::X) == controllerButtonState::changedToPressed) {
     driveState = driveState * -1;
   }
 }
-/*
-void Drivetrain::toggleDrivePolarity(bool toggleDrivePolarityButton) {
-	if (toggleDrivePolarityButton) {
-		if (!driveRightF.is_reversed() && !driveRightB.is_reversed()) {
-			driveRightF.set_reversed(true);
-			driveRightB.set_reversed(true);
-		} else 	if (driveRightF.is_reversed() && driveRightB.is_reversed()) {
-			driveRightF.set_reversed(false);
-			driveRightB.set_reversed(false);
-		}
-	}
-}
-*/
+
 bool Drivetrain::inRange(float low, float high, float x){
 		return x < high && x > low;
 }
@@ -158,11 +150,12 @@ void Drivetrain::adjustDistance(int leftTarget, int rightTarget, float leftY, fl
 	}
 }
 
-void Drivetrain::update(float leftVoltage, float rightVoltage, bool toggleVoltageIndexButton, bool toggleDriveStateButton){
+void Drivetrain::update(float leftVoltage, float rightVoltage, SmartController smartController){
+  updateController(smartController);
   updateGyro();
   updateSonics();
-  toggleMaxSpeed(toggleVoltageIndexButton);
-	toggleDriveState(toggleDriveStateButton);
+  toggleMaxSpeed();
+	toggleDriveState();
   //toggleDrivePolarity(toggleDrivePolarityButton);
 
   float leftV =  leftVoltage * (float) currentVoltageIndex;

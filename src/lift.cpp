@@ -12,14 +12,18 @@ Lift::~Lift(){
   liftMotor.move_voltage(0);
 }
 
+void Lift::updateController(SmartController smartController){
+  controller = smartController;
+}
+
 void Lift::updatePot(){
   potValue = liftPotentiometer.get_value();
 }
 
-void Lift::manualLiftControl(bool liftUpPressed, bool liftDownPressed){
-	if (liftUpPressed) {
+void Lift::manualLiftControl(){
+	if (controller.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed)) {
 		liftMotor.move_voltage(12000);
-	} else if (liftDownPressed) {
+	} else if (controller.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)) {
 		liftMotor.move_voltage(-12000);
 	} else if(liftSet){
 		liftMotor.move_voltage(370);
@@ -38,12 +42,12 @@ void Lift::lowerLiftIndex(){
 	}
 }
 
-void Lift::updateLiftIndex(bool liftUpChangedToPressed, bool liftDownChangedToPressed){
+void Lift::updateLiftIndex(){
 	//Updates it for the button presses
-	if(liftUpChangedToPressed){
+	if(controller.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed)){
 		raiseLiftIndex();
 	}
-	if(liftDownChangedToPressed){
+	if(controller.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed)){
 		lowerLiftIndex();
 	}
 /*
@@ -98,7 +102,7 @@ int Lift::lowerPVal(int liftIndex){
   }
 }
 
-void Lift::updateLiftPosition(bool liftUpPressed, bool liftDownPressed){
+void Lift::updateLiftPosition(){
 	int diff = 0;
 	if(potValue > liftPositions[liftIndex] + 10){
 		liftSet = false;
@@ -116,16 +120,18 @@ void Lift::updateLiftPosition(bool liftUpPressed, bool liftDownPressed){
 		} else {
 			liftMotor.move_voltage(upPVal(liftIndex)-1500);
 		}
-	} else if(!liftUpPressed && !liftDownPressed){
+	} else if(!controller.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed) &&
+            !controller.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)){
 		liftSet = true;
 	}
 }
 
-void Lift::update(bool liftUpPressed, bool liftDownPressed, bool liftUpChangedToPressed, bool liftDownChangedToPressed){
+void Lift::update(SmartController smartController){
+  updateController(smartController);
   updatePot();
-	updateLiftIndex(liftUpChangedToPressed, liftDownChangedToPressed);
-	updateLiftPosition(liftUpPressed, liftDownPressed);
-  manualLiftControl(liftUpPressed, liftDownPressed);
+	updateLiftIndex();
+	updateLiftPosition();
+  manualLiftControl();
 }
 
 int Lift::getLiftIndex(){

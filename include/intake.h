@@ -11,12 +11,14 @@ private:
   Motor intakeMotor;
   int intakeDirection;
   bool intakeOn;
+  SmartController controller;
 public:
   Intake();
   ~Intake();
-  void toggleIntake(bool intakeButtonPressed);
-  void intakeManualControl(bool intakeButtonChangedToPressed);
-  void update(bool intakeButtonPressed, bool intakeButtonChangedToPressed);
+  void updateController(SmartController controller);
+  void toggleIntake();
+  void intakeManualControl();
+  void update();
 };
 
 #endif
