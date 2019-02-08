@@ -1,4 +1,5 @@
 #include "display.h"
+#include "robot.h"
 
 void Display::initialize(){
 
@@ -12,20 +13,12 @@ Display::~Display(){
 
 }
 
-/*
 void Display::displaySensorValuesOnBrain(){
-  pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-                   (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-                   (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-  pros::lcd::print(1, "Ultrasonic left: %d", leftSonic);
-  pros::lcd::print(2, "Ultrasonic right: %d", rightSonic);
-  pros::lcd::print(3, "Gyro: %d", gyroAngle);
-  pros::lcd::print(4, "Vision 1: %d", gyroAngle);
-  pros::lcd::print(5, "Vision 2: %d", gyroAngle);
-  pros::lcd::print(6, "Vision 3: %d", gyroAngle);
-  pros::lcd::print(7, "Vision 4: %d", gyroAngle);
+  Robot& robot = Robot::instance();
+  pros::lcd::print(1, "Ultrasonic left: %d", robot.drivetrain.leftSonic);
+  pros::lcd::print(2, "Ultrasonic right: %d", robot.drivetrain.rightSonic);
+  pros::lcd::print(3, "Gyro: %d", robot.drivetrain.gyroAngle);
 }
-*/
 
 void Display::displayDataOnController(){
   controller.clear();
