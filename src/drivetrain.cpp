@@ -232,9 +232,9 @@ int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
   int revolutionsRemaining = ticksRemaining / ticksGreen;
   double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
   if (distanceRemaining <= 18.0) {
-    return (distanceRemaining/18.0) * (double) currentVoltageIndex;
+    return (distanceRemaining/18.0) * 200.0;
   } else {
-    return currentVoltageIndex;
+    return 200.0;
   }
 }
 
@@ -266,14 +266,18 @@ void Drivetrain::driveDistance(double inches){
     leftVelocity = velocityBasedOnDistanceLeft(leftTicksRemaining);
     rightVelocity = velocityBasedOnDistanceLeft(rightTicksRemaining);
 
-    driveLeftDistance(ticksToMove, leftVelocity);
-    driveRightDistance(ticksToMove, rightVelocity);
+    // Placeholder Velocities
+    leftVelocity = 120;
+    rightVelocity = 120;
+
+    driveLeftDistance(leftTicksRemaining, leftVelocity);
+    driveRightDistance(rightTicksRemaining, rightVelocity);
 
     leftTicksRemaining = driveLeftB.get_target_position() - driveLeftB.get_position();
     rightTicksRemaining = driveRightB.get_target_position() - driveRightB.get_position();
 
     currentMillis = pros::millis();
-    if(currentMillis - startMillis > 3000){
+    if(currentMillis - startMillis > 5000){
       completed = true;
     }
 
