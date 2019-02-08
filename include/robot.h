@@ -20,7 +20,7 @@ private:
 	Launcher launcher;
 	Intake intake;
 	Drivetrain drivetrain;
-	//Display display;
+	Display display;
 	SmartController smartController;
 public:
 	//Constructors
