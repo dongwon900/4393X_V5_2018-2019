@@ -25,7 +25,7 @@ void autonomous() {
   int sideMod = (leftSide)? 1 : -1;
 
   //should climb the platform or something like that +3 points
-  robot.drivetrain.driveDistance(20);
+  robot.drivetrain.driveDistance(10);
   pros::delay(1000);
   robot.drivetrain.turnDegrees(turn90);
   pros::delay(2000);
