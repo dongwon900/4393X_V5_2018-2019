@@ -249,9 +249,9 @@ int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
   int revolutionsRemaining = ticksRemaining / ticksGreen;
   double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
   if (distanceRemaining <= 18.0) {
-    return (distanceRemaining/18.0) * (double) currentVoltageIndex;
+    return (distanceRemaining/18.0) * 200.0;
   } else {
-    return currentVoltageIndex;
+    return 200.0;
   }
 }
 

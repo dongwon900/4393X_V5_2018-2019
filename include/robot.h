@@ -14,10 +14,10 @@
 
 class Robot{
 private:
-	void initialize();
 	Robot();
 	static Robot* inst;
 public:
+	void initialize();
 	//Subclasses
 	Forklift forklift;
 	Lift lift;

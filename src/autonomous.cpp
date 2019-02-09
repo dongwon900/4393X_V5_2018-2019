@@ -16,6 +16,7 @@
 
 void autonomous() {
   Robot& robot = Robot::instance();
+  robot.initialize();
 
   bool leftSide = false;
   int popSquat = (leftSide)? 9 : -9;
