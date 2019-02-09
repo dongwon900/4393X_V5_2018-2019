@@ -228,6 +228,23 @@ void Drivetrain::turnWithGyro(int degrees){
   driveAll(0,0);
 }
 
+void Drivetrain::turnDegrees(int degrees){ //super janky needs a delay after it
+  double wheelCircumference = 4.25 * 3.14159;
+  double distanceMultiplier = degrees / 360;
+  double robotArcCircumference = 14 * 3.14159; //14 is the width of the robot wheel to wheel, multiply by pi to get the circumference of the circle carved out
+  double distanceNeeded = distanceMultiplier * robotArcCircumference;
+  double tickMultiplier = distanceNeeded / wheelCircumference;
+  int ticksNeededToTurn = ticksGreen * tickMultiplier;
+
+  if(degrees < 0){
+    driveLeftRelative(-ticksNeededToTurn, 150);
+    driveRightRelative(ticksNeededToTurn, 150);
+  } else {
+    driveLeftRelative(ticksNeededToTurn, 150);
+    driveRightRelative(-ticksNeededToTurn, 150);
+  }
+}
+
 int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
   int revolutionsRemaining = ticksRemaining / ticksGreen;
   double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
@@ -238,12 +255,12 @@ int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
   }
 }
 
-void Drivetrain::driveLeftDistance(int tickCount, int velocity){
+void Drivetrain::driveLeftRelative(int tickCount, int velocity){
   driveLeftF.move_relative(tickCount, velocity);
   driveLeftB.move_relative(tickCount, velocity);
 }
 
-void Drivetrain::driveRightDistance(int tickCount, int velocity){
+void Drivetrain::driveRightRelative(int tickCount, int velocity){
   driveRightF.move_relative(tickCount, velocity);
   driveRightB.move_relative(tickCount, velocity);
 }
@@ -253,31 +270,47 @@ void Drivetrain::driveDistance(double inches){
   double tickMultiplier = inches / wheelCircumference;
   int ticksToMove = ticksGreen * tickMultiplier; //ticksgreen is the tiks per rev on 18:1 motor
 
-  int leftTicksRemaining = ticksToMove;
-  int rightTicksRemaining = ticksToMove;
+  // int startLeftT = driveLeftB.get_position();
+  // int startRightT = driveRightB.get_position();
 
-  int leftVelocity;
-  int rightVelocity;
+  driveLeftRelative(ticksToMove, 200);
+  driveRightRelative(ticksToMove, 200);
 
-  bool completed = false;
-  int startMillis = pros::millis();
-  int currentMillis = startMillis;
-  while(!completed){
-    leftVelocity = velocityBasedOnDistanceLeft(leftTicksRemaining);
-    rightVelocity = velocityBasedOnDistanceLeft(rightTicksRemaining);
+  // bool completed = false;
+  // while(!completed){
+  //   if((driveLeftB.get_position() == startLeftT + ticksToMove) &&
+  //      (driveRightB.get_position() == startRightT + ticksToMove)){
+  //     completed = true;
+  //   }
+  //
+  //   pros::delay(3);
+  // }
 
-    driveLeftDistance(ticksToMove, leftVelocity);
-    driveRightDistance(ticksToMove, rightVelocity);
-
-    leftTicksRemaining = driveLeftB.get_target_position() - driveLeftB.get_position();
-    rightTicksRemaining = driveRightB.get_target_position() - driveRightB.get_position();
-
-    currentMillis = pros::millis();
-    if(currentMillis - startMillis > 3000){
-      completed = true;
-    }
-
-    pros::delay(2);
-  }
-  driveAll(0,0);
+  // int leftTicksRemaining = ticksToMove;
+  // int rightTicksRemaining = ticksToMove;
+  //
+  // int leftVelocity;
+  // int rightVelocity;
+  //
+  // bool completed = false;
+  // int startMillis = pros::millis();
+  // int currentMillis = startMillis;
+  // while(!completed){
+  //   leftVelocity = velocityBasedOnDistanceLeft(leftTicksRemaining);
+  //   rightVelocity = velocityBasedOnDistanceLeft(rightTicksRemaining);
+  //
+  //   driveLeftDistance(ticksToMove, leftVelocity);
+  //   driveRightDistance(ticksToMove, rightVelocity);
+  //
+  //   leftTicksRemaining = driveLeftB.get_target_position() - driveLeftB.get_position();
+  //   rightTicksRemaining = driveRightB.get_target_position() - driveRightB.get_position();
+  //
+  //   currentMillis = pros::millis();
+  //   if(currentMillis - startMillis > 3000){
+  //     completed = true;
+  //   }
+  //
+  //   pros::delay(2);
+  // }
+  // driveAll(0,0);
 }
