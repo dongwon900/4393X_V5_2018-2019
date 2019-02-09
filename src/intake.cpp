@@ -10,8 +10,8 @@ Intake::~Intake() {
   intakeMotor.move_voltage(0);
 }
 
-void Forklift::updateController(SmartController smartController){
-  controller = smartController;
+void Forklift::updateController(SmartController controller){
+  smartController = controller;
 }
 
 void Intake::toggleIntake() {

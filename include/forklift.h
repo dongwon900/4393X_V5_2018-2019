@@ -9,13 +9,13 @@
 class Forklift{
 private:
 	Motor forkMotor;
-	SmartController controller;
+	SmartController smartController;
 public:
 	Forklift();
 	~Forklift();
 	void updateController(SmartController controller);
 	void manualForkControl();
-	void update();
+	void update(SmartController controller);
 };
 
 #endif

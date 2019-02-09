@@ -33,7 +33,7 @@ void Robot::manualControl(float leftJoy, float rightJoy){
   // drivetrain.update(leftAnalogDrive, rightAnalogDrive,
   //   smartController.isButtonState(controllerButtonNames::up, controllerButtonState::changedToPressed),
   //   smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed));
-  smartController.update();
+  //smartController.update();
   forklift.update(smartController);
   lift.update(smartController);
   launcher.update(smartController);
@@ -50,7 +50,7 @@ void Robot::manualControl(float leftJoy, float rightJoy){
 
 //The function that does everything. Run this one function in the opcontrol
 void Robot::update(){
-  //smartController.update();
+  smartController.update();
   //display.update();
   manualControl(smartController.getJoystickAxis(controllerAxisNames::leftY), smartController.getJoystickAxis(controllerAxisNames::rightY));
 

@@ -12,8 +12,8 @@ Lift::~Lift(){
   liftMotor.move_voltage(0);
 }
 
-void Lift::updateController(SmartController smartController){
-  controller = smartController;
+void Lift::updateController(SmartController controller){
+  smartController = controller;
 }
 
 void Lift::updatePot(){

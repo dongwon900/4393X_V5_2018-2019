@@ -22,8 +22,8 @@ Drivetrain::~Drivetrain(){
   driveRightB.move_voltage(0);
 }
 
-void Drivetrain::updateController(SmartController smartController){
-  controller = smartController;
+void Drivetrain::updateController(SmartController controller){
+  smartController = controller;
 }
 
 void Drivetrain::updateGyro(){

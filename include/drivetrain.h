@@ -20,7 +20,7 @@ private:
   int gyroAngle;
   int leftSonic;
   int rightSonic;
-  SmartController controller;
+  SmartController smartController;
 public:
   Drivetrain();
   ~Drivetrain();
@@ -35,7 +35,7 @@ public:
   bool inRange(float low, float high, float x);
   std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
   void adjustDistance(int lefTarget, int rightTarget, float leftY, float rightY);
-  void update(float leftVoltage, float rightVoltage);
+  void update(float leftVoltage, float rightVoltage, SmartController controller);
 };
 
 #endif

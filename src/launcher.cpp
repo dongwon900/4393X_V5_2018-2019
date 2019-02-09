@@ -11,8 +11,8 @@ Launcher::~Launcher(){
   launcherMotor.move_voltage(0);
 }
 
-void Launcher::updateController(SmartController smartController){
-  controller = smartController;
+void Launcher::updateController(SmartController controller){
+  smartController = controller;
 }
 
 void Launcher::updateLimit(){
