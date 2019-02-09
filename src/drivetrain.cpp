@@ -273,8 +273,8 @@ void Drivetrain::driveDistance(double inches){
   // int startLeftT = driveLeftB.get_position();
   // int startRightT = driveRightB.get_position();
 
-  driveLeftRelative(ticksToMove, 200);
-  driveRightRelative(ticksToMove, 200);
+  driveLeftRelative(ticksToMove, 150);
+  driveRightRelative(ticksToMove, 150);
 
   // bool completed = false;
   // while(!completed){
