@@ -26,11 +26,15 @@ void autonomous() {
 
   //should climb the platform or something like that +3 points
   robot.drivetrain.driveDistance(10);
-  pros::delay(1000);
-  robot.drivetrain.turnDegrees(turn90);
-  pros::delay(2000);
-  robot.drivetrain.driveAll(12000,12000);
   pros::delay(3000);
+
+  robot.drivetrain.driveLeftRelative(300, 150);
+  robot.drivetrain.driveRightRelative(-300, 150);
+
+  //robot.drivetrain.turnDegrees(turn90);
+  pros::delay(3000);
+  robot.drivetrain.driveAll(12000,12000);
+  pros::delay(2000);
   robot.drivetrain.driveAll(0,0);
 
 

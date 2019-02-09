@@ -237,11 +237,11 @@ void Drivetrain::turnDegrees(int degrees){ //super janky needs a delay after it
   int ticksNeededToTurn = ticksGreen * tickMultiplier;
 
   if(degrees < 0){
-    driveLeftRelative(-ticksNeededToTurn, 150);
-    driveRightRelative(ticksNeededToTurn, 150);
-  } else {
-    driveLeftRelative(ticksNeededToTurn, 150);
+    driveLeftRelative(ticksNeededToTurn, -150);
     driveRightRelative(-ticksNeededToTurn, 150);
+  } else {
+    driveLeftRelative(-ticksNeededToTurn, 150);
+    driveRightRelative(ticksNeededToTurn, -150);
   }
 }
 
