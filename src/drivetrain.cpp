@@ -239,8 +239,8 @@ int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
 }
 
 void Drivetrain::driveLeftDistance(int tickCount, int velocity){
-  driveLeftF.move_relative(tickCount, velocity);
-  driveLeftB.move_relative(tickCount, velocity);
+  driveLeftF.move_velocity(velocity);
+  driveLeftB.move_velocity(velocity);
 }
 
 void Drivetrain::driveRightDistance(int tickCount, int velocity){
@@ -262,26 +262,29 @@ void Drivetrain::driveDistance(double inches){
   bool completed = false;
   int startMillis = pros::millis();
   int currentMillis = startMillis;
-  while(!completed){
-    leftVelocity = velocityBasedOnDistanceLeft(leftTicksRemaining);
-    rightVelocity = velocityBasedOnDistanceLeft(rightTicksRemaining);
 
-    // Placeholder Velocities
-    leftVelocity = 120;
-    rightVelocity = 120;
-
-    driveLeftDistance(leftTicksRemaining, leftVelocity);
-    driveRightDistance(rightTicksRemaining, rightVelocity);
-
-    leftTicksRemaining = driveLeftB.get_target_position() - driveLeftB.get_position();
-    rightTicksRemaining = driveRightB.get_target_position() - driveRightB.get_position();
-
-    currentMillis = pros::millis();
-    if(currentMillis - startMillis > 5000){
-      completed = true;
-    }
-
-    pros::delay(2);
-  }
+  driveLeftDistance(leftTicksRemaining, 200);
+  driveRightDistance(rightTicksRemaining, 200);
+  // while(!completed){
+  //   leftVelocity = velocityBasedOnDistanceLeft(leftTicksRemaining);
+  //   rightVelocity = velocityBasedOnDistanceLeft(rightTicksRemaining);
+  //
+  //   // Placeholder Velocities
+  //   leftVelocity = 200;
+  //   rightVelocity = 200;
+  //
+  //   driveLeftDistance(leftTicksRemaining, leftVelocity);
+  //   driveRightDistance(rightTicksRemaining, rightVelocity);
+  //
+  //   leftTicksRemaining = driveLeftB.get_target_position() - driveLeftB.get_position();
+  //   rightTicksRemaining = driveRightB.get_target_position() - driveRightB.get_position();
+  //
+  //   currentMillis = pros::millis();
+  //   if(currentMillis - startMillis > 5000){
+  //     completed = true;
+  //   }
+  //
+  //   pros::delay(2);
+  // }
   driveAll(0,0);
 }
