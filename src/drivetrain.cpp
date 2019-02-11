@@ -228,21 +228,33 @@ void Drivetrain::turnWithGyro(int degrees){
   driveAll(0,0);
 }
 
-void Drivetrain::turnDegrees(int degrees){ //super janky needs a delay after it
-  double wheelCircumference = 4.25 * 3.14159;
-  double distanceMultiplier = degrees / 360;
-  double robotArcCircumference = 14 * 3.14159; //14 is the width of the robot wheel to wheel, multiply by pi to get the circumference of the circle carved out
-  double distanceNeeded = distanceMultiplier * robotArcCircumference;
-  double tickMultiplier = distanceNeeded / wheelCircumference;
-  int ticksNeededToTurn = ticksGreen * tickMultiplier;
+void Drivetrain::turnDegrees(double degrees){ //super janky needs a delay after it
+
+  double tickMultiplier = degrees / 360;
+  double ticksToMove = tickMultiplier * ticksGreen;
 
   if(degrees < 0){
-    driveLeftRelative(ticksNeededToTurn, -150);
-    driveRightRelative(-ticksNeededToTurn, 150);
+    driveLeftRelative((int)ticksToMove, -100);
+    driveRightRelative((int)-ticksToMove, 100);
   } else {
-    driveLeftRelative(-ticksNeededToTurn, 150);
-    driveRightRelative(ticksNeededToTurn, -150);
+    driveLeftRelative((int)-ticksToMove, 100);
+    driveRightRelative((int)ticksToMove, -100);
   }
+
+  // double wheelCircumference = 4.25 * 3.14159;
+  // double distanceMultiplier = degrees / 360;
+  // double robotArcCircumference = 14 * 3.14159; //14 is the width of the robot wheel to wheel, multiply by pi to get the circumference of the circle carved out
+  // double distanceNeeded = distanceMultiplier * robotArcCircumference;
+  // double tickMultiplier = distanceNeeded / wheelCircumference;
+  // int ticksNeededToTurn = ticksGreen * tickMultiplier;
+  //
+  // if(degrees < 0){
+  //   driveLeftRelative(ticksNeededToTurn, -150);
+  //   driveRightRelative(-ticksNeededToTurn, 150);
+  // } else {
+  //   driveLeftRelative(-ticksNeededToTurn, 150);
+  //   driveRightRelative(ticksNeededToTurn, -150);
+  // }
 }
 
 int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){

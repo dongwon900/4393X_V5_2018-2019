@@ -28,8 +28,7 @@ void autonomous() {
   robot.drivetrain.driveDistance(7);
   pros::delay(3000);
 
-  robot.drivetrain.driveLeftRelative(-165, 150);
-  robot.drivetrain.driveRightRelative(165, 150);
+  robot.drivetrain.turnDegrees(90);
   pros::delay(3000);
 
   robot.drivetrain.driveAll(-12000,-12000);

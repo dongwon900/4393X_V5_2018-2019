@@ -43,7 +43,7 @@ public:
   void autoaim();
   void update(float leftVoltage, float rightVoltage);
   void turnWithGyro(int degrees);
-  void turnDegrees(int degrees);
+  void turnDegrees(double degrees);
   int velocityBasedOnDistanceLeft(int ticksRemaining);
   void driveLeftRelative(int tickCount, int velocity);
   void driveRightRelative(int tickCount, int velocity);
