@@ -11,7 +11,7 @@ private:
   Motor intakeMotor;
   int intakeDirection;
   bool intakeOn;
-  SmartController smartCcontroller;
+  SmartController smartController;
 public:
   Intake();
   ~Intake();

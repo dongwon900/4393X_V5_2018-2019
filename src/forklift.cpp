@@ -14,13 +14,13 @@ void Forklift::updateController(SmartController controller){
 }
 
 void Forklift::manualForkControl(){
-	if(controller.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed) && controller.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
+	if(smartController.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed) && smartController.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(0);
-	} else if (!controller.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed) && !controller.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
+	} else if (!smartController.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed) && !smartController.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(0);
-	} else if (controller.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed)){
+	} else if (smartController.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(12000);
-  } else if (controller.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
+  } else if (smartController.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(-12000);
 	}
 }

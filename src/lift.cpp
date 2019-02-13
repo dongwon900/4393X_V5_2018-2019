@@ -21,9 +21,9 @@ void Lift::updatePot(){
 }
 
 void Lift::manualLiftControl(){
-	if (controller.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed)) {
+	if (smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed)) {
 		liftMotor.move_voltage(12000);
-	} else if (controller.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)) {
+	} else if (smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)) {
 		liftMotor.move_voltage(-12000);
 	} else if(liftSet){
 		liftMotor.move_voltage(370);
@@ -44,10 +44,10 @@ void Lift::lowerLiftIndex(){
 
 void Lift::updateLiftIndex(){
 	//Updates it for the button presses
-	if(controller.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed)){
+	if(smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed)){
 		raiseLiftIndex();
 	}
-	if(controller.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed)){
+	if(smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed)){
 		lowerLiftIndex();
 	}
 /*
@@ -120,8 +120,8 @@ void Lift::updateLiftPosition(){
 		} else {
 			liftMotor.move_voltage(upPVal(liftIndex)-1500);
 		}
-	} else if(!controller.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed) &&
-            !controller.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)){
+	} else if(!smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed) &&
+            !smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)){
 		liftSet = true;
 	}
 }

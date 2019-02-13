@@ -166,6 +166,35 @@ void SmartController::saveDataToAutoLog(){
   autoLog.push_back(internalStorage);
 }
 
+controllerButtonNames SmartController::intToButtonName(int buttonIndex){
+  switch(buttonIndex){
+    case 0:
+      return controllerButtonNames::L1;
+    case 1:
+      return controllerButtonNames::L2;
+    case 2:
+      return controllerButtonNames::R1;
+    case 3:
+      return controllerButtonNames::R2;
+    case 4:
+      return controllerButtonNames::up;
+    case 5:
+      return controllerButtonNames::down;
+    case 6:
+      return controllerButtonNames::left;
+    case 7:
+      return controllerButtonNames::right;
+    case 8:
+      return controllerButtonNames::X;
+    case 9:
+      return controllerButtonNames::B;
+    case 10:
+      return controllerButtonNames::Y;
+    case 11:
+      return controllerButtonNames::A;
+  }
+}
+
 void SmartController::update(){
   leftY = controller.getAnalog(ControllerAnalog::leftY);
   leftX = controller.getAnalog(ControllerAnalog::leftX);
@@ -173,12 +202,12 @@ void SmartController::update(){
   rightX = controller.getAnalog(ControllerAnalog::rightY);
 
   for(unsigned int i = 0; i < 12; i++){
-    buttonStates[i] = updateButton(i);
+    buttonStates[i] = updateButton(intToButtonName(i));
   }
 
   currentMillis = pros::millis();
 
-  if(left == controllerButtonState::changedToPressed){
+  if(buttonStates[6] == controllerButtonState::changedToPressed){
     if(isRecording){
       isRecording = false;
     } else {
@@ -256,7 +285,7 @@ void SmartController::autoLogParser(std::vector<std::vector<int>>& autoData){
   rightX = newRightX;
 
   for(unsigned int i = 0; i < newData.size(); i++){
-    buttonStates[i] = intToButtonState(newData[i])
+    buttonStates[i] = intToButtonState(newData[i]);
   }
 
   autoData.erase(autoData.begin());
@@ -267,7 +296,7 @@ void SmartController::autonomousUpdate(std::vector<std::vector<int>>& autoData){
   autoLogParser(autoData);
 }
 
-static SmartController::SmartController& instance(){
+static SmartController& SmartController::instance(){
   if(!inst){
     inst = new SmartController();
     return *inst;

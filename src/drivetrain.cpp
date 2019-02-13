@@ -70,7 +70,7 @@ void Drivetrain::driveAll(int leftVoltage, int rightVoltage){
 }
 
 void Drivetrain::toggleMaxSpeed(){
-  if (controller.getButtonState(controllerButtonNames::up) == controllerButtonState::changedToPressed) {
+  if (smartController.getButtonState(controllerButtonNames::up) == controllerButtonState::changedToPressed) {
     if(currentVoltageIndex == 10000){
       currentVoltageIndex = 12000;
     } else if (currentVoltageIndex == 12000){
@@ -80,7 +80,7 @@ void Drivetrain::toggleMaxSpeed(){
 }
 
 void Drivetrain::toggleDriveState(){
-  if (controller.getButtonState(controllerButtonNames::X) == controllerButtonState::changedToPressed) {
+  if (smartController.getButtonState(controllerButtonNames::X) == controllerButtonState::changedToPressed) {
     driveState = driveState * -1;
   }
 }

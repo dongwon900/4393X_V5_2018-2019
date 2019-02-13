@@ -24,13 +24,13 @@ void Launcher::enableLauncher() {
 }
 
 void Launcher::launcherAutoMovement(){
-  if (controller.isButtonState(controllerButtonNames::A, controllerButtonState::changedToPressed)) {
+  if (smartController.isButtonState(controllerButtonNames::A, controllerButtonState::changedToPressed)) {
     launcherEnabled = true;
   }
 
   if (launcherEnabled) {
   	if(launcherLimit == 1){
-  		if(controller.isButtonState(controllerButtonNames::A, controllerButtonState::isPressed)){
+  		if(smartController.isButtonState(controllerButtonNames::A, controllerButtonState::isPressed)){
   			launcherMotor.move_voltage(12000);
   		} else {
   			launcherMotor.move_voltage(500);
