@@ -14,32 +14,107 @@
  * from where it left off.
  */
 
+void autoRedFront1(){
+  Robot& robot = Robot::instance();
+  robot.initialize();
+
+}
+
+void autoRedBack1(){
+  Robot& robot = Robot::instance();
+  robot.initialize();
+
+  //drive forward and hit the cap to the ground and then drive a portion of the distance back
+  robot.drivetrain.driveDistance(20);
+  pros::delay(2000);
+  robot.drivetrain.driveDistance(-10);
+  pros::delay(1000);
+
+  //turn to and backup to position behind alliance platform
+  robot.drivetrain.turnDegrees(45);
+  pros::delay(1000);
+  robot.drivetrain.driveDistance(-4);
+  pros::delay(1000);
+  robot.drivetrain.turnDegrees(-45);
+  pros::delay(1000);
+
+  //backs up into the wall
+  robot.drivetrain.driveAll(-12000,-12000);
+  pros::delay(750);
+
+  //drive onto the alliance platform
+  robot.drivetrain.driveAll(12000,12000);
+  pros::delay(3000);
+
+  //stop the robot
+  robot.drivetrain.driveAll(0,0);
+}
+
+void autoBlueFront1(){
+  Robot& robot = Robot::instance();
+  robot.initialize();
+
+}
+
+void autoBlueBack1(){
+  Robot& robot = Robot::instance();
+  robot.initialize();
+
+  //drive forward and hit the cap to the ground and then drive a portion of the distance back
+  robot.drivetrain.driveDistance(20);
+  pros::delay(2000);
+  robot.drivetrain.driveDistance(-10);
+  pros::delay(1000);
+
+  //turn to and backup to position behind alliance platform
+  robot.drivetrain.turnDegrees(-45);
+  pros::delay(1000);
+  robot.drivetrain.driveDistance(-4);
+  pros::delay(1000);
+  robot.drivetrain.turnDegrees(45);
+  pros::delay(1000);
+
+  //backs up into the wall
+  robot.drivetrain.driveAll(-12000,-12000);
+  pros::delay(750);
+
+  //drive onto the alliance platform
+  robot.drivetrain.driveAll(12000,12000);
+  pros::delay(3000);
+
+  //stop the robot
+  robot.drivetrain.driveAll(0,0);
+}
+
 void autonomous() {
   Robot& robot = Robot::instance();
   robot.initialize();
 
-  bool leftSide = false;
-  int popSquat = (leftSide)? 9 : -9;
-  int turn90 = (leftSide)? 90 : -90;
-  int turn180 = (leftSide)? 180 : -180;
-  int sideMod = (leftSide)? 1 : -1;
+  Alliance alliance = robot.display.getAlliance();
+  StartingTile startingTile = robot.display.getStartingTile();
 
-  //should climb the platform or something like that +3 points
-  robot.drivetrain.driveDistance(7);
-  pros::delay(3000);
+  switch(alliance){
+    case 0:
+      switch(startingTile){
+        case 0:
+          autoRedFront1();
+        case 1:
+          autoRedBack1();
+      }
+    case 1:
+      switch(startingTile){
+        case 0:
+          autoBlueFront1();
+        case 1:
+          autoBlueBack1();
+      }
+  }
 
-  robot.drivetrain.turnDegrees(90);
-  pros::delay(3000);
-
-  robot.drivetrain.driveAll(-12000,-12000);
-  pros::delay(1100);
-  robot.drivetrain.driveAll(0,0);
-
-
-  //robot.drivetrain.turnDegrees(turn90);
-  robot.drivetrain.driveAll(12000,12000);
-  pros::delay(2000);
-  robot.drivetrain.driveAll(0,0);
+  // bool leftSide = false;
+  // int popSquat = (leftSide)? 9 : -9;
+  // int turn90 = (leftSide)? 90 : -90;
+  // int turn180 = (leftSide)? 180 : -180;
+  // int sideMod = (leftSide)? 1 : -1;
 
 
  //  robot.launcher.enableLauncher();

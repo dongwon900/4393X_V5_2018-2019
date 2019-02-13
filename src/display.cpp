@@ -85,3 +85,11 @@ void Display::update(){
 
   //printf("%s\n", "I am running");
 }
+
+Alliance Display::getAlliance(){
+  return alliance;
+}
+
+StartingTile Display::getStartingTile(){
+  return startingTile;
+}

@@ -23,6 +23,8 @@ public:
   bool chooseTile(); //takes a button press on the lcd emulator
   void chooseAuto();
   void update();
+  Alliance getAlliance();
+  StartingTile getStartingTile();
 };
 
 #endif

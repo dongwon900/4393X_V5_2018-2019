@@ -258,7 +258,7 @@ void Drivetrain::turnDegrees(double degrees){ //super janky needs a delay after 
 }
 
 int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
-  int revolutionsRemaining = ticksRemaining / ticksGreen;
+  double revolutionsRemaining = ticksRemaining / ticksGreen;
   double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
   if (distanceRemaining <= 18.0) {
     return (distanceRemaining/18.0) * 200.0;
