@@ -296,7 +296,7 @@ void SmartController::autonomousUpdate(std::vector<std::vector<int>>& autoData){
   autoLogParser(autoData);
 }
 
-static SmartController& SmartController::instance(){
+SmartController& SmartController::instance(){
   if(!inst){
     inst = new SmartController();
     return *inst;
