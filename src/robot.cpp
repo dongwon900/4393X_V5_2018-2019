@@ -34,16 +34,18 @@ void Robot::manualControl(float leftJoy, float rightJoy){
   //   smartController.isButtonState(controllerButtonNames::up, controllerButtonState::changedToPressed),
   //   smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed));
   //smartController.update();
-  forklift.update(smartController);
-  lift.update(smartController);
-  launcher.update(smartController);
-  intake.update(smartController);
-  drivetrain.update(leftAnalogDrive, rightAnalogDrive, smartController);
+  forklift.update();
+  lift.update();
+  launcher.update();
+  intake.update();
+  drivetrain.update(leftAnalogDrive, rightAnalogDrive);
 
   pros::lcd::print(0, "liftIndex: %d", lift.getLiftIndex());
   pros::lcd::print(1, "liftUpPressed: %d", smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed));
   pros::lcd::print(2, "liftDownPressed: %d", smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed));
-  pros::lcd::print(3, "liftUpChangedToPressed: %d", smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed));
+  if(smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed)){
+    pros::lcd::print(3, "liftUpChangedToPressed: %d", 1);
+  }
   pros::lcd::print(4, "liftDownChangedToPressed: %d", smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed));
   pros::lcd::print(5, "liftIndex: %d", lift.getLiftIndex());
 }

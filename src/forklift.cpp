@@ -9,8 +9,8 @@ Forklift::~Forklift(){
 	forkMotor.move_voltage(0);
 }
 
-void Forklift::updateController(SmartController controller){
-  smartController = controller;
+void Forklift::updateController(){
+  smartController = SmartController::instance();
 }
 
 void Forklift::manualForkControl(){
@@ -25,7 +25,7 @@ void Forklift::manualForkControl(){
 	}
 }
 
-void Forklift::update(SmartController smartController){
-	updateController(smartController);
+void Forklift::update(){
+	updateController();
 	manualForkControl();
 }

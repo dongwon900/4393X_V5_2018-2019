@@ -10,8 +10,8 @@ Intake::~Intake() {
   intakeMotor.move_voltage(0);
 }
 
-void Intake::updateController(SmartController controller){
-  smartController = controller;
+void Intake::updateController(){
+  smartController = SmartController::instance();
 }
 
 void Intake::toggleIntake() {
@@ -35,8 +35,8 @@ void Intake::intakeManualControl(){
 	}
 }
 
-void Intake::update(SmartController smartController){
-  updateController(smartController);
+void Intake::update(){
+  updateController();
 	toggleIntake();
 	intakeManualControl();
 }

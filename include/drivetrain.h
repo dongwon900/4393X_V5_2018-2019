@@ -24,7 +24,7 @@ private:
 public:
   Drivetrain();
   ~Drivetrain();
-  void updateController(SmartController controller);
+  void updateController();
   void updateGyro();
   void updateSonics();
   void driveLeft(int voltage);
@@ -35,7 +35,7 @@ public:
   bool inRange(float low, float high, float x);
   std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
   void adjustDistance(int lefTarget, int rightTarget, float leftY, float rightY);
-  void update(float leftVoltage, float rightVoltage, SmartController controller);
+  void update(float leftVoltage, float rightVoltage);
 };
 
 #endif

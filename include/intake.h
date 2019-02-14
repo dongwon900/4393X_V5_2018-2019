@@ -15,10 +15,10 @@ private:
 public:
   Intake();
   ~Intake();
-  void updateController(SmartController controller);
+  void updateController();
   void toggleIntake();
   void intakeManualControl();
-  void update(SmartController controller);
+  void update();
 };
 
 #endif

@@ -12,8 +12,8 @@ Lift::~Lift(){
   liftMotor.move_voltage(0);
 }
 
-void Lift::updateController(SmartController controller){
-  smartController = controller;
+void Lift::updateController(){
+  smartController = SmartController::instance();
 }
 
 void Lift::updatePot(){
@@ -126,8 +126,8 @@ void Lift::updateLiftPosition(){
 	}
 }
 
-void Lift::update(SmartController smartController){
-  updateController(smartController);
+void Lift::update(){
+  updateController();
   updatePot();
 	updateLiftIndex();
 	updateLiftPosition();

@@ -22,8 +22,8 @@ Drivetrain::~Drivetrain(){
   driveRightB.move_voltage(0);
 }
 
-void Drivetrain::updateController(SmartController controller){
-  smartController = controller;
+void Drivetrain::updateController(){
+  smartController = SmartController::instance();
 }
 
 void Drivetrain::updateGyro(){
@@ -150,8 +150,8 @@ void Drivetrain::adjustDistance(int leftTarget, int rightTarget, float leftY, fl
 	}
 }
 
-void Drivetrain::update(float leftVoltage, float rightVoltage, SmartController smartController){
-  updateController(smartController);
+void Drivetrain::update(float leftVoltage, float rightVoltage){
+  updateController();
   updateGyro();
   updateSonics();
   toggleMaxSpeed();

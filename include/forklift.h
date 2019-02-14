@@ -13,9 +13,9 @@ private:
 public:
 	Forklift();
 	~Forklift();
-	void updateController(SmartController controller);
+	void updateController();
 	void manualForkControl();
-	void update(SmartController controller);
+	void update();
 };
 
 #endif

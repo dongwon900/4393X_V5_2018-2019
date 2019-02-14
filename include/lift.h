@@ -18,7 +18,7 @@ private:
 public:
   Lift();
   ~Lift();
-  void updateController(SmartController controller);
+  void updateController();
   void updatePot();
   void manualLiftControl();
   void raiseLiftIndex();
@@ -27,7 +27,7 @@ public:
   int lowerPVal (int liftIndex);
 	void updateLiftIndex();
   void updateLiftPosition();
-  void update(SmartController controller);
+  void update();
   int getLiftIndex();
 };
 

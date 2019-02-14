@@ -16,11 +16,11 @@ private:
 public:
   Launcher();
   ~Launcher();
-  void updateController(SmartController controller);
+  void updateController();
   void updateLimit();
   void enableLauncher();
   void launcherAutoMovement();
-  void update(SmartController controller);
+  void update();
 };
 
 #endif
