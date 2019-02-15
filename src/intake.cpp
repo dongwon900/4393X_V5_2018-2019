@@ -52,6 +52,7 @@ void Intake::indexerMimic(){
   } else if(1500 < photoValue && photoValue < 2000){ //placeholder values
     intakeMotor.move_voltage(0);
     ballNear = false;
+    intakeOn = false;
   }
 }
 
