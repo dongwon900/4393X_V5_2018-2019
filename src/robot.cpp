@@ -46,6 +46,8 @@ void Robot::manualControl(float leftJoy, float rightJoy){
   pros::lcd::print(2, "liftDownPressed: %d", smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed));
   if(smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed)){
     pros::lcd::print(3, "liftUpChangedToPressed: %d", 1);
+  } else {
+    pros::lcd::print(3, "");
   }
   pros::lcd::print(4, "liftDownChangedToPressed: %d", smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed));
   pros::lcd::print(5, "liftIndex: %d", lift.getLiftIndex());
