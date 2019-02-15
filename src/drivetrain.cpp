@@ -1,7 +1,6 @@
 #include "drivetrain.h"
 
 void Drivetrain::initialize(){
-  gyroAngle = gyro.get_value();
   leftSonic = ultrasonicLeft.get_value();
   rightSonic = ultrasonicRight.get_value();
   driveState = 1;
@@ -19,7 +18,6 @@ Drivetrain::Drivetrain()
 driveLeftB(DRIVETRAIN_L_B),
 driveRightF(-DRIVETRAIN_R_F),
 driveRightB(-DRIVETRAIN_R_B),
-gyro(GYRO_PORT),
 ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT),
 ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT) {
   initialize();
@@ -30,10 +28,6 @@ Drivetrain::~Drivetrain(){
   driveLeftB.move_voltage(0);
   driveRightF.move_voltage(0);
   driveRightB.move_voltage(0);
-}
-
-void Drivetrain::updateGyro(){
-  gyroAngle = gyro.get_value();
 }
 
 void Drivetrain::updateSonics(){
@@ -175,7 +169,6 @@ void Drivetrain::adjustDistance(int leftTarget, int rightTarget){
 // }
 
 void Drivetrain::update(float leftVoltage, float rightVoltage){
-  updateGyro();
   updateSonics();
   toggleMaxSpeed();
 	toggleDriveState();
@@ -185,48 +178,48 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
 
 	driveAll((int) leftV, (int) rightV);
 }
-
-void Drivetrain::turnWithGyro(int degrees){
-  updateGyro();
-  int tenthDegrees = degrees * 10;
-  int targetDegrees = gyroAngle + tenthDegrees;
-
-  int startMillis = pros::millis();
-  int currentMillis = startMillis;
-  bool completed = false;
-  while(!completed){
-    if((gyroAngle - targetDegrees) < 100){
-      if(tenthDegrees < 0){
-        driveLeft(-3000);
-        driveRight(3000);
-      } else {
-        driveLeft(3000);
-        driveRight(-3000);
-      }
-    } else {
-      if(tenthDegrees < 0){
-        driveLeft(-6000);
-        driveRight(6000);
-      } else {
-        driveLeft(6000);
-        driveRight(-6000);
-      }
-    }
-
-    updateGyro();
-    if(abs(gyroAngle - targetDegrees) < 20){
-      completed = true;
-    }
-
-    currentMillis = pros::millis();
-    if(currentMillis - startMillis > 100){
-      completed = true;
-    }
-
-    pros::delay(2);
-  }
-  driveAll(0,0);
-}
+//
+// void Drivetrain::turnWithGyro(int degrees){
+//   updateGyro();
+//   int tenthDegrees = degrees * 10;
+//   int targetDegrees = gyroAngle + tenthDegrees;
+//
+//   int startMillis = pros::millis();
+//   int currentMillis = startMillis;
+//   bool completed = false;
+//   while(!completed){
+//     if((gyroAngle - targetDegrees) < 100){
+//       if(tenthDegrees < 0){
+//         driveLeft(-3000);
+//         driveRight(3000);
+//       } else {
+//         driveLeft(3000);
+//         driveRight(-3000);
+//       }
+//     } else {
+//       if(tenthDegrees < 0){
+//         driveLeft(-6000);
+//         driveRight(6000);
+//       } else {
+//         driveLeft(6000);
+//         driveRight(-6000);
+//       }
+//     }
+//
+//     updateGyro();
+//     if(abs(gyroAngle - targetDegrees) < 20){
+//       completed = true;
+//     }
+//
+//     currentMillis = pros::millis();
+//     if(currentMillis - startMillis > 100){
+//       completed = true;
+//     }
+//
+//     pros::delay(2);
+//   }
+//   driveAll(0,0);
+// }
 
 void Drivetrain::turnDegrees(double degrees){ //super janky needs a delay after it
 

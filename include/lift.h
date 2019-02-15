@@ -11,6 +11,8 @@ class Lift{
 public:
   Motor liftMotor;
   pros::ADIPotentiometer liftPotentiometer;
+  pros::ADIButton liftLimit;
+  int liftLimitValue;
   int potValue;
   int liftIndex;
 	bool liftSet;
@@ -20,6 +22,7 @@ public:
   Lift();
   ~Lift();
   void updatePot();
+  void updateLimit();
   void manualLiftControl();
   void raiseLiftIndex();
 	void lowerLiftIndex();

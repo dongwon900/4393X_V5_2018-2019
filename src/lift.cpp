@@ -5,11 +5,13 @@ void Lift::initialize(){
   liftIndex = 0;
   liftSet = false;
   liftMotor.move_voltage(0);
+  liftLimitValue = liftLimit.get_value();
 }
 
 Lift::Lift()
   :liftMotor(LIFT_MOTOR),
-  liftPotentiometer(LIFT_POTENTIOMETER_PORT) {
+  liftPotentiometer(LIFT_POTENTIOMETER_PORT),
+  liftLimit(LIFT_LIMIT_PORT) {
   initialize();
 }
 
@@ -19,6 +21,10 @@ Lift::~Lift(){
 
 void Lift::updatePot(){
   potValue = liftPotentiometer.get_value();
+}
+
+void Lift::updateLimit(){
+  liftLimitValue = liftLimit.get_value();
 }
 
 void Lift::manualLiftControl(){
@@ -105,14 +111,16 @@ int Lift::lowerPVal(int liftIndex){
 
 void Lift::updateLiftPosition(){
 	int diff = 0;
-	if(potValue > liftPositions[liftIndex] + 10){
-		liftSet = false;
-		diff = potValue - liftPositions[liftIndex];
-		if(diff > 100){
-			liftMotor.move_voltage(lowerPVal(liftIndex));
-		} else {
-			liftMotor.move_voltage(lowerPVal(liftIndex)/3);
-		}
+	if(liftLimitValue != 1){
+    if(potValue > liftPositions[liftIndex] + 10){
+      liftSet = false;
+      diff = potValue - liftPositions[liftIndex];
+      if(diff > 100){
+        liftMotor.move_voltage(lowerPVal(liftIndex));
+      } else {
+        liftMotor.move_voltage(lowerPVal(liftIndex)/3);
+      }
+    }
   } else if(potValue < liftPositions[liftIndex] - 10){
 		liftSet = false;
 		diff = liftPositions[liftIndex] - potValue;
@@ -128,6 +136,7 @@ void Lift::updateLiftPosition(){
 
 void Lift::update(){
   updatePot();
+  updateLimit();
 	updateLiftIndex();
 	updateLiftPosition();
   manualLiftControl();

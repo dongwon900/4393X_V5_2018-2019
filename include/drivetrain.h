@@ -11,7 +11,6 @@ public:
   Motor driveLeftB;
   Motor driveRightF;
   Motor driveRightB;
-  pros::ADIGyro gyro;
   pros::ADIUltrasonic ultrasonicLeft;
   pros::ADIUltrasonic ultrasonicRight;
   int driveState;
@@ -30,7 +29,6 @@ public:
   void initialize();
   Drivetrain();
   ~Drivetrain();
-  void updateGyro();
   void updateSonics();
   void driveLeft(int voltage);
 	void driveRight(int voltage);
@@ -42,7 +40,6 @@ public:
   void adjustDistance(int lefTarget, int rightTarget);
   void autoaim();
   void update(float leftVoltage, float rightVoltage);
-  void turnWithGyro(int degrees);
   void turnDegrees(double degrees);
   int velocityBasedOnDistanceLeft(int ticksRemaining);
   void driveLeftRelative(int tickCount, int velocity);
