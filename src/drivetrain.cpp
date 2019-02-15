@@ -7,7 +7,9 @@ driveRightF(DRIVETRAIN_R_F),
 driveRightB(DRIVETRAIN_R_B),
 gyro(GYRO_PORT),
 ultrasonicLeft (ULTRA_ECHO_PORT_LEFT, ULTRA_PING_PORT_LEFT),
-ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT) {
+ultrasonicRight (ULTRA_ECHO_PORT, ULTRA_PING_PORT),
+smartController{SmartController::instance()}
+{
   gyroAngle = gyro.get_value();
   leftSonic = ultrasonicLeft.get_value();
   rightSonic = ultrasonicRight.get_value();

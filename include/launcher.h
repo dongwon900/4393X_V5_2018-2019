@@ -12,7 +12,7 @@ private:
   ADIButton launcherLimitSwitch;
   int launcherLimit;
   bool launcherEnabled;
-  SmartController smartController;
+  SmartController& smartController;
 public:
   Launcher();
   ~Launcher();

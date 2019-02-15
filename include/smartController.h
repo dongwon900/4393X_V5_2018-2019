@@ -7,19 +7,19 @@
 class SmartController{
 private:
   static SmartController* inst;
-  Controller controller;
-  ControllerButton forkUp;
-  ControllerButton forkDown;
-  ControllerButton btnUp;
-  ControllerButton btnDown;
-  ControllerButton shootButton;
-  ControllerButton autoDistanceButton;
-  ControllerButton autoButton;
-  ControllerButton toggleMaxSpeedButton;
-  ControllerButton toggleDriveStateButton;
-  ControllerButton toggleIntakeButton;
-  ControllerButton miscButton;
-  ControllerButton recordAutoDataButton;
+  okapi::Controller controller;
+  okapi::ControllerButton forkUp;
+  okapi::ControllerButton forkDown;
+  okapi::ControllerButton btnUp;
+  okapi::ControllerButton btnDown;
+  okapi::ControllerButton shootButton;
+  okapi::ControllerButton autoDistanceButton;
+  okapi::ControllerButton autoButton;
+  okapi::ControllerButton toggleMaxSpeedButton;
+  okapi::ControllerButton toggleDriveStateButton;
+  okapi::ControllerButton toggleIntakeButton;
+  okapi::ControllerButton miscButton;
+  okapi::ControllerButton recordAutoDataButton;
   //Button and joystick state storage
   float leftY;
   float leftX;
@@ -38,11 +38,12 @@ private:
   //the following twelve save the controllerButtonState from 0-2 with isPressed = 1 going down the enum
   //The final int is the timestamp which is the time elapsed (in milliseconds) since the smartController class was initialized
   std::vector<std::vector<int>> autoLog;
+private:
+  SmartController();
 public:
   void initialize();
-  SmartController();
   ~SmartController();
-  controllerButtonState buttonStatefromControllerButton(ControllerButton button);
+  controllerButtonState buttonStateFromControllerButton(ControllerButton button);
   controllerButtonState buttonStateFromButtonIndex(int buttonIndex);
   controllerButtonState evaluateButton(int buttonIndex);
   controllerButtonState updateButton(controllerButtonNames button);

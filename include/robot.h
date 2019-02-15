@@ -21,7 +21,7 @@ private:
 	Intake intake;
 	Drivetrain drivetrain;
 	//Display display;
-	SmartController smartController;
+	SmartController& smartController;
 public:
 	//Constructors
 	Robot();

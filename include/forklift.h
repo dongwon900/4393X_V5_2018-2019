@@ -9,7 +9,7 @@
 class Forklift{
 private:
 	Motor forkMotor;
-	SmartController smartController;
+	SmartController& smartController;
 public:
 	Forklift();
 	~Forklift();

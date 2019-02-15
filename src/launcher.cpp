@@ -2,7 +2,9 @@
 
 Launcher::Launcher()
   :launcherMotor(LAUNCH_MOTOR),
-  launcherLimitSwitch(LIMIT_PORT) {
+  launcherLimitSwitch(LIMIT_PORT),
+  smartController{SmartController::instance()}
+{
   launcherLimit = launcherLimitSwitch.isPressed();
   launcherEnabled = false;
 }

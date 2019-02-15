@@ -1,7 +1,9 @@
 #include "intake.h"
 
 Intake::Intake()
-  :intakeMotor(INTAKE_MOTOR) {
+  :intakeMotor(INTAKE_MOTOR),
+  smartController{SmartController::instance()}
+{
     intakeDirection = 1;
     intakeOn = false;
 }

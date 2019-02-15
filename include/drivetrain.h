@@ -20,7 +20,7 @@ private:
   int gyroAngle;
   int leftSonic;
   int rightSonic;
-  SmartController smartController;
+  SmartController& smartController;
 public:
   Drivetrain();
   ~Drivetrain();

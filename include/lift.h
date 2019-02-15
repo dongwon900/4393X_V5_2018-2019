@@ -14,7 +14,7 @@ private:
   int liftIndex;
 	bool liftSet;
   const std::vector<int> liftPositions {1630, 2100, 2600, 2900};
-  SmartController smartController;
+  SmartController& smartController;
 public:
   Lift();
   ~Lift();

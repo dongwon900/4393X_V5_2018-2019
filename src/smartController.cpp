@@ -59,7 +59,7 @@ SmartController::~SmartController(){
   }
 }
 
-controllerButtonState SmartController::buttonStatefromControllerButton(ControllerButton button){
+controllerButtonState SmartController::buttonStateFromControllerButton(ControllerButton button){
   if(button.isPressed()){
     return controllerButtonState::isPressed;
   } else {
@@ -70,38 +70,38 @@ controllerButtonState SmartController::buttonStatefromControllerButton(Controlle
 controllerButtonState SmartController::buttonStateFromButtonIndex(int buttonIndex){
   switch(buttonIndex){
     case 0:
-      return buttonStatefromControllerButton(forkUp);
+      return buttonStateFromControllerButton(forkUp);
     case 1:
-      return buttonStatefromControllerButton(forkDown);
+      return buttonStateFromControllerButton(forkDown);
     case 2:
-      return buttonStatefromControllerButton(btnUp);
+      return buttonStateFromControllerButton(btnUp);
     case 3:
-      return buttonStatefromControllerButton(btnDown);
+      return buttonStateFromControllerButton(btnDown);
     case 4:
-      return buttonStatefromControllerButton(toggleMaxSpeedButton);
+      return buttonStateFromControllerButton(toggleMaxSpeedButton);
     case 5:
-      return buttonStatefromControllerButton(autoDistanceButton);
+      return buttonStateFromControllerButton(autoDistanceButton);
     case 6:
-      return buttonStatefromControllerButton(recordAutoDataButton);
+      return buttonStateFromControllerButton(recordAutoDataButton);
     case 7:
-      return buttonStatefromControllerButton(autoButton);
+      return buttonStateFromControllerButton(autoButton);
     case 8:
-      return buttonStatefromControllerButton(toggleDriveStateButton);
+      return buttonStateFromControllerButton(toggleDriveStateButton);
     case 9:
-      return buttonStatefromControllerButton(toggleIntakeButton);
+      return buttonStateFromControllerButton(toggleIntakeButton);
     case 10:
-      return buttonStatefromControllerButton(miscButton);
+      return buttonStateFromControllerButton(miscButton);
     case 11:
-      return buttonStatefromControllerButton(shootButton);
+      return buttonStateFromControllerButton(shootButton);
   }
 }
 
 controllerButtonState SmartController::evaluateButton(int buttonIndex){
   if(buttonStateFromButtonIndex(buttonIndex) == controllerButtonState::isPressed){
-    if(!isButtonChangedToPressed[buttonIndex]){
+    if(isButtonChangedToPressed[buttonIndex] == false){
       isButtonChangedToPressed[buttonIndex] = true;
       return controllerButtonState::changedToPressed;
-    } else if(isButtonChangedToPressed[buttonIndex]){
+    } else {
       isButtonChangedToPressed[buttonIndex] = false;
       isButtonPressed[buttonIndex] = true;
       return controllerButtonState::isPressed;
@@ -115,6 +115,11 @@ controllerButtonState SmartController::evaluateButton(int buttonIndex){
 
 controllerButtonState SmartController::updateButton(controllerButtonNames button){
   int buttonIndex = (int) button;
+
+  if(evaluateButton(buttonIndex) == controllerButtonState::changedToPressed){
+    printf("%s\n", "changed to pressed dawg");
+  }
+
   return evaluateButton(buttonIndex);
 }
 
@@ -207,7 +212,7 @@ void SmartController::update(){
 
   currentMillis = pros::millis();
 
-  if(buttonStates[6] == controllerButtonState::changedToPressed){
+  if(buttonStates[7] == controllerButtonState::changedToPressed){
     if(isRecording){
       isRecording = false;
     } else {

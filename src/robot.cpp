@@ -1,10 +1,11 @@
 #include "robot.h"
 
-Robot::Robot(){
+Robot::Robot()
+:smartController{SmartController::instance()}
+{
   std::vector<RobotActions> startSet;
 	startSet.push_back(initialized);
 	actionLog = startSet;
-  smartController = SmartController::instance();
 }
 
 Robot::~Robot(){

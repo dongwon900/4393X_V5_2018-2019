@@ -1,7 +1,9 @@
 #include "forklift.h"
 
 Forklift::Forklift()
-:forkMotor(FORK_MOTOR) {
+:forkMotor(FORK_MOTOR),
+smartController{SmartController::instance()}
+{
 
 }
 
