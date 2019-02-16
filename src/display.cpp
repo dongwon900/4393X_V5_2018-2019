@@ -19,6 +19,7 @@ void Display::displaySensorValuesOnBrain(){
   pros::lcd::print(2, "Ultrasonic right: %d", robot.drivetrain.rightSonic);
   pros::lcd::print(3, "startingPhotoValue: %d", robot.intake.startingPhotoValue);
   pros::lcd::print(4, "currentPhotoValue: %d", robot.intake.currentPhotoValue);
+  pros::lcd::print(5, "liftLimit: %d", robot.lift.liftLimitValue);
 }
 
 void Display::displayDataOnController(){

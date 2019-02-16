@@ -31,9 +31,11 @@ void Lift::manualLiftControl(){
 	if (btnUp.isPressed()) {
 		liftMotor.move_voltage(12000);
 	} else if (btnDown.isPressed()) {
-		liftMotor.move_voltage(-12000);
-	} else if(liftSet){
-		liftMotor.move_voltage(370);
+		liftMotor.move_voltage(-8000);
+	} else if(liftLimitValue == 1){
+    liftMotor.move_voltage(0);
+  } else if(liftSet){
+		liftMotor.move_voltage(400);
 	}
 }
 
@@ -78,10 +80,10 @@ void Lift::updateLiftIndex(){
 int Lift::upPVal(int liftIndex){
   switch(liftIndex){
     case 0:
-      return 10000;
+      return 12000;
       break;
     case 1:
-      return 11000;
+      return 12000;
       break;
     case 2:
       return 12000;
@@ -98,7 +100,7 @@ int Lift::lowerPVal(int liftIndex){
       return -5000;
       break;
     case 1:
-      return -3000;
+      return -2500;
       break;
     case 2:
       return -2000;
@@ -111,15 +113,13 @@ int Lift::lowerPVal(int liftIndex){
 
 void Lift::updateLiftPosition(){
 	int diff = 0;
-	if(liftLimitValue != 1){
-    if(potValue > liftPositions[liftIndex] + 10){
-      liftSet = false;
-      diff = potValue - liftPositions[liftIndex];
-      if(diff > 100){
-        liftMotor.move_voltage(lowerPVal(liftIndex));
-      } else {
-        liftMotor.move_voltage(lowerPVal(liftIndex)/3);
-      }
+  if(potValue > liftPositions[liftIndex] + 10){
+    liftSet = false;
+    diff = potValue - liftPositions[liftIndex];
+    if(diff > 100){
+      liftMotor.move_voltage(lowerPVal(liftIndex));
+    } else {
+      liftMotor.move_voltage(lowerPVal(liftIndex)/3);
     }
   } else if(potValue < liftPositions[liftIndex] - 10){
 		liftSet = false;

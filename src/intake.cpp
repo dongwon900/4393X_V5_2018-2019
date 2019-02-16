@@ -48,10 +48,10 @@ void Intake::intakeManualControl(){
 
 void Intake::indexerMimic(){
   if(!ballNear){
-    if(startingPhotoValue + 40 <= currentPhotoValue){ //placeholder value
+    if(startingPhotoValue + 1 > currentPhotoValue && currentPhotoValue > startingPhotoValue - 1){ //placeholder value
       ballNear = true;
     }
-  } else if(startingPhotoValue + 10 <= currentPhotoValue ){ //placeholder values
+  } else if(startingPhotoValue + 1 > currentPhotoValue && currentPhotoValue > startingPhotoValue - 1){ //placeholder values
     intakeMotor.move_voltage(0);
     ballNear = false;
     intakeOn = false;
