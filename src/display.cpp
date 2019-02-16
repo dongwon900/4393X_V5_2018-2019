@@ -17,7 +17,8 @@ void Display::displaySensorValuesOnBrain(){
   Robot& robot = Robot::instance();
   pros::lcd::print(1, "Ultrasonic left: %d", robot.drivetrain.leftSonic);
   pros::lcd::print(2, "Ultrasonic right: %d", robot.drivetrain.rightSonic);
-  pros::lcd::print(3, "Gyro: %d", robot.drivetrain.gyroAngle);
+  pros::lcd::print(3, "startingPhotoValue: %d", robot.intake.startingPhotoValue);
+  pros::lcd::print(4, "currentPhotoValue: %d", robot.intake.currentPhotoValue);
 }
 
 void Display::displayDataOnController(){

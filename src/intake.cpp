@@ -4,7 +4,8 @@ void Intake::initialize(){
   intakeDirection = 1;
   intakeOn = false;
   intakeMotor.move_voltage(0);
-  photoValue = photoGate.get_value();
+  startingPhotoValue = photoGate.get_value_calibrated();
+  currentPhotoValue = photoGate.get_value_calibrated();
   ballNear = false;
 }
 
@@ -13,6 +14,7 @@ Intake::Intake()
   photoGate(PHOTO_GATE_PORT)
 {
   initialize();
+  photoGate.calibrate();
 }
 
 Intake::~Intake() {
@@ -20,7 +22,7 @@ Intake::~Intake() {
 }
 
 void Intake::updatePhotoGate(){
-  photoValue = photoGate.get_value();
+  currentPhotoValue = photoGate.get_value_calibrated();
 }
 
 void Intake::toggleIntake() {
@@ -46,10 +48,10 @@ void Intake::intakeManualControl(){
 
 void Intake::indexerMimic(){
   if(!ballNear){
-    if(1500 < photoValue && photoValue < 2000){ //placeholder value
+    if(startingPhotoValue + 40 <= currentPhotoValue){ //placeholder value
       ballNear = true;
     }
-  } else if(1500 < photoValue && photoValue < 2000){ //placeholder values
+  } else if(startingPhotoValue + 10 <= currentPhotoValue ){ //placeholder values
     intakeMotor.move_voltage(0);
     ballNear = false;
     intakeOn = false;

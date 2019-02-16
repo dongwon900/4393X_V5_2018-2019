@@ -12,9 +12,10 @@ public:
   Motor intakeMotor;
   int intakeDirection;
   bool intakeOn;
-  int photoValue;
+  int startingPhotoValue;
+  int currentPhotoValue;
   bool ballNear;
-  pros::ADILineSensor photoGate;
+  pros::ADILightSensor photoGate;
 public:
   void initialize();
   Intake();
