@@ -27,7 +27,7 @@ void Lift::manualLiftControl(){
 		liftMotor.move_voltage(12000);
 	} else if (smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)) {
 		liftMotor.move_voltage(-12000);
-	} else if(liftSet){
+	} else {
 		liftMotor.move_voltage(370);
 	}
 }
@@ -74,16 +74,14 @@ int Lift::upPVal(int liftIndex){
   switch(liftIndex){
     case 0:
       return 10000;
-      break;
     case 1:
       return 11000;
-      break;
     case 2:
       return 12000;
-      break;
     case 3:
       return 12000;
-      break;
+    default:
+      return 12000;
   }
 }
 
@@ -91,16 +89,14 @@ int Lift::lowerPVal(int liftIndex){
   switch(liftIndex){
     case 0:
       return -5000;
-      break;
     case 1:
       return -3000;
-      break;
     case 2:
       return -2000;
-      break;
     case 3:
       return -1000;
-      break;
+    default:
+      return -3000;
   }
 }
 

@@ -4,7 +4,6 @@ Forklift::Forklift()
 :forkMotor(FORK_MOTOR),
 smartController{SmartController::instance()}
 {
-
 }
 
 Forklift::~Forklift(){
@@ -17,9 +16,9 @@ void Forklift::updateController(){
 
 void Forklift::manualForkControl(){
 	if(smartController.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed) && smartController.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
-		forkMotor.move_voltage(0);
+		forkMotor.move_voltage(200);
 	} else if (!smartController.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed) && !smartController.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){
-		forkMotor.move_voltage(0);
+		forkMotor.move_voltage(200);
 	} else if (smartController.isButtonState(controllerButtonNames::L1, controllerButtonState::isPressed)){
 		forkMotor.move_voltage(12000);
   } else if (smartController.isButtonState(controllerButtonNames::L2, controllerButtonState::isPressed)){

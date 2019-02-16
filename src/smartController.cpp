@@ -44,19 +44,7 @@ shootButton(ControllerDigital::A, false) {
 }
 
 SmartController::~SmartController(){
-  leftY = 0;
-  leftX = 0;
-  rightY = 0;
-  rightX = 0;
-  for(unsigned int i = 0; i < 12; i++){
-    buttonStates[i] = controllerButtonState::notPressed;
-  }
-  for(unsigned int i = 0; i < 12; i++){
-    isButtonChangedToPressed[i] = false;
-  }
-  for(unsigned int i = 0; i < 12; i++){
-    isButtonPressed[i] = false;
-  }
+
 }
 
 controllerButtonState SmartController::buttonStateFromControllerButton(ControllerButton button){
@@ -127,7 +115,7 @@ bool SmartController::inRange(int low, int high, int x){
   return x < high && x > low;
 }
 
-bool SmartController::vectorDataCloseEnough(std::vector<int> newData){
+bool SmartController::vectorDataCloseEnough(std::vector<int> newData, int resAdjust){
   if(autoLog.size() < 1){
     return false;
   }
@@ -142,7 +130,7 @@ bool SmartController::vectorDataCloseEnough(std::vector<int> newData){
   }
 
   for(unsigned int i = 0; i < 4; i++){
-    if(!inRange(oldData[i]-20, oldData[i]+20, newData[i])){
+    if(!inRange(oldData[i]-resAdjust, oldData[i]+resAdjust, newData[i])){
       return false;
     }
   }
@@ -164,7 +152,7 @@ void SmartController::saveDataToAutoLog(){
   //saving to vector
   std::vector<int> internalStorage {(int)Yleft, (int)Xleft, (int)Yright, (int)Xright, L1, L2, R1, R2, up, down, left, right, X, B, Y, A, (currentMillis - startMillis)};
 
-  if(vectorDataCloseEnough(internalStorage)){ //checking to see if the data is "different" enough to justify saving
+  if(vectorDataCloseEnough(internalStorage, 20)){ //checking to see if the data is "different" enough to justify saving
     return;
   }
 
@@ -243,23 +231,19 @@ float SmartController::getJoystickAxis(controllerAxisNames axis){
 }
 
 bool SmartController::isButtonState(controllerButtonNames button, controllerButtonState state){
-  controllerButtonState buttonState = getButtonState(button);
-  if(buttonState == state){
-    return true;
-  } else {
-    return false;
-  }
+  return getButtonState(button) == state;
 }
 
 controllerButtonState intToButtonState(int x){
-  if(x == 0){
-    return controllerButtonState::isPressed;
-  }
-  if(x == 1){
-    return controllerButtonState::notPressed;
-  }
-  if(x == 2){
-    return controllerButtonState::changedToPressed;
+  switch(x){
+    case 0:
+      return controllerButtonState::isPressed;
+    case 1:
+      return controllerButtonState::notPressed;
+    case 2:
+      return controllerButtonState::changedToPressed;
+    default:
+      return controllerButtonState::notPressed;
   }
 }
 
@@ -271,7 +255,7 @@ void SmartController::autoLogParser(std::vector<std::vector<int>>& autoData){
   std::vector<int> newData = autoData[0];
 
   if(parsedData){
-    if(currentMillis + timestampDiff < newData[16]){
+    if(currentMillis + timestampDiff < newData[16]){ //move to while loop
       pros::delay(newData[16] - currentMillis);
     }
   } else {
@@ -301,10 +285,25 @@ void SmartController::autonomousUpdate(std::vector<std::vector<int>>& autoData){
   autoLogParser(autoData);
 }
 
+int SmartController::controllerButtonStateToInt(controllerButtonState buttonState){
+  if(buttonState == controllerButtonState::isPressed){
+    return 0;
+  } else if(buttonState == controllerButtonState::notPressed){
+    return 1;
+  } else if(buttonState == controllerButtonState::changedToPressed){
+    return 2;
+  } else {
+    return 1;
+  }
+}
+
+std::string SmartController::printButtonStates(){
+
+}
+
 SmartController& SmartController::instance(){
   if(!inst){
     inst = new SmartController();
-    return *inst;
   }
   return *inst;
 }

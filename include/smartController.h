@@ -5,7 +5,7 @@
 #include "enums.h"
 
 class SmartController{
-private:
+public:
   static SmartController* inst;
   okapi::Controller controller;
   okapi::ControllerButton forkUp;
@@ -48,7 +48,7 @@ public:
   controllerButtonState evaluateButton(int buttonIndex);
   controllerButtonState updateButton(controllerButtonNames button);
   bool inRange(int low, int high, int x);
-  bool vectorDataCloseEnough(std::vector<int> newData);
+  bool vectorDataCloseEnough(std::vector<int> newData, int resAdjust);
   void saveDataToAutoLog();
   controllerButtonNames intToButtonName(int buttonIndex);
   void update();
@@ -58,6 +58,8 @@ public:
   void autoLogParser(std::vector<std::vector<int>>& autoData);
   controllerButtonState intToButtonState(int x);
   void autonomousUpdate(std::vector<std::vector<int>>& autoData);
+  int controllerButtonStateToInt(controllerButtonState buttonState);
+  std::string printButtonStates();
 
   static SmartController& instance();
 

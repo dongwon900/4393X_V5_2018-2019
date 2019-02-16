@@ -25,7 +25,7 @@ void Intake::toggleIntake() {
 		}
 	}
 }
-
+  
 void Intake::intakeManualControl(){
 	if (smartController.isButtonState(controllerButtonNames::B, controllerButtonState::isPressed)){
 		intakeMotor.move_voltage(-12000*intakeDirection);
