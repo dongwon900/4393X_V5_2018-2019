@@ -4,25 +4,24 @@ void Intake::initialize(){
   intakeDirection = 1;
   intakeOn = false;
   intakeMotor.move_voltage(0);
-  startingPhotoValue = photoGate.get_value_calibrated();
-  currentPhotoValue = photoGate.get_value_calibrated();
-  ballNear = false;
+  intakeLimitValue = intakeLimit.get_value();
+  ballStaged = false;
+  limitToggled = false;
 }
 
 Intake::Intake()
   :intakeMotor(INTAKE_MOTOR),
-  photoGate(PHOTO_GATE_PORT)
+  intakeLimit(INTAKE_LIMIT_PORT)
 {
   initialize();
-  photoGate.calibrate();
 }
 
 Intake::~Intake() {
   intakeMotor.move_voltage(0);
 }
 
-void Intake::updatePhotoGate(){
-  currentPhotoValue = photoGate.get_value_calibrated();
+void Intake::updateIntakeLimit(){
+  intakeLimitValue = intakeLimit.get_value();
 }
 
 void Intake::toggleIntake() {
@@ -46,20 +45,27 @@ void Intake::intakeManualControl(){
 	}
 }
 
+bool Intake::limitChangedToToggled(){
+  if(intakeLimitValue == 1 && limitToggled == false){ //checks to see if the state of the limit switch has changed
+    limitToggled = true;
+    return true;
+  }
+
+  if(intakeLimitValue == 0 && limitToggled == true){ //checks to see if the limit has been untoggled
+    limitToggled = false;
+  }
+
+  return false; //if the first statement isnt true then the limit switch didnt change therefore, return false
+}
+
 void Intake::indexerMimic(){
-  if(!ballNear){
-    if(startingPhotoValue + 1 > currentPhotoValue && currentPhotoValue > startingPhotoValue - 1){ //placeholder value
-      ballNear = true;
-    }
-  } else if(startingPhotoValue + 1 > currentPhotoValue && currentPhotoValue > startingPhotoValue - 1){ //placeholder values
-    intakeMotor.move_voltage(0);
-    ballNear = false;
+  if(limitChangedToToggled()){
     intakeOn = false;
   }
 }
 
 void Intake::update(){
-  updatePhotoGate();
+  updateIntakeLimit();
 	toggleIntake();
 	intakeManualControl();
   indexerMimic();

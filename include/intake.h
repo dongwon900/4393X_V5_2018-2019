@@ -12,17 +12,18 @@ public:
   Motor intakeMotor;
   int intakeDirection;
   bool intakeOn;
-  int startingPhotoValue;
-  int currentPhotoValue;
-  bool ballNear;
-  pros::ADILightSensor photoGate;
+  int intakeLimitValue;
+  bool limitToggled;
+  bool ballStaged;
+  pros::ADIButton intakeLimit;
 public:
   void initialize();
   Intake();
   ~Intake();
-  void updatePhotoGate();
+  void updateIntakeLimit();
   void toggleIntake();
   void intakeManualControl();
+  bool limitChangedToToggled();
   void indexerMimic();
   void update();
 };

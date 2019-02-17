@@ -17,9 +17,9 @@ void Display::displaySensorValuesOnBrain(){
   Robot& robot = Robot::instance();
   pros::lcd::print(1, "Ultrasonic left: %d", robot.drivetrain.leftSonic);
   pros::lcd::print(2, "Ultrasonic right: %d", robot.drivetrain.rightSonic);
-  pros::lcd::print(3, "startingPhotoValue: %d", robot.intake.startingPhotoValue);
-  pros::lcd::print(4, "currentPhotoValue: %d", robot.intake.currentPhotoValue);
-  pros::lcd::print(5, "liftLimit: %d", robot.lift.liftLimitValue);
+  pros::lcd::print(3, "limitToggled: %d", robot.intake.limitToggled);
+  pros::lcd::print(4, "ballStaged: %d", robot.intake.ballStaged);
+  pros::lcd::print(5, "intakeLimit: %d", robot.intake.intakeLimitValue);
 }
 
 void Display::displayDataOnController(){
