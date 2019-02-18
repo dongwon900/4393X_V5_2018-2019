@@ -1,3 +1,10 @@
-/.vscode
+.vscode/
 bin/
+/common.mk
+/Makefile
 /compile_commands.json
+/project.pros
+firmware/
+include/display/
+include/okapi/
+include/pros/
