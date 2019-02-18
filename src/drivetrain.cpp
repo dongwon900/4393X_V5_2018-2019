@@ -221,33 +221,24 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
 //   driveAll(0,0);
 // }
 
+//Takes 1.2 seconds for execution and maximum 90 degrees (90 is also most accurate)
 void Drivetrain::turnDegrees(double degrees){ //super janky needs a delay after it
 
-  double tickMultiplier = degrees / 360;
-  double ticksToMove = tickMultiplier * ticksGreen;
+  double adjustedDegrees;
 
-  if(degrees < 0){
-    driveLeftRelative((int)ticksToMove, -100);
-    driveRightRelative((int)-ticksToMove, 100);
+  if(degrees > 0){ //account for momentum carried by the robot
+    adjustedDegrees = degrees * .7;
   } else {
-    driveLeftRelative((int)-ticksToMove, 100);
-    driveRightRelative((int)ticksToMove, -100);
+    adjustedDegrees = degrees * .7;
   }
 
-  // double wheelCircumference = 4.25 * 3.14159;
-  // double distanceMultiplier = degrees / 360;
-  // double robotArcCircumference = 14 * 3.14159; //14 is the width of the robot wheel to wheel, multiply by pi to get the circumference of the circle carved out
-  // double distanceNeeded = distanceMultiplier * robotArcCircumference;
-  // double tickMultiplier = distanceNeeded / wheelCircumference;
-  // int ticksNeededToTurn = ticksGreen * tickMultiplier;
-  //
-  // if(degrees < 0){
-  //   driveLeftRelative(ticksNeededToTurn, -150);
-  //   driveRightRelative(-ticksNeededToTurn, 150);
-  // } else {
-  //   driveLeftRelative(-ticksNeededToTurn, 150);
-  //   driveRightRelative(ticksNeededToTurn, -150);
-  // }
+  double tickMultiplier = adjustedDegrees / 360;
+  double ticksToMove = tickMultiplier * ticksGreen;
+  ticksToMove = ticksToMove - 5; //account for momentum carried by the robot
+
+  driveAllRelative(ticksToMove, -ticksToMove, 100, 100);
+
+  pros::delay(1200);
 }
 
 int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
@@ -270,6 +261,33 @@ void Drivetrain::driveRightRelative(int tickCount, int velocity){
   driveRightB.move_relative(tickCount, velocity);
 }
 
+void Drivetrain::driveAllRelative(int leftTickCount, int rightTickCount, int leftVelocity, int rightVelocity){
+  driveLeftRelative(leftTickCount, leftVelocity);
+  driveRightRelative(rightTickCount, rightVelocity);
+}
+
+void Drivetrain::driveLeftVelocity(int velocity){
+  driveLeftF.move_velocity(velocity);
+  driveLeftB.move_velocity(velocity);
+}
+
+void Drivetrain::driveRightVelocity(int velocity){
+  driveRightF.move_velocity(velocity);
+  driveRightB.move_velocity(velocity);
+}
+
+void Drivetrain::driveAllVelocity(int leftVelocity, int rightVelocity){
+  driveLeftVelocity(leftVelocity);
+  driveRightVelocity(rightVelocity);
+}
+
+void Drivetrain::setBrakeMode(pros::motor_brake_mode_e_t mode){
+  driveLeftF.set_brake_mode(mode);
+  driveLeftB.set_brake_mode(mode);
+  driveRightF.set_brake_mode(mode);
+  driveRightB.set_brake_mode(mode);
+}
+
 void Drivetrain::driveDistance(double inches){
   double wheelCircumference = 4.25 * 3.14159;
   double tickMultiplier = inches / wheelCircumference;
@@ -278,8 +296,13 @@ void Drivetrain::driveDistance(double inches){
   // int startLeftT = driveLeftB.get_position();
   // int startRightT = driveRightB.get_position();
 
-  driveLeftRelative(ticksToMove, 150);
-  driveRightRelative(ticksToMove, 150);
+  driveAllRelative(ticksToMove, ticksToMove, 150, 150);
+
+  pros::delay(ticksToMove/2);
+
+  driveAll(-12000, -12000);
+  pros::delay(60);
+  driveAll(0,0);
 
   // bool completed = false;
   // while(!completed){

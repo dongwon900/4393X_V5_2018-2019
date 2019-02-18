@@ -87,22 +87,22 @@ void autoBlueBack1(){
 }
 
 void autonomous() {
-  Robot& robot = Robot::instance();
-  robot.initialize();
+ Robot& robot = Robot::instance();
+ robot.initialize();
 
   Alliance alliance = robot.display.getAlliance();
   StartingTile startingTile = robot.display.getStartingTile();
 
-  switch(alliance){
+  switch((int)alliance){
     case 0:
-      switch(startingTile){
+      switch((int)startingTile){
         case 0:
           autoRedFront1();
         case 1:
           autoRedBack1();
       }
     case 1:
-      switch(startingTile){
+      switch((int)startingTile){
         case 0:
           autoBlueFront1();
         case 1:

@@ -31,4 +31,5 @@ void disabled() {}
 void competition_initialize() {
 	Robot& robot = Robot::instance();
 	robot.display.chooseAuto();
+	printf("%s\n", "I finished chooseAuto");
 }

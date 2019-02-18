@@ -2,7 +2,8 @@
 #include "robot.h"
 
 void Display::initialize(){
-
+  alliance = Alliance::red;
+  startingTile = StartingTile::back;
 }
 
 Display::Display(){
@@ -30,7 +31,6 @@ void Display::displayDataOnController(){
 }
 
 bool Display::chooseAlliance(){
-  pros::lcd::clear();
   pros::lcd::set_text(1, "Choose an Alliance");
   pros::lcd::set_text(3, "Left for Blue");
   pros::lcd::set_text(4, "Right for Red");
@@ -40,7 +40,7 @@ bool Display::chooseAlliance(){
   } else if (pros::lcd::read_buttons() == 2){
     //lv_disp_flush(10, 50, 10, 50, COLOR_BLACK); //(teehee) I dug deep into the files and can now print images to the touchscreen
     return false;
-  } else if (pros::lcd::read_buttons() == 2){
+  } else if (pros::lcd::read_buttons() == 1){
     alliance = Alliance::red;
     return true;
   } else {
@@ -49,7 +49,6 @@ bool Display::chooseAlliance(){
 }
 
 bool Display::chooseTile(){
-  pros::lcd::clear();
   pros::lcd::set_text(1, "Choose a Tile");
   pros::lcd::set_text(3, "Left for Front");
   pros::lcd::set_text(4, "Right for Back");
@@ -59,7 +58,7 @@ bool Display::chooseTile(){
   } else if (pros::lcd::read_buttons() == 2){
     //lv_disp_flush(10, 50, 10, 50, COLOR_BLACK); //(teehee) I dug deep into the files and can now print images to the touchscreen
     return false;
-  } else if (pros::lcd::read_buttons() == 2){
+  } else if (pros::lcd::read_buttons() == 1){
     startingTile = StartingTile::back;
     return true;
   } else {
@@ -73,11 +72,33 @@ void Display::chooseAuto(){
 
   while(!allianceSelected){
     allianceSelected = chooseAlliance();
-    pros::delay(2);
+    printf("%s\n", "Alliance Selector");
+    pros::delay(10);
   }
+  pros::lcd::clear();
+  pros::lcd::set_text(1, "The inbetween");
+  pros::delay(1000);
   while(!tileSelected){
     tileSelected = chooseTile();
-    pros::delay(2);
+    printf("%s\n", "Tile Selector");
+    pros::delay(10);
+  }
+
+  pros::lcd::clear();
+  printf("%s\n", "Cleared screen");
+  if(alliance == Alliance::red){
+    pros::lcd::set_text(1, "Red Alliance");
+    printf("%s\n", "Red Alliance");
+  } else {
+    pros::lcd::set_text(1, "Blue Alliance");
+    printf("%s\n", "Blue Alliance");
+  }
+  if(startingTile == StartingTile::front){
+    pros::lcd::set_text(2, "Front Tile");
+    printf("%s\n", "Front Tile");
+  } else {
+    pros::lcd::set_text(2, "Back Tile");
+    printf("%s\n", "Back Tile");
   }
 }
 

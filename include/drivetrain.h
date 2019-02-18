@@ -42,8 +42,13 @@ public:
   void update(float leftVoltage, float rightVoltage);
   void turnDegrees(double degrees);
   int velocityBasedOnDistanceLeft(int ticksRemaining);
+  void driveLeftVelocity(int velocity);
+  void driveRightVelocity(int velocity);
+  void driveAllVelocity(int leftVelocity, int rightVelocity);
   void driveLeftRelative(int tickCount, int velocity);
   void driveRightRelative(int tickCount, int velocity);
+  void driveAllRelative(int leftTickCount, int rightTickCount, int leftVelocity, int rightVelocity);
+  void setBrakeMode(pros::motor_brake_mode_e_t mode);
   void driveDistance(double inches);
 };
 
