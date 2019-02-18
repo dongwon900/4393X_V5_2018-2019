@@ -150,24 +150,6 @@ void Drivetrain::adjustDistance(int leftTarget, int rightTarget){
 	}
 }
 
-// //adjustDistance should be used where the moveVoltagements are sequential and not simultanous, otherwise use sonicDistanceAdjust in the parent function
-// void Drivetrain::autoaim(){
-// 	bool completed = false;
-// 	std::vector<bool> setSides;
-//
-//   while(!completed){
-// 		if (!inRange(-0.1, 0.1, controller.get_analog(ControllerAnalog::leftY)) ||
-// 				!inRange(-0.1, 0.1, controller.get_analog(ControllerAnalog::rightY))) {
-// 			completed = true; 	// User interrupt
-// 		}
-// 		setSides = sonicDistanceAdjust(leftTarget, rightTarget);
-// 		if(setSides[0] == true && setSides[1] == true) {
-// 			completed = true;
-// 		}
-//     pros::delay(2);
-// 	}
-// }
-
 void Drivetrain::update(float leftVoltage, float rightVoltage){
   updateSonics();
   toggleMaxSpeed();
@@ -177,78 +159,6 @@ void Drivetrain::update(float leftVoltage, float rightVoltage){
   float rightV = rightVoltage * (float) currentVoltageIndex;
 
 	driveAll((int) leftV, (int) rightV);
-}
-//
-// void Drivetrain::turnWithGyro(int degrees){
-//   updateGyro();
-//   int tenthDegrees = degrees * 10;
-//   int targetDegrees = gyroAngle + tenthDegrees;
-//
-//   int startMillis = pros::millis();
-//   int currentMillis = startMillis;
-//   bool completed = false;
-//   while(!completed){
-//     if((gyroAngle - targetDegrees) < 100){
-//       if(tenthDegrees < 0){
-//         driveLeft(-3000);
-//         driveRight(3000);
-//       } else {
-//         driveLeft(3000);
-//         driveRight(-3000);
-//       }
-//     } else {
-//       if(tenthDegrees < 0){
-//         driveLeft(-6000);
-//         driveRight(6000);
-//       } else {
-//         driveLeft(6000);
-//         driveRight(-6000);
-//       }
-//     }
-//
-//     updateGyro();
-//     if(abs(gyroAngle - targetDegrees) < 20){
-//       completed = true;
-//     }
-//
-//     currentMillis = pros::millis();
-//     if(currentMillis - startMillis > 100){
-//       completed = true;
-//     }
-//
-//     pros::delay(2);
-//   }
-//   driveAll(0,0);
-// }
-
-//Takes 1.2 seconds for execution and maximum 90 degrees (90 is also most accurate)
-void Drivetrain::turnDegrees(double degrees){ //super janky needs a delay after it
-
-  double adjustedDegrees;
-
-  if(degrees > 0){ //account for momentum carried by the robot
-    adjustedDegrees = degrees * .7;
-  } else {
-    adjustedDegrees = degrees * .7;
-  }
-
-  double tickMultiplier = adjustedDegrees / 360;
-  double ticksToMove = tickMultiplier * ticksGreen;
-  ticksToMove = ticksToMove - 5; //account for momentum carried by the robot
-
-  driveAllRelative(ticksToMove, -ticksToMove, 100, 100);
-
-  pros::delay(1200);
-}
-
-int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
-  double revolutionsRemaining = ticksRemaining / ticksGreen;
-  double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
-  if (distanceRemaining <= 18.0) {
-    return (distanceRemaining/18.0) * 200.0;
-  } else {
-    return 200.0;
-  }
 }
 
 void Drivetrain::driveLeftRelative(int tickCount, int velocity){
@@ -288,57 +198,67 @@ void Drivetrain::setBrakeMode(pros::motor_brake_mode_e_t mode){
   driveRightB.set_brake_mode(mode);
 }
 
-void Drivetrain::driveDistance(double inches){
+int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
+  double revolutionsRemaining = ticksRemaining / ticksGreen;
+  double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
+  if (distanceRemaining <= 18.0) {
+    return (distanceRemaining/18.0) * 200.0;
+  } else {
+    return 200.0;
+  }
+}
+
+//delayRatio is a multipier
+void Drivetrain::turnDegrees(double degrees, double delayRatio){
+  double tickMultiplier = degrees / 360;
+  double ticksToMove = tickMultiplier * ticksGreen;
+
+  driveAllRelative(ticksToMove, -ticksToMove, 100, 100);
+
+  pros::delay(abs(ticksToMove*delayRatio));
+
+  if(degrees > 0){
+    driveAll(-12000, 12000);
+  } else {
+    driveAll(12000, -12000);
+  }
+  pros::delay(80);
+  driveAll(0,0);
+}
+
+//delayRatio is a divisor
+void Drivetrain::driveDistance(double inches, double delayRatio){
   double wheelCircumference = 4.25 * 3.14159;
   double tickMultiplier = inches / wheelCircumference;
   int ticksToMove = ticksGreen * tickMultiplier; //ticksgreen is the tiks per rev on 18:1 motor
 
-  // int startLeftT = driveLeftB.get_position();
-  // int startRightT = driveRightB.get_position();
-
   driveAllRelative(ticksToMove, ticksToMove, 150, 150);
 
-  pros::delay(ticksToMove/2);
+  pros::delay(ticksToMove / delayRatio);
 
-  driveAll(-12000, -12000);
+  if(inches > 0){
+    driveAll(-12000, -12000);
+  } else {
+    driveAll(12000, 12000);
+  }
   pros::delay(60);
   driveAll(0,0);
+}
 
-  // bool completed = false;
-  // while(!completed){
-  //   if((driveLeftB.get_position() == startLeftT + ticksToMove) &&
-  //      (driveRightB.get_position() == startRightT + ticksToMove)){
-  //     completed = true;
-  //   }
-  //
-  //   pros::delay(3);
-  // }
+//takes a sign either 1 or -1 only to determine the diretion. 1 is 45 to the right, -1 to the left
+void Drivetrain::turn45(int sign){
+  if(sign == 1){
+    turnDegrees(45, 3);
+  } else if(sign == -1){
+    turnDegrees(-45, 3);
+  }
+}
 
-  // int leftTicksRemaining = ticksToMove;
-  // int rightTicksRemaining = ticksToMove;
-  //
-  // int leftVelocity;
-  // int rightVelocity;
-  //
-  // bool completed = false;
-  // int startMillis = pros::millis();
-  // int currentMillis = startMillis;
-  // while(!completed){
-  //   leftVelocity = velocityBasedOnDistanceLeft(leftTicksRemaining);
-  //   rightVelocity = velocityBasedOnDistanceLeft(rightTicksRemaining);
-  //
-  //   driveLeftDistance(ticksToMove, leftVelocity);
-  //   driveRightDistance(ticksToMove, rightVelocity);
-  //
-  //   leftTicksRemaining = driveLeftB.get_target_position() - driveLeftB.get_position();
-  //   rightTicksRemaining = driveRightB.get_target_position() - driveRightB.get_position();
-  //
-  //   currentMillis = pros::millis();
-  //   if(currentMillis - startMillis > 3000){
-  //     completed = true;
-  //   }
-  //
-  //   pros::delay(2);
-  // }
-  // driveAll(0,0);
+//takes a sign either 1 or -1 only to determine the direction. -1 is 90 to the right, -1 to the left
+void Drivetrain::turn90(int sign){
+  if(sign == 1){
+    turnDegrees(90, 2);
+  } else if(sign == -1){
+    turnDegrees(-90, 2);
+  }
 }

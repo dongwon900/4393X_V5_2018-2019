@@ -5,25 +5,25 @@
 void autoRedFront1(){
   Robot& robot = Robot::instance();
 
-  robot.drivetrain.turnDegrees(45);
+  robot.drivetrain.turn90(1);
 }
 
 void autoRedBack1(){
   Robot& robot = Robot::instance();
 
-  robot.drivetrain.turnDegrees(-45);
+  robot.drivetrain.turn45(-1);
 }
 
 void autoBlueFront1(){
   Robot& robot = Robot::instance();
 
-  robot.drivetrain.driveDistance(6);
+  robot.drivetrain.driveDistance(6, 2);
 }
 
 void autoBlueBack1(){
   Robot& robot = Robot::instance();
 
-  robot.drivetrain.driveDistance(-6);
+  robot.drivetrain.driveDistance(-6, 2);
 }
 
 void autonomous() {

@@ -40,7 +40,7 @@ public:
   void adjustDistance(int lefTarget, int rightTarget);
   void autoaim();
   void update(float leftVoltage, float rightVoltage);
-  void turnDegrees(double degrees);
+  void turnDegrees(double degrees, double delayRatio);
   int velocityBasedOnDistanceLeft(int ticksRemaining);
   void driveLeftVelocity(int velocity);
   void driveRightVelocity(int velocity);
@@ -49,7 +49,9 @@ public:
   void driveRightRelative(int tickCount, int velocity);
   void driveAllRelative(int leftTickCount, int rightTickCount, int leftVelocity, int rightVelocity);
   void setBrakeMode(pros::motor_brake_mode_e_t mode);
-  void driveDistance(double inches);
+  void driveDistance(double inches, double delayRatio);
+  void turn45(int sign);
+  void turn90(int sign);
 };
 
 #endif

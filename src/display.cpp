@@ -2,8 +2,8 @@
 #include "robot.h"
 
 void Display::initialize(){
-  alliance = Alliance::none;
-  startingTile = StartingTile::neither;
+  alliance = Alliance::red;
+  startingTile = StartingTile::front;
 }
 
 Display::Display(){
@@ -75,7 +75,7 @@ void Display::chooseAuto(){
     printf("%s\n", "Alliance Selector");
     pros::delay(10);
   }
-  pros::delay(500);
+  pros::delay(750);
 
   while(!tileSelected){
     tileSelected = chooseTile();
