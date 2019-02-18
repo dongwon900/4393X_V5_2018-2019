@@ -98,11 +98,11 @@ std::vector<bool> Drivetrain::sonicDistanceAdjust(int leftDistance, int rightDis
 
 	//Equalization
 	if((leftSonic < rightSonic-15 && leftDistance > leftSonic) || (leftSonic < rightSonic-15 && leftDistance < leftSonic)){
-		driveRight(1800);
-	  driveLeft(-1800);
+		driveRight(2700);
+	  driveLeft(-2700);
 	} else if ((rightSonic < leftSonic-15 && rightDistance > rightSonic) || (rightSonic < leftSonic-15 && rightDistance < rightSonic)){
-		driveLeft(1800);
-		driveRight(-1800);
+		driveLeft(2700);
+		driveRight(-2700);
 	} else {
 		//left adjustment
 		if(leftDistance-10 < leftSonic && leftDistance+10 > leftSonic){
@@ -110,10 +110,10 @@ std::vector<bool> Drivetrain::sonicDistanceAdjust(int leftDistance, int rightDis
 			leftSet = true;
 		}
 		else if(leftDistance-10 > leftSonic){ //going forward (with respect ot the forklift being the front) means the 'speed' inputted must be negative
-			driveRight(1800);
+			driveRight(4000);
 		}
 		else if(leftDistance+10 < leftSonic){
-			driveRight(-1800);
+			driveRight(-4000);
 		}
 
 		//right adjustment
@@ -122,10 +122,10 @@ std::vector<bool> Drivetrain::sonicDistanceAdjust(int leftDistance, int rightDis
 			rightSet = true;
 		}
 		else if(rightDistance-10 > rightSonic){
-			driveLeft(1800);
+			driveLeft(4000);
 		}
 		else if(rightDistance+10 < rightSonic){
-			driveLeft(-1800);
+			driveLeft(-4000);
 		}
 	}
 
@@ -257,8 +257,8 @@ void Drivetrain::turn45(int sign){
 //takes a sign either 1 or -1 only to determine the direction. -1 is 90 to the right, -1 to the left
 void Drivetrain::turn90(int sign){
   if(sign == 1){
-    turnDegrees(90, 2);
+    turnDegrees(90, 2.05);
   } else if(sign == -1){
-    turnDegrees(-90, 2);
+    turnDegrees(-90, 2.05);
   }
 }

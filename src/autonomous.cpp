@@ -5,7 +5,7 @@
 void autoRedFront1(){
   Robot& robot = Robot::instance();
 
-  robot.drivetrain.turn90(1);
+  robot.drivetrain.turn45(1);
 }
 
 void autoRedBack1(){
