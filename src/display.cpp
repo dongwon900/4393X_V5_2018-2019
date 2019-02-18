@@ -2,8 +2,8 @@
 #include "robot.h"
 
 void Display::initialize(){
-  alliance = Alliance::red;
-  startingTile = StartingTile::back;
+  alliance = Alliance::none;
+  startingTile = StartingTile::neither;
 }
 
 Display::Display(){
@@ -75,17 +75,18 @@ void Display::chooseAuto(){
     printf("%s\n", "Alliance Selector");
     pros::delay(10);
   }
-  pros::lcd::clear();
-  pros::lcd::set_text(1, "The inbetween");
-  pros::delay(1000);
+  pros::delay(500);
+
   while(!tileSelected){
     tileSelected = chooseTile();
     printf("%s\n", "Tile Selector");
     pros::delay(10);
   }
+  pros::delay(500);
 
-  pros::lcd::clear();
-  printf("%s\n", "Cleared screen");
+  pros::lcd::set_text(3, " "); //clears the stuff from before ^
+  pros::lcd::set_text(4, " ");
+
   if(alliance == Alliance::red){
     pros::lcd::set_text(1, "Red Alliance");
     printf("%s\n", "Red Alliance");
@@ -93,6 +94,7 @@ void Display::chooseAuto(){
     pros::lcd::set_text(1, "Blue Alliance");
     printf("%s\n", "Blue Alliance");
   }
+
   if(startingTile == StartingTile::front){
     pros::lcd::set_text(2, "Front Tile");
     printf("%s\n", "Front Tile");
@@ -105,8 +107,6 @@ void Display::chooseAuto(){
 void Display::update(){
   displaySensorValuesOnBrain();
   displayDataOnController();
-
-  //printf("%s\n", "I am running");
 }
 
 Alliance Display::getAlliance(){

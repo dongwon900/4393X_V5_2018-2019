@@ -2,164 +2,61 @@
 #include "definitions.h"
 #include "robot.h"
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
-
 void autoRedFront1(){
   Robot& robot = Robot::instance();
-  robot.initialize();
 
+  robot.drivetrain.turnDegrees(45);
 }
 
 void autoRedBack1(){
   Robot& robot = Robot::instance();
-  robot.initialize();
 
-  //drive forward and hit the cap to the ground and then drive a portion of the distance back
-  robot.drivetrain.driveDistance(20);
-  pros::delay(2000);
-  robot.drivetrain.driveDistance(-10);
-  pros::delay(1000);
-
-  //turn to and backup to position behind alliance platform
-  robot.drivetrain.turnDegrees(45);
-  pros::delay(1000);
-  robot.drivetrain.driveDistance(-4);
-  pros::delay(1000);
   robot.drivetrain.turnDegrees(-45);
-  pros::delay(1000);
-
-  //backs up into the wall
-  robot.drivetrain.driveAll(-12000,-12000);
-  pros::delay(750);
-
-  //drive onto the alliance platform
-  robot.drivetrain.driveAll(12000,12000);
-  pros::delay(3000);
-
-  //stop the robot
-  robot.drivetrain.driveAll(0,0);
 }
 
 void autoBlueFront1(){
   Robot& robot = Robot::instance();
-  robot.initialize();
 
+  robot.drivetrain.driveDistance(6);
 }
 
 void autoBlueBack1(){
   Robot& robot = Robot::instance();
-  robot.initialize();
 
-  //drive forward and hit the cap to the ground and then drive a portion of the distance back
-  robot.drivetrain.driveDistance(20);
-  pros::delay(2000);
-  robot.drivetrain.driveDistance(-10);
-  pros::delay(1000);
-
-  //turn to and backup to position behind alliance platform
-  robot.drivetrain.turnDegrees(-45);
-  pros::delay(1000);
-  robot.drivetrain.driveDistance(-4);
-  pros::delay(1000);
-  robot.drivetrain.turnDegrees(45);
-  pros::delay(1000);
-
-  //backs up into the wall
-  robot.drivetrain.driveAll(-12000,-12000);
-  pros::delay(750);
-
-  //drive onto the alliance platform
-  robot.drivetrain.driveAll(12000,12000);
-  pros::delay(3000);
-
-  //stop the robot
-  robot.drivetrain.driveAll(0,0);
+  robot.drivetrain.driveDistance(-6);
 }
 
 void autonomous() {
  Robot& robot = Robot::instance();
- robot.initialize();
 
   Alliance alliance = robot.display.getAlliance();
   StartingTile startingTile = robot.display.getStartingTile();
 
+  printf("%i\n", (int)alliance);
+  printf("%i\n", (int)startingTile);
+
   switch((int)alliance){
-    case 0:
-      switch((int)startingTile){
-        case 0:
-          autoRedFront1();
-        case 1:
-          autoRedBack1();
-      }
     case 1:
       switch((int)startingTile){
-        case 0:
-          autoBlueFront1();
         case 1:
-          autoBlueBack1();
+          autoRedFront1();
+          break;
+        case 2:
+          autoRedBack1();
+          break;
       }
+      break;
+    case 2:
+      switch((int)startingTile){
+        case 1:
+          autoBlueFront1();
+          break;
+        case 2:
+          autoBlueBack1();
+          break;
+      }
+      break;
   }
 
-  // bool leftSide = false;
-  // int popSquat = (leftSide)? 9 : -9;
-  // int turn90 = (leftSide)? 90 : -90;
-  // int turn180 = (leftSide)? 180 : -180;
-  // int sideMod = (leftSide)? 1 : -1;
-
-
- //  robot.launcher.enableLauncher();
- //
- //
- // robot.launcher.launcherMotor.move_relative(450, 200);
- // robot.intake.intakeMotor.move_relative(3000, 200);
- //
- // // Left Front
- // // Forward
- // // Shoot high flag (+2)
- // robot.drivetrain.driveDistance(36);
- // robot.drivetrain.turnDegrees(popSquat);
- // robot.launcher.launcherMotor.move_relative(700, 200);
- // robot.drivetrain.turnDegrees(-popSquat);
- // robot.intake.intakeMotor.move_voltage(-12000);
- // // Forward into low flag (+1)
- // robot.drivetrain.driveAll(8000, 8000);
- // pros::Task::delay(700);
- // robot.intake.intakeMotor.move_voltage(0);
- //
- // // Back up
- // // Do 90 Turn to cap
- // // Square off on wall
- // // Move to cap
- // // Flip fork up
- // // Forward, hope it flips cap (+1)
- // robot.drivetrain.driveDistance(-30);
- // robot.drivetrain.turnWithGyro(-turn90);
- // robot.drivetrain.driveAll(8000, 8000);
- // pros::Task::delay(500);
- // robot.drivetrain.driveAll(0, 0);
- // robot.forklift.forkMotor.move_relative(2200, 200);
- // robot.lift.liftMotor.move_voltage(-5000);
- // robot.drivetrain.driveDistance(-18);
- // robot.lift.liftMotor.move_voltage(0);
- // robot.forklift.forkMotor.move_relative(2200, -200);
- // pros::Task::delay(100);
- // robot.drivetrain.driveDistance(-8);
- //
- // // Do 90
- // // Move to platform (+3)
- // robot.drivetrain.driveDistance(-8);
- // robot.drivetrain.turnWithGyro(sideMod*90);
- // robot.drivetrain.driveAll(-12000, -12000);
- // pros::Task::delay(2500);
- // robot.drivetrain.driveAll(0, 0);
+  robot.initialize();
 }

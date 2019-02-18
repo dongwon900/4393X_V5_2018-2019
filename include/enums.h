@@ -20,11 +20,13 @@ enum RobotActions{
 };
 
 enum Alliance{
+	none,
 	red,
 	blue,
 };
 
 enum StartingTile{
+	neither,
 	front,
 	back,
 };
