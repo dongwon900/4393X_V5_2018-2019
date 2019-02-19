@@ -31,6 +31,7 @@ public:
 	void updateLiftIndex();
   void updateLiftPosition();
   void update();
+  void updateAuto();
 };
 
 #endif

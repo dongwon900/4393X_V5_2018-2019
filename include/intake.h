@@ -26,6 +26,7 @@ public:
   bool limitChangedToToggled();
   void indexerMimic();
   void update();
+  void updateAuto();
 };
 
 #endif

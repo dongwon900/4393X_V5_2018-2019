@@ -36,4 +36,8 @@ const std::uint8_t YELLOW_SIG = 3;
 #define LIFT_LIMIT_PORT 7
 #define LIMIT_PORT 8
 
+// E_MOTOR_BRAKE_COAST = 0, // Motor coasts when stopped, traditional behavior
+// E_MOTOR_BRAKE_BRAKE = 1, // Motor brakes when stopped
+// E_MOTOR_BRAKE_HOLD  = 2; //Motor actively holds when stopped
+
 #endif

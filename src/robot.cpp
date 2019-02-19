@@ -8,7 +8,7 @@ void Robot::initialize(){
   launcher.initialize();
   intake.initialize();
   drivetrain.initialize();
-  display.initialize();
+  //display.initialize(); //should not reintilize because that would mean the selected alliance and startingTile would change
 }
 
 Robot::Robot(){

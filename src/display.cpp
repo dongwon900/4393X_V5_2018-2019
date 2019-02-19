@@ -72,14 +72,12 @@ void Display::chooseAuto(){
 
   while(!allianceSelected){
     allianceSelected = chooseAlliance();
-    printf("%s\n", "Alliance Selector");
     pros::delay(10);
   }
   pros::delay(750);
 
   while(!tileSelected){
     tileSelected = chooseTile();
-    printf("%s\n", "Tile Selector");
     pros::delay(10);
   }
   pros::delay(500);

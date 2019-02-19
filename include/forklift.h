@@ -14,7 +14,13 @@ public:
 	void initialize();
 	Forklift();
 	~Forklift();
+	void manualMovement();
 	void update();
+	void setBrakeMode(pros::motor_brake_mode_e_t mode);
+	void bringDown();
+	void moveUp(int ticks);
+	void moveDown(int ticks);
+	void updateAuto();
 };
 
 #endif

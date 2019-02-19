@@ -11,6 +11,10 @@ void Drivetrain::initialize(){
   driveLeftB.move_voltage(0);
   driveRightF.move_voltage(0);
   driveRightB.move_voltage(0);
+  performingMovement = false;
+  performingAutoFunction = false;
+  currentMillis = pros::millis();
+  targetMillis = pros::millis();
 }
 
 Drivetrain::Drivetrain()
@@ -202,20 +206,26 @@ int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
   double revolutionsRemaining = ticksRemaining / ticksGreen;
   double distanceRemaining = revolutionsRemaining * 4.25 * 3.14159;
   if (distanceRemaining <= 18.0) {
-    return (distanceRemaining/18.0) * 200.0;
+    if((distanceRemaining/18.0) * 200.0 > 20){
+      return (distanceRemaining/18.0) * 200.0;
+    } else {
+      return 20;
+    }
   } else {
     return 200.0;
   }
 }
 
+//returns the millis it takes to complete
 //delayRatio is a multipier
 void Drivetrain::turnDegrees(double degrees, double delayRatio){
   double tickMultiplier = degrees / 360;
   double ticksToMove = tickMultiplier * ticksGreen;
 
-  driveAllRelative(ticksToMove, -ticksToMove, 100, 100);
+  driveAllRelative(ticksToMove, -ticksToMove, 50, 50);
 
-  pros::delay(abs(ticksToMove*delayRatio));
+  double delay = abs((double)ticksToMove * delayRatio);
+  pros::delay((int)delay);
 
   if(degrees > 0){
     driveAll(-12000, 12000);
@@ -226,7 +236,9 @@ void Drivetrain::turnDegrees(double degrees, double delayRatio){
   driveAll(0,0);
 }
 
+//returns the millis it takes to complete
 //delayRatio is a divisor
+//common delayRatio vallues, 6 inches 1.8, 12 inches 2.15
 void Drivetrain::driveDistance(double inches, double delayRatio){
   double wheelCircumference = 4.25 * 3.14159;
   double tickMultiplier = inches / wheelCircumference;
@@ -234,31 +246,47 @@ void Drivetrain::driveDistance(double inches, double delayRatio){
 
   driveAllRelative(ticksToMove, ticksToMove, 150, 150);
 
-  pros::delay(ticksToMove / delayRatio);
+  double delay = abs((double)ticksToMove / delayRatio);
+  pros::delay((int)delay);
 
   if(inches > 0){
     driveAll(-12000, -12000);
   } else {
     driveAll(12000, 12000);
   }
-  pros::delay(60);
+  pros::delay(85);
   driveAll(0,0);
+}
+
+//using 1.33 + 0.289 ln x to determine the delayRatio, this was found through compliling the experimental values and fitting a trendline
+void Drivetrain::driveDistance(double inches){
+  double delayRatio = 1.33 + 0.289 * log(abs(inches));
+  driveDistance(inches, delayRatio);
 }
 
 //takes a sign either 1 or -1 only to determine the diretion. 1 is 45 to the right, -1 to the left
 void Drivetrain::turn45(int sign){
   if(sign == 1){
-    turnDegrees(45, 3);
+    turnDegrees(45, 3.2);
   } else if(sign == -1){
-    turnDegrees(-45, 3);
+    turnDegrees(-45, 3.2);
   }
 }
 
-//takes a sign either 1 or -1 only to determine the direction. -1 is 90 to the right, -1 to the left
+//takes a sign either 1 or -1 only to determine the direction. 1 is 90 to the right, -1 to the left
 void Drivetrain::turn90(int sign){
   if(sign == 1){
-    turnDegrees(90, 2.05);
+    turnDegrees(90, 3);
   } else if(sign == -1){
-    turnDegrees(-90, 2.05);
+    turnDegrees(-90, 3);
+  }
+}
+
+//takes a sign either 1 or -1 only to determine the direction. 1 is 180 to the right, -1 to the left
+void Drivetrain::turn180(int sign){
+  if(sign == 1){
+    turnDegrees(180, 2.65);
+  } else {
+    turnDegrees(-180, 2.65);
   }
 }

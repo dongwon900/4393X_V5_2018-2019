@@ -5,25 +5,99 @@
 void autoRedFront1(){
   Robot& robot = Robot::instance();
 
-  robot.drivetrain.turn45(1);
+
 }
 
 void autoRedBack1(){
   Robot& robot = Robot::instance();
-
-  robot.drivetrain.turn45(-1);
+  robot.forklift.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  robot.forklift.bringDown();
+  robot.drivetrain.driveDistance(-36); //drives to the blue tilted cap
+  robot.forklift.moveUp(1500);
+  robot.drivetrain.driveDistance(-12);
+  robot.drivetrain.turn90(1);
+  robot.drivetrain.driveDistance(12);
+  robot.drivetrain.driveDistance(-16);
+  robot.drivetrain.turn90(1);
+  robot.drivetrain.driveDistance(-36);
+  robot.lift.raiseLiftIndex();
+  robot.lift.raiseLiftIndex();
+  robot.lift.liftSet = false;
+  while(robot.lift.liftSet == false){
+    robot.lift.update();
+    pros::delay(5);
+  }
+  robot.forklift.moveDown(1300);
+  robot.drivetrain.adjustDistance(200, 200);
+  robot.lift.lowerLiftIndex();
+  robot.lift.liftSet = false;
+  while(robot.lift.liftSet == false){
+    robot.lift.update();
+    pros::delay(5);
+  }
+  robot.drivetrain.driveDistance(12);
+  robot.lift.lowerLiftIndex();
+  robot.lift.liftSet = false;
+  while(robot.lift.liftSet == false){
+    robot.lift.update();
+    pros::delay(5);
+  }
+  robot.drivetrain.turn90(-1);
+  robot.drivetrain.driveDistance(-12);
+  robot.drivetrain.turn90(-1);
+  robot.drivetrain.driveDistance(14);
+  robot.drivetrain.driveDistance(-30);
+  robot.forklift.moveUp(2500);
+  pros::delay(50);
+  robot.drivetrain.driveDistance(-12);
 }
 
 void autoBlueFront1(){
   Robot& robot = Robot::instance();
-
-  robot.drivetrain.driveDistance(6, 2);
 }
 
 void autoBlueBack1(){
   Robot& robot = Robot::instance();
-
-  robot.drivetrain.driveDistance(-6, 2);
+  robot.forklift.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  robot.forklift.bringDown();
+  robot.drivetrain.driveDistance(-36); //drives to the blue tilted cap
+  robot.forklift.moveUp(1500);
+  robot.drivetrain.driveDistance(-12);
+  robot.drivetrain.turn90(-1);
+  robot.drivetrain.driveDistance(12);
+  robot.drivetrain.driveDistance(-16);
+  robot.drivetrain.turn90(-1);
+  robot.drivetrain.driveDistance(-36);
+  robot.lift.raiseLiftIndex();
+  robot.lift.raiseLiftIndex();
+  robot.lift.liftSet = false;
+  while(robot.lift.liftSet == false){
+    robot.lift.update();
+    pros::delay(5);
+  }
+  robot.forklift.moveDown(1300);
+  robot.drivetrain.adjustDistance(200, 200);
+  robot.lift.lowerLiftIndex();
+  robot.lift.liftSet = false;
+  while(robot.lift.liftSet == false){
+    robot.lift.update();
+    pros::delay(5);
+  }
+  robot.drivetrain.driveDistance(12);
+  robot.lift.lowerLiftIndex();
+  robot.lift.liftSet = false;
+  while(robot.lift.liftSet == false){
+    robot.lift.update();
+    pros::delay(5);
+  }
+  robot.drivetrain.turn90(1);
+  robot.drivetrain.driveDistance(-12);
+  robot.drivetrain.turn90(1);
+  robot.drivetrain.driveDistance(14);
+  robot.drivetrain.driveDistance(-30);
+  robot.forklift.moveUp(2500);
+  pros::delay(50);
+  robot.drivetrain.driveDistance(-12);
 }
 
 void autonomous() {
@@ -31,9 +105,6 @@ void autonomous() {
 
   Alliance alliance = robot.display.getAlliance();
   StartingTile startingTile = robot.display.getStartingTile();
-
-  printf("%i\n", (int)alliance);
-  printf("%i\n", (int)startingTile);
 
   switch((int)alliance){
     case 1:
@@ -57,6 +128,7 @@ void autonomous() {
       }
       break;
   }
-
-  robot.initialize();
+  for(unsigned int i = 0; i < 5; i++){ //helps to settle the robot after autonomous
+    pros::delay(50);
+  }
 }

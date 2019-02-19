@@ -25,10 +25,17 @@ public:
   const int ticksGreen = 900;
   const int ticksBlue = 300;
   double wheelDiameter = 4.25;
+  //fields relating to autonomous
+  bool performingAutoFunction;
+  bool performingMovement;
+  int currentMillis;
+  int targetMillis;
 public:
+  //constructor, destructor
   void initialize();
   Drivetrain();
   ~Drivetrain();
+  //methods relating to opcontrol
   void updateSonics();
   void driveLeft(int voltage);
 	void driveRight(int voltage);
@@ -40,7 +47,7 @@ public:
   void adjustDistance(int lefTarget, int rightTarget);
   void autoaim();
   void update(float leftVoltage, float rightVoltage);
-  void turnDegrees(double degrees, double delayRatio);
+  //methods relating to autonomous
   int velocityBasedOnDistanceLeft(int ticksRemaining);
   void driveLeftVelocity(int velocity);
   void driveRightVelocity(int velocity);
@@ -49,9 +56,14 @@ public:
   void driveRightRelative(int tickCount, int velocity);
   void driveAllRelative(int leftTickCount, int rightTickCount, int leftVelocity, int rightVelocity);
   void setBrakeMode(pros::motor_brake_mode_e_t mode);
+  void turnDegrees(double degrees, double delayRatio);
   void driveDistance(double inches, double delayRatio);
+  void driveDistance(double inches);
   void turn45(int sign);
   void turn90(int sign);
+  void turn180(int sign);
+  void asyncMovementSequencer();
+  void updateAuto();
 };
 
 #endif
