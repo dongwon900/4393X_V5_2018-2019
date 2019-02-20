@@ -86,8 +86,9 @@ controllerButtonState SmartController::buttonStateFromButtonIndex(int buttonInde
 
 controllerButtonState SmartController::evaluateButton(int buttonIndex){
   if(buttonStateFromButtonIndex(buttonIndex) == controllerButtonState::isPressed){
-    if(isButtonChangedToPressed[buttonIndex] == false){
+    if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttonIndex] == false){
       isButtonChangedToPressed[buttonIndex] = true;
+      isButtonPressed[buttonIndex] = true;
       return controllerButtonState::changedToPressed;
     } else {
       isButtonChangedToPressed[buttonIndex] = false;

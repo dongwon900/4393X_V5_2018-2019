@@ -126,6 +126,14 @@ void Lift::updateLiftPosition(){
 
 void Lift::update(){
   updateController();
+
+  if(smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::changedToPressed)){
+    printf("%s\n", "up changed to pressed");
+  }
+  if(smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::changedToPressed)){
+    printf("%s\n", "down changed to pressed");
+  }
+
   updatePot();
 	updateLiftIndex();
 	updateLiftPosition();

@@ -18,6 +18,7 @@ void Intake::updateController(){
 
 void Intake::toggleIntake() {
 	if(smartController.isButtonState(controllerButtonNames::B, controllerButtonState::changedToPressed)) {
+    printf("%s\n", intakeOn);
 		if(intakeOn) {
 			intakeOn = false;
 		} else {
@@ -25,7 +26,7 @@ void Intake::toggleIntake() {
 		}
 	}
 }
-  
+
 void Intake::intakeManualControl(){
 	if (smartController.isButtonState(controllerButtonNames::B, controllerButtonState::isPressed)){
 		intakeMotor.move_voltage(-12000*intakeDirection);
