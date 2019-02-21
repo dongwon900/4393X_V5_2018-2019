@@ -5,11 +5,12 @@
 void autoRedFront1(){
   Robot& robot = Robot::instance();
 
-
+  robot.drivetrain.driveDistance(40);
 }
 
 void autoRedBack1(){
   Robot& robot = Robot::instance();
+
   robot.forklift.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   robot.forklift.bringDown();
   robot.drivetrain.driveDistance(-36); //drives to the blue tilted cap
@@ -54,10 +55,13 @@ void autoRedBack1(){
 
 void autoBlueFront1(){
   Robot& robot = Robot::instance();
+
+  robot.drivetrain.driveDistance(40);
 }
 
 void autoBlueBack1(){
   Robot& robot = Robot::instance();
+
   robot.forklift.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   robot.forklift.bringDown();
   robot.drivetrain.driveDistance(-36); //drives to the blue tilted cap
