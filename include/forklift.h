@@ -16,6 +16,7 @@ public:
 	~Forklift();
 	void manualMovement();
 	void update();
+	void moveVelocity(int velocity);
 	void setBrakeMode(pros::motor_brake_mode_e_t mode);
 	void bringDown();
 	void moveUp(int ticks);
