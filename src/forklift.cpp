@@ -30,6 +30,10 @@ void Forklift::update(){
 	manualMovement();
 }
 
+void Forklift::moveVelocity(int velocity){
+	forkMotor.move_velocity(velocity);
+}
+
 void Forklift::setBrakeMode(pros::motor_brake_mode_e_t mode){
 	forkMotor.set_brake_mode(mode);
 }
