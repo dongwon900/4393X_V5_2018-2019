@@ -220,9 +220,9 @@ int Drivetrain::velocityBasedOnDistanceLeft(int ticksRemaining){
 //delayRatio is a multipier
 void Drivetrain::turnDegrees(double degrees, double delayRatio){
   double tickMultiplier = degrees / 360;
-  double ticksToMove = tickMultiplier * ticksGreen;
+  double ticksToMove = tickMultiplier * ticksGreen * 1.5;
 
-  driveAllRelative(ticksToMove, -ticksToMove, 50, 50);
+  driveAllRelative(ticksToMove, -ticksToMove, 200, 200);
 
   double delay = abs((double)ticksToMove * delayRatio);
   pros::delay((int)delay);
@@ -232,7 +232,7 @@ void Drivetrain::turnDegrees(double degrees, double delayRatio){
   } else {
     driveAll(12000, -12000);
   }
-  pros::delay(80);
+  pros::delay(30);
   driveAll(0,0);
 }
 
@@ -256,12 +256,19 @@ void Drivetrain::driveDistance(double inches, double delayRatio){
   }
   pros::delay(85);
   driveAll(0,0);
+  pros::delay(20);
 }
 
 //using 1.33 + 0.289 ln x to determine the delayRatio, this was found through compliling the experimental values and fitting a trendline
 void Drivetrain::driveDistance(double inches){
   double delayRatio = 1.33 + 0.289 * log(abs(inches));
   driveDistance(inches, delayRatio);
+}
+
+//using 4.74 - 0.397 ln (degrees) to determine the delayRatio, this was found by fitting a curve
+void Drivetrain::turnDegrees(double degrees){
+  double delayRatio = 4.74 - 0.397 * log(abs(degrees));
+  turnDegrees(degrees, delayRatio);
 }
 
 //takes a sign either 1 or -1 only to determine the diretion. 1 is 45 to the right, -1 to the left

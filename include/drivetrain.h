@@ -58,6 +58,7 @@ public:
   void turnDegrees(double degrees, double delayRatio);
   void driveDistance(double inches, double delayRatio);
   void driveDistance(double inches);
+  void turnDegrees(double degrees);
   void turn45(int sign);
   void turn90(int sign);
   void turn180(int sign);
