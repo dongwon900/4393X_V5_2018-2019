@@ -1,3 +1,6 @@
+#ifndef _EYES_H_
+#define _EYES_H_
+
 #include "main.h"
 #include "definitions.h"
 #include <vector>
@@ -23,3 +26,5 @@ public:
   pros::vision_color_code_t redflag;
   pros::vision_color_code_t blueflag;
 };
+
+#endif

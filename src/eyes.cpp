@@ -41,7 +41,7 @@ void Eyes::autoaim(){
   Robot& robot = Robot::instance();
 
   // alliance color
-  Alliance alliance = robot.display.getAlliance();
+  Alliance alliance = red;
 
   // aiming bias. + is right, - is left
   // this allows you to aim slightly right or left
@@ -49,6 +49,8 @@ void Eyes::autoaim(){
 
   // the object x coordinate
   int x_coord;
+
+  pros::vision_object_s_t object;
 
   // check for errors
   // check for biggest object in the color code of alliance
@@ -60,6 +62,8 @@ void Eyes::autoaim(){
     pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, blueflag);
     x_coord = object.left_coord + (object.width/2);
   }
+  pros::c::lcd_print(0, "object leftcoord, alliance: %d", object.left_coord, alliance);
+  pros::c::lcd_print(7, "x coordinates: %d", x_coord);
 
   // while center coord is not within range of 5px from 0,
   while(!((x_coord <= 5) && (x_coord >= -5))){
@@ -80,19 +84,21 @@ void Eyes::autoaim(){
       x_coord = object.left_coord + (object.width/2);
     }
 
+    pros::c::lcd_print(0, "object leftcoord, alliance: %d", object.left_coord, alliance);
+    pros::c::lcd_print(7, "x coordinates: %d", x_coord);
+
     // move according to x_coord
     // if x position > 0, set motors to move left
     if(x_coord>0){
-      robot.drivetrain.driveLeft(-2000);
-      robot.drivetrain.driveRight(2000);
+      robot.drivetrain.driveAll(-3000,3000);
     }
     // elif x position > 0, set motors to move left
     else if(x_coord<0){
-      robot.drivetrain.driveLeft(2000);
-      robot.drivetrain.driveRight(-2000);
+      robot.drivetrain.driveAll(3000,-3000);
     }
 
     pros::delay(20);
+    robot.drivetrain.driveAll(0,0);
     // shoot - implement that later
   }
   // robot in position now

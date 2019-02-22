@@ -43,6 +43,8 @@ public:
 	//includes the display functionality, autonomous and auto distance
 	void update();
 
+	Alliance alliance;
+
 	static Robot& instance();
 };
 

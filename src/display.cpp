@@ -2,8 +2,8 @@
 #include "robot.h"
 
 void Display::initialize(){
-  alliance = Alliance::red;
-  startingTile = StartingTile::front;
+  alliance = Alliance::none;
+  startingTile = StartingTile::neither;
 }
 
 Display::Display(){
