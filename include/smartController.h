@@ -14,6 +14,7 @@ extern okapi::ControllerButton driveReverseButton;
 extern okapi::ControllerButton toggleMaxSpeedButton;
 extern okapi::ControllerButton toggleIntakeButton;
 extern okapi::ControllerButton autoDistanceButton2;
+extern okapi::ControllerButton autoaimButton;
 
 class SmartController{
 private:

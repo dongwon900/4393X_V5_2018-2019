@@ -67,6 +67,7 @@ void autoBlueBack1(){
 
   robot.forklift.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   robot.forklift.moveVelocity(-200);
+  robot.forklift.moveVelocity(0); // stops the fork from fucking itself
   pros::delay(2300);
   robot.drivetrain.driveDistance(-36); //drives to the blue tilted cap
   robot.forklift.moveVelocity(200); //raises the fork to pickup the cap

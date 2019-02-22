@@ -2,31 +2,24 @@
 #include "definitions.h"
 #include <vector>
 
-extern Vision visionSensor1;
-// vision sensor on the midsection
-extern Vision visionSensor2;
+// prints a signautre's parameters to the terminal
+void print_sig(
+  int32_t id, int32_t u_min, int32_t u_max,
+  int32_t u_mean, int32_t v_min, int32_t v_max,
+  int32_t v_mean, float range, int32_t type);
 
-class eyes{
-private:
-  pros::vision_object_s_t closest_ball;
-  pros::vision_object_s_t closest_cap;
+class Eyes{
 public:
-  eyes();
-
-  // finds nearest ball and returns the lateral location
-  std::vector<int16_t> find_nearest_ball();
-
-  // finds nearest cap and returns the lateral location
-  std::vector<int16_t> find_nearest_cap();
-
-  // finds nearest ball and returns the lateral location
-  std::vector<std::vector<int16_t>> findflags(uint32_t signature);
-
-  std::string return_cap_color();
-
-  // updates the vision object fields
-  void update_visionobjects(pros::vision_object_s_t closest_ball, pros::vision_object_s_t closest_cap);
-  // gets the vision object fields
-  void get_visionobjects();
-
+  // vision sensor on the lift upper arm
+  Vision aiming_vision_sensor;
+  // vision sensor for the flags
+  Vision pole_vision_sensor;
+  Eyes();
+  void initialize();
+  void autoaim();
+  void align_with_pole();
+  void update();
+  void call_autoaim();
+  pros::vision_color_code_t redflag;
+  pros::vision_color_code_t blueflag;
 };

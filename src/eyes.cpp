@@ -2,67 +2,106 @@
 #include "main.h"
 #include "robot.h"
 
-// vision sensor on the lift upper arm
-Vision visionSensor1(VISION_1, pros::E_VISION_ZERO_CENTER);
-// vision sensor on the midsection
-Vision visionSensor2(VISION_2, pros::E_VISION_ZERO_CENTER);
+// prints the signature to the terminal
+void print_sig(pros::vision_signature_s_t signature){
+    printf("(%d,%d,%d,%d,%d,%d,%d,%f,%d)",
+    signature.id, signature.u_min, signature.u_max,
+    signature.u_mean, signature.v_min, signature.v_max,
+    signature.v_mean, signature.range, signature.type);
+}
 
-Vision visionSensor3(VISION_3, pros::E_VISION_ZERO_CENTER);
-Vision visionSensor4(VISION_4, pros::E_VISION_ZERO_CENTER);
+void Eyes::initialize(){
+  // turn off wifi
+  aiming_vision_sensor.set_wifi_mode(0);
+  pole_vision_sensor.set_wifi_mode(0);
 
-eyes::eyes(){
+  // load signatures
+  // aiming_vision_sensor.set_signature(const std::uint8_t signature_id, vision_signature_s_t *const signature_ptr);
+  // ground_vision_sensor.set_signature(const std::uint8_t signature_id, vision_signature_s_t *const signature_ptr);
 
+  // create color codes
+  redflag = aiming_vision_sensor.create_color_code(1,3);
+  blueflag = aiming_vision_sensor.create_color_code(2,3);
 };
 
-std::vector<int16_t> eyes::find_nearest_ball(){
-  // gets the biggest ball in front
-  pros::vision_object_s_t ball = visionSensor2.get_by_sig(0,3);
-  std::vector<int16_t> location_vector = {ball.x_middle_coord, ball.y_middle_coord};
-  return location_vector;
+Eyes::Eyes()
+:aiming_vision_sensor(AIMING_VISION_SENSOR, pros::E_VISION_ZERO_CENTER),
+pole_vision_sensor(POLE_VISION_SENSOR, pros::E_VISION_ZERO_CENTER) {
+  initialize();
 };
 
-std::vector<int16_t> eyes::find_nearest_cap(){
-  // gets the biggest cap in front
-  pros::vision_object_s_t cap = visionSensor2.get_by_size(0);
-  std::vector<int16_t> location_vector;
-
-  // if cap is red
-  if(cap.signature == RED_SIG){
-    location_vector = {cap.x_middle_coord, cap.y_middle_coord, RED_SIG};
+void Eyes::call_autoaim(){
+  if(autoaimButton.changedToPressed()){
+    autoaim();
   }
-  // if cap is blue
-  else if(cap.signature == BLUE_SIG){
-    location_vector = {cap.x_middle_coord, cap.y_middle_coord, BLUE_SIG};
+}
+
+// aligns the x position for now
+void Eyes::autoaim(){
+  Robot& robot = Robot::instance();
+
+  // alliance color
+  Alliance alliance = robot.display.getAlliance();
+
+  // aiming bias. + is right, - is left
+  // this allows you to aim slightly right or left
+  int bias = 0;
+
+  // the object x coordinate
+  int x_coord;
+
+  // check for errors
+  // check for biggest object in the color code of alliance
+  if(alliance == red){
+    pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, redflag);
+    x_coord = object.left_coord + (object.width/2);
   }
-  return location_vector;
+  else if(alliance == blue){
+    pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, blueflag);
+    x_coord = object.left_coord + (object.width/2);
+  }
+
+  // while center coord is not within range of 5px from 0,
+  while(!((x_coord <= 5) && (x_coord >= -5))){
+
+    // controller interrupt handler
+    if(!robot.drivetrain.inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::leftY)) ||
+				!robot.drivetrain.inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::rightY))){
+          break;
+        }
+
+    // redefine object, in case it disappears or changes
+    if(alliance == red){
+      pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, redflag);
+      x_coord = object.left_coord + (object.width/2);
+    }
+    else if(alliance == blue){
+      pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, blueflag);
+      x_coord = object.left_coord + (object.width/2);
+    }
+
+    // move according to x_coord
+    // if x position > 0, set motors to move left
+    if(x_coord>0){
+      robot.drivetrain.driveLeft(-2000);
+      robot.drivetrain.driveRight(2000);
+    }
+    // elif x position > 0, set motors to move left
+    else if(x_coord<0){
+      robot.drivetrain.driveLeft(2000);
+      robot.drivetrain.driveRight(-2000);
+    }
+
+    pros::delay(20);
+    // shoot - implement that later
+  }
+  // robot in position now
 };
 
-std::string eyes::return_cap_color(){
-  std::string color;
-  if(find_nearest_cap()[2] == RED_SIG){
-    color = "RED";
-  }
-  // if cap is blue
-  else if(find_nearest_cap()[2] == BLUE_SIG){
-    color = "BLUE";
-  }
-  return color;
+void Eyes::align_with_pole(){
+  Robot& robot = Robot::instance();
 };
 
-// std::vector<std::vector<int16_t>> findflags(uint32_t signature){
-//
-//   pros::vision_object_s_t flag1 = visionSensor1.get_by_sig(0, signature);
-//   pros::vision_object_s_t flag2 = visionSensor1.get_by_sig(1, signature);
-//   pros::vision_object_s_t flag3 = visionSensor1.get_by_sig(2, signature);
-//   std::vector<int16_t> location_vector = {flag1.x_middle_coord, flag1.y_middle_coord};
-//   return location_vector;
-// };
-
-
-void update_visionobjects(pros::vision_object_s_t closest_ball, pros::vision_object_s_t closest_cap){
-
-};
-
-void get_visionobjects(){
-
+void Eyes::update(){
+  call_autoaim();
 };

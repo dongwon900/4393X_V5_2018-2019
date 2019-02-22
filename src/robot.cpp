@@ -8,6 +8,7 @@ void Robot::initialize(){
   launcher.initialize();
   intake.initialize();
   drivetrain.initialize();
+  eyes.initialize();
   //display.initialize(); //should not reintilize because that would mean the selected alliance and startingTile would change
 }
 
@@ -35,6 +36,7 @@ void Robot::manualControl(float leftJoy, float rightJoy){
 	launcher.update();
 	intake.update();
   drivetrain.update(leftAnalogDrive, rightAnalogDrive);
+  eyes.update();
 }
 
 //The function that does everything. Run this one function in the opcontrol

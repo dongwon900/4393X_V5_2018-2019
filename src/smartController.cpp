@@ -16,3 +16,4 @@ okapi::ControllerButton driveReverseButton(ControllerDigital::X);
 okapi::ControllerButton toggleMaxSpeedButton(ControllerDigital::up);
 okapi::ControllerButton toggleIntakeButton(ControllerDigital::B);
 okapi::ControllerButton autoDistanceButton2(ControllerDigital::Y);
+okapi::ControllerButton autoaimButton(ControllerDigital::left);

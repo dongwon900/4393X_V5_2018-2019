@@ -10,6 +10,7 @@
 #include "launcher.h"
 #include "lift.h"
 #include "display.h"
+#include "eyes.h"
 #include "smartController.h"
 
 class Robot{
@@ -25,6 +26,7 @@ public:
 	Intake intake;
 	Drivetrain drivetrain;
 	Display display;
+	Eyes eyes;
 public:
 	//Constructors
 	~Robot();

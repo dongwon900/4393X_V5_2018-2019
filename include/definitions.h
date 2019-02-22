@@ -16,10 +16,8 @@ const std::uint8_t  LIFT_MOTOR = 10;
 const std::uint8_t  LAUNCH_MOTOR = 8;
 
 //Vision sensor definitions
-const std::uint8_t VISION_1  = 11;
-const std::uint8_t VISION_2  = 12;
-const std::uint8_t VISION_3  = 13;
-const std::uint8_t VISION_4 = 14;
+const std::uint8_t AIMING_VISION_SENSOR  = 11;
+const std::uint8_t POLE_VISION_SENSOR  = 12;
 
 const std::uint8_t RED_SIG  = 0;
 const std::uint8_t BLUE_SIG  = 1;

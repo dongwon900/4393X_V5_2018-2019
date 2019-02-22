@@ -45,7 +45,6 @@ public:
   bool inRange(float low, float high, float x);
   std::vector<bool> sonicDistanceAdjust(int leftDistance, int rightDistance);
   void adjustDistance(int lefTarget, int rightTarget);
-  void autoaim();
   void update(float leftVoltage, float rightVoltage);
   //methods relating to autonomous
   int velocityBasedOnDistanceLeft(int ticksRemaining);
