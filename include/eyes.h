@@ -23,6 +23,11 @@ public:
   void align_with_pole();
   void update();
   void call_autoaim();
+
+  pros::vision_signature_s_t red_sig;
+  pros::vision_signature_s_t blue_sig;
+  pros::vision_signature_s_t green_sig;
+
   pros::vision_color_code_t redflag;
   pros::vision_color_code_t blueflag;
 };

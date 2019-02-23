@@ -40,6 +40,12 @@ void autoRedFront1(){
   }
   robot.drivetrain.turnDegrees(-100);
   robot.drivetrain.driveDistance(40);
+  robot.drivetrain.driveDistance(-24);
+  robot.drivetrain.turnDegrees(90);
+  robot.drivetrain.driveDistance(20);
+  robot.forklift.moveVelocity(200);
+  robot.drivetrain.driveDistance(20);
+  robot.forklift.moveVelocity(0);
 }
 
 void autoRedBack1(){
@@ -49,7 +55,10 @@ void autoRedBack1(){
   robot.forklift.moveVelocity(-200);
   pros::delay(2200);
   robot.forklift.moveVelocity(0);
-  robot.drivetrain.driveDistance(-42); //drives to the blue tilted cap
+
+  robot.drivetrain.driveDistance(-36); //drives to the blue tilted cap
+  robot.drivetrain.driveDistance(-8);
+
   pros::delay(250);
   robot.forklift.moveVelocity(200); //raises the fork to pickup the cap
   pros::delay(750); //waits for this action to complete
@@ -136,6 +145,12 @@ void autoBlueFront1(){
   }
   robot.drivetrain.turnDegrees(100);
   robot.drivetrain.driveDistance(40);
+  robot.drivetrain.driveDistance(-24);
+  robot.drivetrain.turnDegrees(-90);
+  robot.drivetrain.driveDistance(20);
+  robot.forklift.moveVelocity(200);
+  robot.drivetrain.driveDistance(20);
+  robot.forklift.moveVelocity(0);
 }
 
 void autoBlueBack1(){
@@ -145,7 +160,8 @@ void autoBlueBack1(){
   robot.forklift.moveVelocity(-200);
   pros::delay(2200);
   robot.forklift.moveVelocity(0);
-  robot.drivetrain.driveDistance(-42); //drives to the blue tilted cap
+  robot.drivetrain.driveDistance(-36);
+  robot.drivetrain.driveDistance(-8); //drives to the blue tilted cap
   pros::delay(250);
   robot.forklift.moveVelocity(200); //raises the fork to pickup the cap
   pros::delay(750); //waits for this action to complete
@@ -195,7 +211,7 @@ void autoBlueBack1(){
 }
 
 void autonomous() {
- Robot& robot = Robot::instance();
+  Robot& robot = Robot::instance();
 
   Alliance alliance = robot.display.getAlliance();
   StartingTile startingTile = robot.display.getStartingTile();
@@ -222,6 +238,7 @@ void autonomous() {
       }
       break;
   }
+
   for(unsigned int i = 0; i < 5; i++){ //helps to settle the robot after autonomous
     pros::delay(50);
   }

@@ -10,6 +10,8 @@ void print_sig(pros::vision_signature_s_t signature){
     signature.v_mean, signature.range, signature.type);
 }
 
+
+
 void Eyes::initialize(){
   // turn off wifi
   aiming_vision_sensor.set_wifi_mode(0);
@@ -18,6 +20,12 @@ void Eyes::initialize(){
   // load signatures
   // aiming_vision_sensor.set_signature(const std::uint8_t signature_id, vision_signature_s_t *const signature_ptr);
   // ground_vision_sensor.set_signature(const std::uint8_t signature_id, vision_signature_s_t *const signature_ptr);
+
+  aiming_vision_sensor.set_exposure(19);
+
+  red_sig = aiming_vision_sensor.signature_from_utility(1, 7811, 8475, 8143, -347, 187, -80, 11.000, 1);
+  blue_sig = aiming_vision_sensor.signature_from_utility(2, -3369, -2545, -2958, 10127, 11227, 10676, 8.300, 1);
+  green_sig = aiming_vision_sensor.signature_from_utility(3, -2427, -2009, -2218, -3959, -3489, -3724, 6.800, 1);
 
   // create color codes
   redflag = aiming_vision_sensor.create_color_code(1,3);
@@ -41,27 +49,17 @@ void Eyes::autoaim(){
   Robot& robot = Robot::instance();
 
   // alliance color
-  Alliance alliance = red;
+  Alliance alliance = robot.display.getAlliance();
 
   // aiming bias. + is right, - is left
   // this allows you to aim slightly right or left
-  int bias = 0;
+  int bias = 3;
 
   // the object x coordinate
-  int x_coord;
+  int x_coord = 10;
 
   pros::vision_object_s_t object;
 
-  // check for errors
-  // check for biggest object in the color code of alliance
-  if(alliance == red){
-    pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, redflag);
-    x_coord = object.left_coord + (object.width/2);
-  }
-  else if(alliance == blue){
-    pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, blueflag);
-    x_coord = object.left_coord + (object.width/2);
-  }
   pros::c::lcd_print(0, "object leftcoord, alliance: %d", object.left_coord, alliance);
   pros::c::lcd_print(7, "x coordinates: %d", x_coord);
 
@@ -70,9 +68,9 @@ void Eyes::autoaim(){
 
     // controller interrupt handler
     if(!robot.drivetrain.inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::leftY)) ||
-				!robot.drivetrain.inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::rightY))){
-          break;
-        }
+			 !robot.drivetrain.inRange(-0.1, 0.1, controller.getAnalog(ControllerAnalog::rightY))){
+      break;
+    }
 
     // redefine object, in case it disappears or changes
     if(alliance == red){
