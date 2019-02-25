@@ -63,20 +63,7 @@ public:
 
   static SmartController& instance();
 
-  void operator=(const SmartController& controller){
-    this->leftY = controller.leftY;
-    this->leftX = controller.leftX;
-    this->rightY = controller.rightY;
-    this->rightX = controller.rightX;
-    this->buttonStates = controller.buttonStates;
-    this->startMillis = controller.startMillis;
-    this->currentMillis = controller.currentMillis;
-    this->parsedData = controller.parsedData;
-    this->timestampDiff = controller.timestampDiff;
-    this->isRecording = controller.isRecording;
-    this->isButtonChangedToPressed = controller.isButtonChangedToPressed;
-    this->isButtonPressed = controller.isButtonPressed;
-  }
+  void operator=(const SmartController& controller);
 };
 
 #endif
