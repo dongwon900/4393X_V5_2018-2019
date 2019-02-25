@@ -14,9 +14,9 @@ void autoRedFront1(){
   pros::delay(550); //waits for this action to complete
   robot.forklift.moveVelocity(0); //stops the forklift motor
   robot.drivetrain.driveDistance(46);
-  robot.drivetrain.driveDistance(-10);
+  robot.drivetrain.driveDistance(-20);
   robot.drivetrain.turnDegrees(-90);
-  robot.drivetrain.driveDistance(14);
+  robot.drivetrain.driveDistance(11);
   robot.drivetrain.turnDegrees(-90);
   robot.lift.raiseLiftIndex();
   robot.lift.raiseLiftIndex();
@@ -25,7 +25,10 @@ void autoRedFront1(){
     robot.lift.update();
     pros::delay(5);
   }
+  robot.forklift.moveVelocity(-100);
+  pros::delay(1100);
   robot.drivetrain.adjustDistance(200, 200);
+  robot.lift.lowerLiftIndex();
   robot.lift.lowerLiftIndex();
   while(robot.lift.liftSet == false){
     robot.lift.update();
@@ -33,12 +36,11 @@ void autoRedFront1(){
   }
   robot.drivetrain.driveDistance(12);
   robot.lift.lowerLiftIndex();
-  robot.lift.lowerLiftIndex();
   while(robot.lift.liftSet == false){
     robot.lift.update();
     pros::delay(5);
   }
-  robot.drivetrain.turnDegrees(-100);
+  robot.drivetrain.turnDegrees(-80);
   robot.drivetrain.driveDistance(40);
   robot.drivetrain.driveDistance(-24);
   robot.drivetrain.turnDegrees(90);
@@ -76,7 +78,7 @@ void autoRedBack1(){
     pros::delay(5);
   }
   robot.forklift.moveVelocity(-100);
-  pros::delay(110);
+  pros::delay(1100);
   robot.forklift.moveVelocity(0);
   robot.drivetrain.adjustDistance(200, 200); //aligns with the pole and drives forward
   robot.drivetrain.driveDistance(-6); //jolts back to the pole incase it backedup
@@ -119,9 +121,9 @@ void autoBlueFront1(){
   pros::delay(550); //waits for this action to complete
   robot.forklift.moveVelocity(0); //stops the forklift motor
   robot.drivetrain.driveDistance(46);
-  robot.drivetrain.driveDistance(-10);
+  robot.drivetrain.driveDistance(-20);
   robot.drivetrain.turnDegrees(90);
-  robot.drivetrain.driveDistance(14);
+  robot.drivetrain.driveDistance(11);
   robot.drivetrain.turnDegrees(90);
   robot.lift.raiseLiftIndex();
   robot.lift.raiseLiftIndex();
@@ -130,7 +132,10 @@ void autoBlueFront1(){
     robot.lift.update();
     pros::delay(5);
   }
+  robot.forklift.moveVelocity(-100);
+  pros::delay(1100);
   robot.drivetrain.adjustDistance(200, 200);
+  robot.lift.lowerLiftIndex();
   robot.lift.lowerLiftIndex();
   while(robot.lift.liftSet == false){
     robot.lift.update();
@@ -138,12 +143,11 @@ void autoBlueFront1(){
   }
   robot.drivetrain.driveDistance(12);
   robot.lift.lowerLiftIndex();
-  robot.lift.lowerLiftIndex();
   while(robot.lift.liftSet == false){
     robot.lift.update();
     pros::delay(5);
   }
-  robot.drivetrain.turnDegrees(100);
+  robot.drivetrain.turnDegrees(80);
   robot.drivetrain.driveDistance(40);
   robot.drivetrain.driveDistance(-24);
   robot.drivetrain.turnDegrees(-90);
@@ -210,6 +214,48 @@ void autoBlueBack1(){
   robot.forklift.moveVelocity(0);
 }
 
+void bluePlatform(){
+  Robot& robot = Robot::instance();
+
+  robot.drivetrain.driveDistance(-31);
+  robot.drivetrain.turnDegrees(90);
+  robot.drivetrain.driveAllVelocity(200,200);
+  pros::delay(3200);
+  robot.drivetrain.driveAll(0,0);
+}
+
+void blueOtherPlatformn(){
+  Robot& robot = Robot::instance();
+
+  robot.drivetrain.driveDistance(-60);
+  robot.drivetrain.driveDistance(12);
+  robot.drivetrain.turnDegrees(-94);
+  robot.drivetrain.driveAllVelocity(180,180);
+  pros::delay(2300);
+  robot.drivetrain.driveAll(0,0);
+}
+
+void redPlatform(){
+  Robot& robot = Robot::instance();
+
+  robot.drivetrain.driveDistance(-29);
+  robot.drivetrain.turnDegrees(-90);
+  robot.drivetrain.driveAllVelocity(200,200);
+  pros::delay(3200);
+  robot.drivetrain.driveAll(0,0);
+}
+
+void redOtherPlatform(){
+  Robot& robot = Robot::instance();
+
+  robot.drivetrain.driveDistance(-60);
+  robot.drivetrain.driveDistance(12);
+  robot.drivetrain.turnDegrees(94);
+  robot.drivetrain.driveAllVelocity(180,180);
+  pros::delay(2300);
+  robot.drivetrain.driveAll(0,0);
+}
+
 void autonomous() {
   Robot& robot = Robot::instance();
 
@@ -220,20 +266,20 @@ void autonomous() {
     case 1:
       switch((int)startingTile){
         case 1:
-          autoRedFront1();
+          redOtherPlatform();
           break;
         case 2:
-          autoRedBack1();
+          redPlatform();
           break;
       }
       break;
     case 2:
       switch((int)startingTile){
         case 1:
-          autoBlueFront1();
+          blueOtherPlatformn();
           break;
         case 2:
-          autoBlueBack1();
+          bluePlatform();
           break;
       }
       break;

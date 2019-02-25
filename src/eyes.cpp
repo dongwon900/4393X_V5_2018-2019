@@ -10,8 +10,6 @@ void print_sig(pros::vision_signature_s_t signature){
     signature.v_mean, signature.range, signature.type);
 }
 
-
-
 void Eyes::initialize(){
   // turn off wifi
   aiming_vision_sensor.set_wifi_mode(0);
@@ -46,18 +44,16 @@ void Eyes::call_autoaim(){
 
 // aligns the x position for now
 void Eyes::autoaim(){
+  // setup boi -- "initialization"
   Robot& robot = Robot::instance();
-
   // alliance color
   Alliance alliance = robot.display.getAlliance();
-
   // aiming bias. + is right, - is left
   // this allows you to aim slightly right or left
   int bias = 3;
-
   // the object x coordinate
   int x_coord = 10;
-
+  // the object to save to
   pros::vision_object_s_t object;
 
   pros::c::lcd_print(0, "object leftcoord, alliance: %d", object.left_coord, alliance);
@@ -75,11 +71,11 @@ void Eyes::autoaim(){
     // redefine object, in case it disappears or changes
     if(alliance == red){
       pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, redflag);
-      x_coord = object.left_coord + (object.width/2);
+      x_coord = object.x_middle_coord;
     }
     else if(alliance == blue){
       pros::vision_object_s_t object = aiming_vision_sensor.get_by_code(0, blueflag);
-      x_coord = object.left_coord + (object.width/2);
+      x_coord = object.x_middle_coord;
     }
 
     pros::c::lcd_print(0, "object leftcoord, alliance: %d", object.left_coord, alliance);
