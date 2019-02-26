@@ -118,8 +118,8 @@ void Lift::updateLiftPosition(){
 		} else {
 			liftMotor.move_voltage(upPVal(liftIndex)-1500);
 		}
-	} else if(!smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed) &&
-            !smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)){
+	} else if(smartController.isButtonState(controllerButtonNames::R1, controllerButtonState::isPressed) &&
+            smartController.isButtonState(controllerButtonNames::R2, controllerButtonState::isPressed)){
 		liftSet = true;
 	}
 }
@@ -142,4 +142,8 @@ void Lift::update(){
 
 int Lift::getLiftIndex(){
   return liftIndex;
+}
+
+int Lift::getPotValue(){
+  return potValue;
 }

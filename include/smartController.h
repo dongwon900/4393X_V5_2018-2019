@@ -4,6 +4,7 @@
 #include "main.h"
 #include "enums.h"
 
+//built on the okapi api controller and controllerButton, has the same functionality and more
 class SmartController{
 public:
   static SmartController* inst;
@@ -67,10 +68,3 @@ public:
 };
 
 #endif
-/*
-current issues with smart controller are that the intake will stay on instead of getting toggled
-the lift will not move at all, but the liftindex gets raised to max rigth away
-the launcher has a stutter in it, most likely from the updating of the button to changedToPressed during isPRessed state
-the drivetrain still works perfectly
-forklift works fine, maybe a slight stutter
-*/

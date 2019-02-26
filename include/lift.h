@@ -29,6 +29,7 @@ public:
   void updateLiftPosition();
   void update();
   int getLiftIndex();
+  int getPotValue();
 };
 
 #endif

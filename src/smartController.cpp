@@ -27,6 +27,7 @@ void SmartController::initialize(){
   }
 }
 
+//constructor boy
 SmartController::SmartController()
 :controller(),
 forkUp(ControllerDigital::L1, false),
@@ -160,6 +161,7 @@ bool SmartController::vectorDataCloseEnough(std::vector<int> newData, int resAdj
   return true; //if the data passed all the other tests than the joystick value are close enough and the buttons are the same so it should not get saved
 }
 
+//saves the current smartController state to the autoLog field
 void SmartController::saveDataToAutoLog(){
   //transferring the floats to integers multiplied by the maximum voltage (so they can be pulled out and converted later)
   float Yleft = leftY * 12000;
@@ -176,6 +178,7 @@ void SmartController::saveDataToAutoLog(){
   autoLog.push_back(internalStorage);
 }
 
+//takes an integer and turns it into a controllerButtonNames
 controllerButtonNames SmartController::intToButtonName(int buttonIndex){
   switch(buttonIndex){
     case 0:
@@ -269,7 +272,7 @@ controllerButtonState intToButtonState(int x){
   }
 }
 
-
+//Takes a the data from the SD card
 void SmartController::autoLogParser(std::vector<std::vector<int>>& autoData){
   if(autoData.size() == 1){
     return;

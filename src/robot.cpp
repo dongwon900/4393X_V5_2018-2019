@@ -35,6 +35,11 @@ void Robot::manualControl(float leftJoy, float rightJoy){
   //   smartController.isButtonState(controllerButtonNames::up, controllerButtonState::changedToPressed),
   //   smartController.isButtonState(controllerButtonNames::X, controllerButtonState::changedToPressed));
   //smartController.update();
+
+  pros::lcd::print(0, "PotValue: %d", lift.getPotValue());
+  pros::lcd::print(1, "LiftIndex: %d", lift.getLiftIndex());
+
+
   forklift.update();
   lift.update();
   launcher.update();
