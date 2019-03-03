@@ -1,5 +1,6 @@
 #include "smartController.h"
 
+//the master POINTER
 SmartController* SmartController::inst{nullptr};
 
 //set the smartController to initial values
@@ -30,21 +31,22 @@ void SmartController::initialize(){
 //constructor boy
 SmartController::SmartController()
 :controller(),
-forkUp(ControllerDigital::L1, false),
-forkDown(ControllerDigital::L2, false),
-btnUp(ControllerDigital::R1, false),
-btnDown(ControllerDigital::R2, false),
-toggleMaxSpeedButton(ControllerDigital::up, false),
-autoDistanceButton(ControllerDigital::down, false),
-recordAutoDataButton(ControllerDigital::left, false),
-autoButton(ControllerDigital::right, false),
-toggleDriveStateButton(ControllerDigital::X, false),
-toggleIntakeButton(ControllerDigital::B, false),
-miscButton(ControllerDigital::Y, false),
-shootButton(ControllerDigital::A, false) {
+L1(ControllerDigital::L1, false),
+L2(ControllerDigital::L2, false),
+R1(ControllerDigital::R1, false),
+R2(ControllerDigital::R2, false),
+up(ControllerDigital::up, false),
+down(ControllerDigital::down, false),
+left(ControllerDigital::left, false),
+right(ControllerDigital::right, false),
+X(ControllerDigital::X, false),
+B(ControllerDigital::B, false),
+Y(ControllerDigital::Y, false),
+A(ControllerDigital::A, false) {
   initialize();
 }
 
+//destructor boy
 SmartController::~SmartController(){
 
 }
@@ -62,29 +64,29 @@ controllerButtonState SmartController::buttonStateFromControllerButton(Controlle
 controllerButtonState SmartController::buttonStateFromButtonIndex(int buttonIndex){
   switch(buttonIndex){
     case 0:
-      return buttonStateFromControllerButton(forkUp);
+      return buttonStateFromControllerButton(this->L1);
     case 1:
-      return buttonStateFromControllerButton(forkDown);
+      return buttonStateFromControllerButton(this->L2);
     case 2:
-      return buttonStateFromControllerButton(btnUp);
+      return buttonStateFromControllerButton(this->R1);
     case 3:
-      return buttonStateFromControllerButton(btnDown);
+      return buttonStateFromControllerButton(this->R2);
     case 4:
-      return buttonStateFromControllerButton(toggleMaxSpeedButton);
+      return buttonStateFromControllerButton(this->up);
     case 5:
-      return buttonStateFromControllerButton(autoDistanceButton);
+      return buttonStateFromControllerButton(this->down);
     case 6:
-      return buttonStateFromControllerButton(recordAutoDataButton);
+      return buttonStateFromControllerButton(this->left);
     case 7:
-      return buttonStateFromControllerButton(autoButton);
+      return buttonStateFromControllerButton(this->right);
     case 8:
-      return buttonStateFromControllerButton(toggleDriveStateButton);
+      return buttonStateFromControllerButton(this->X);
     case 9:
-      return buttonStateFromControllerButton(toggleIntakeButton);
+      return buttonStateFromControllerButton(this->B);
     case 10:
-      return buttonStateFromControllerButton(miscButton);
+      return buttonStateFromControllerButton(this->Y);
     case 11:
-      return buttonStateFromControllerButton(shootButton);
+      return buttonStateFromControllerButton(this->A);
   }
 }
 
@@ -93,18 +95,22 @@ controllerButtonState SmartController::evaluateButton(int buttonIndex){
   if(buttonStateFromButtonIndex(buttonIndex) == controllerButtonState::isPressed){ //if the button is pressed continue on to check to see if it should be changedToPressed
     if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttonIndex] == false){ //if the button was notPressed before than clearly it is changedToPressed
       isButtonChangedToPressed[buttonIndex] = true;
-      isButtonPressed[buttonIndex] = true;
+      isButtonPressed[buttonIndex] = false;
       return controllerButtonState::changedToPressed;
-    } else if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttonIndex] == true){
-      return controllerButtonState::isPressed;
-    } else {
+    } else if(isButtonChangedToPressed[buttonIndex] == true && isButtonPressed[buttonIndex] == false){
       isButtonChangedToPressed[buttonIndex] = false;
       isButtonPressed[buttonIndex] = true;
       return controllerButtonState::isPressed;
+    } else if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttoniIdex] == true){
+      return controllerButtonState::isPressed;
+    } else if(isButtonChangedToPressed[buttonIndex] == true && isButtonPressed[buttonIndex] == true){
+      isButtonChangedToPressed[buttonIndex] == false;
+      return controllerButtonState::isPressed;
     }
-  } else { //if the button is notPressed than set everything to false and return notPressed
-    isButtonChangedToPressed[buttonIndex] = false;
+  } else if(isButtonPressed[buttonIndex] == true){ //if the button is notPressed than set everything to false and return notPressed
     isButtonPressed[buttonIndex] = false;
+    return controllerButtonState::changedToNotPressed;
+  } else if(isButtonPressed[buttonIndex] == false){
     return controllerButtonState::notPressed;
   }
 }
@@ -112,9 +118,6 @@ controllerButtonState SmartController::evaluateButton(int buttonIndex){
 //takes the button and runs evaluateButton and returns the result
 controllerButtonState SmartController::updateButton(controllerButtonNames button){
   int buttonIndex = (int) button;
-
-
-
   return evaluateButton(buttonIndex);
 }
 
@@ -315,15 +318,7 @@ void SmartController::autonomousUpdate(std::vector<std::vector<int>>& autoData){
 
 //Takes a controllerButtonState and returns an integer
 int SmartController::controllerButtonStateToInt(controllerButtonState buttonState){
-  if(buttonState == controllerButtonState::isPressed){
-    return 0;
-  } else if(buttonState == controllerButtonState::notPressed){
-    return 1;
-  } else if(buttonState == controllerButtonState::changedToPressed){
-    return 2;
-  } else {
-    return 1;
-  }
+  return (int)buttonState;
 }
 
 //gets a reference to the smartcontroller object
@@ -349,4 +344,76 @@ void SmartController::operator=(const SmartController& controller){
   this->isRecording = controller.isRecording;
   this->isButtonChangedToPressed = controller.isButtonChangedToPressed;
   this->isButtonPressed = controller.isButtonPressed;
+}
+
+void SmartController::saveData(std::string data){
+
+}
+
+CSVWriter::CSVWriter(std::string filename, std::string delm = ",")
+:fileName(filename), delimeter(delm), lineCount(0),
+{
+}
+
+//return the lineCount
+int CSVWriter::getLineCount(){
+  return lineCount;
+}
+
+//This method takes a range of data and appends it as a row with a delimeter (default is comma)
+void CSVWriter::addDataInRow(T first, T last){
+  std::fstream file;
+	// Open the file in truncate mode if first line else in Append Mode
+	file.open(fileName, std::ios::out | (linesCount ? std::ios::app : std::ios::trunc));
+
+  // Iterate over the range and add each lement to file seperated by delimeter.
+	for (; first != last; ) {
+		file << *first;
+		if (++first != last)
+			file << delimeter;
+	}
+	file << "\n";
+	linesCount++;
+
+	// Close the file
+	file.close();
+}
+
+//This method appends a nested set of ranges with a delimeter (default is comma)
+void CSVWriter::addNestedRanges(T first, T last){
+  std::fstream file;
+	// Open the file in truncate mode if first line else in Append Mode
+	file.open(fileName, std::ios::out | (linesCount ? std::ios::app : std::ios::trunc));
+
+  // Iterate over the range and add each lement to file seperated by delimeter.
+	for (; first != last; ) {
+		file << addDataInRow(*first.begin(), *first.end());
+	}
+
+	// Close the file
+	file.close();
+}
+
+CSVReader::CSVReader(std::string filename, std::string delm = ",")
+:fileName(filename), delimeter(delm)
+{
+}
+
+std::vector<std::vector<string>> CSVReader::getData(){
+  std::ifstream file(fileName);
+
+	std::vector<std::vector<std::string> > dataList;
+
+	std::string line = "";
+	// Iterate through each line and split the content using delimeter
+	while (getline(file, line))
+	{
+		std::vector<std::string> vec;
+		boost::algorithm::split(vec, line, boost::is_any_of(delimeter));
+		dataList.push_back(vec);
+	}
+	// Close the File
+	file.close();
+
+	return dataList;
 }

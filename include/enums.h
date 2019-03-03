@@ -32,7 +32,8 @@ enum StartingTile{
 enum class controllerButtonState{
   notPressed,
 	isPressed,
-  changedToPressed
+  changedToPressed,
+	changedToNotPressed
 };
 
 enum controllerButtonNames{
