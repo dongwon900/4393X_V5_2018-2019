@@ -75,12 +75,13 @@ class CSVWriter {
     std::string delimeter;
     int lineCount;
   public:
-    CSVWriter(std::string fileName);
+    CSVWriter(std::string filename);
     int getLineCount();
-    template <typename T>
     //Method to append a range to the file
+    template <typename T>
     void addDataInRow(T first, T last);
     //Method to append nested ranges to the file
+    template <typename T>
     void addNestedRanges(T first, T last);
 };
 
@@ -91,7 +92,25 @@ class CSVReader {
   public:
       CSVReader(std::string filename);
       //Method to fetch data from a CSV File
-	    std::vector<std::vector<std::string> > getData();
+	    std::vector<std::vector<std::string>> getData();
+};
+
+class CSVInterface {
+  private:
+    CSVWriter writer;
+    CSVReader reader;
+    std::string fileName;
+    std::string delimeter;
+    int lineCount;
+  public:
+    CSVInterface(std::string filename);
+    int getLineCount();
+    template <typename T>
+    void addData(T first, T last);
+    template <typename T>
+    void addNestedData(T first, T last);
+    std::vector<std::vector<std::string>> getData();
+    std::vector<std::vector<int>> getDataAsInt();
 };
 
 #endif

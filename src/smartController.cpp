@@ -101,7 +101,7 @@ controllerButtonState SmartController::evaluateButton(int buttonIndex){
       isButtonChangedToPressed[buttonIndex] = false;
       isButtonPressed[buttonIndex] = true;
       return controllerButtonState::isPressed;
-    } else if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttoniIdex] == true){
+    } else if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttonIndex] == true){
       return controllerButtonState::isPressed;
     } else if(isButtonChangedToPressed[buttonIndex] == true && isButtonPressed[buttonIndex] == true){
       isButtonChangedToPressed[buttonIndex] == false;
@@ -172,7 +172,14 @@ void SmartController::saveDataToAutoLog(){
   float Yright = rightY * 12000;
   float Xright = rightX * 12000;
   //saving to vector
-  std::vector<int> internalStorage {(int)Yleft, (int)Xleft, (int)Yright, (int)Xright, L1, L2, R1, R2, up, down, left, right, X, B, Y, A, (currentMillis - startMillis)};
+  std::vector<int> internalStorage;
+  internalStorage.push_back((int)leftY);
+  internalStorage.push_back((int)leftX);
+  internalStorage.push_back((int)rightY);
+  internalStorage.push_back((int)rightX);
+  for(unsigned int i = 0; i < buttonStates.size(); i++){
+    internalStorage.push_back(controllerButtonStateToInt(buttonStates[i]));
+  }
 
   if(vectorDataCloseEnough(internalStorage, 20)){ //checking to see if the data is "different" enough to justify saving
     return;
@@ -416,4 +423,41 @@ std::vector<std::vector<string>> CSVReader::getData(){
 	file.close();
 
 	return dataList;
+}
+
+CSVInterface::CSVInterface(std::string filename. std::string delm = ",")
+:CSVWriter(filename), CSVReader(filename), fileName(filename), delimeter(delm), lineCount(CSVWriter.getLineCount)
+{
+}
+
+int CSVInterface::getLineCount(){
+  lineCount = CSVWriter.getLineCount();
+  return CSVWriter.getLineCount();
+}
+
+void CSVInterface::addData(T first, T last){
+  CSVWriter.addDataInRow(first, last);
+}
+
+void CSVInterface::addNestedData(T first, T last){
+  CSVWriter.addNestedRanges(first, last);
+}
+
+std::vector<std::vector<std::string>> CSVInterface::getData(){
+  CSVReader.getData();
+}
+
+std::vector<std::vector<int>> CSVInterface::getDataAsInt(){
+  std::vector<std::vector<std::string>> data = CSVReader.getData();
+  std::vector<std::vector<int>> dataAsInt;
+
+  for(unsigned int i = 0; i < data.size(); i++){
+    std::vector<int> dataInLine;
+    for(unsigned int n = 0; n < data[i].size(); n++){
+      dataInLine.push_back(std::stoi(data[i][n]));
+    }
+    dataAsInt.push_back(dataInLine);
+  }
+
+  return dataAsInt;
 }

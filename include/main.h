@@ -78,6 +78,12 @@ void opcontrol(void);
  */
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <iterator>
+#include <string>
+#include <algorithm>
+//#include <boost/algorithm/string.hpp>
+
 #endif
 
 #endif  // _PROS_MAIN_H_
