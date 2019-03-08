@@ -82,7 +82,7 @@ void opcontrol(void);
 #include <iterator>
 #include <string>
 #include <algorithm>
-//#include <boost/algorithm/string.hpp>
+#include <sstream>
 
 #endif
 

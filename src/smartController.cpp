@@ -339,6 +339,7 @@ SmartController& SmartController::instance(){
 //sets the fields of one smartController equal to another one
 //This is now defunct because smartController is singleton but I left it in since it may be useful for updating the controller is other ways
 void SmartController::operator=(const SmartController& controller){
+  this->inst = controller.inst;
   this->leftY = controller.leftY;
   this->leftX = controller.leftX;
   this->rightY = controller.rightY;
@@ -351,14 +352,33 @@ void SmartController::operator=(const SmartController& controller){
   this->isRecording = controller.isRecording;
   this->isButtonChangedToPressed = controller.isButtonChangedToPressed;
   this->isButtonPressed = controller.isButtonPressed;
+  this->autoLog = controller.autoLog;
 }
 
-void SmartController::saveData(std::string data){
-
+void SmartController::saveDataToSDCard(std::string filename){
+  CSVInterface interface(filename);
+  interface.addNestedData(autoLog.begin(), autoLog.end());
 }
 
-CSVWriter::CSVWriter(std::string filename, std::string delm = ",")
-:fileName(filename), delimeter(delm), lineCount(0),
+void SmartController::loadDataFromSDCard(std::string filename){
+  CSVInterface interface(filename);
+  autoLog = interface.getDataAsInt();
+}
+
+std::vector<std::string> split(const std::string& str, char delimiter)
+{
+   std::vector<std::string> tokens;
+   std::string token;
+   std::istringstream tokenStream(str);
+   while (std::getline(tokenStream, token, delimiter))
+   {
+      tokens.push_back(token);
+   }
+   return tokens;
+}
+
+CSVWriter::CSVWriter(std::string filename)
+:fileName(filename), delimeter(","), lineCount(0)
 {
 }
 
@@ -367,11 +387,12 @@ int CSVWriter::getLineCount(){
   return lineCount;
 }
 
+template <typename T>
 //This method takes a range of data and appends it as a row with a delimeter (default is comma)
 void CSVWriter::addDataInRow(T first, T last){
   std::fstream file;
 	// Open the file in truncate mode if first line else in Append Mode
-	file.open(fileName, std::ios::out | (linesCount ? std::ios::app : std::ios::trunc));
+	file.open(fileName, std::ios::out | (lineCount ? std::ios::app : std::ios::trunc));
 
   // Iterate over the range and add each lement to file seperated by delimeter.
 	for (; first != last; ) {
@@ -380,43 +401,45 @@ void CSVWriter::addDataInRow(T first, T last){
 			file << delimeter;
 	}
 	file << "\n";
-	linesCount++;
+	lineCount++;
 
 	// Close the file
 	file.close();
 }
 
+template <typename T>
 //This method appends a nested set of ranges with a delimeter (default is comma)
 void CSVWriter::addNestedRanges(T first, T last){
   std::fstream file;
 	// Open the file in truncate mode if first line else in Append Mode
-	file.open(fileName, std::ios::out | (linesCount ? std::ios::app : std::ios::trunc));
+	file.open(fileName, std::ios::out | (lineCount ? std::ios::app : std::ios::trunc));
 
   // Iterate over the range and add each lement to file seperated by delimeter.
 	for (; first != last; ) {
-		file << addDataInRow(*first.begin(), *first.end());
+		addDataInRow((*first).begin(), (*first).end());
 	}
 
 	// Close the file
 	file.close();
 }
 
-CSVReader::CSVReader(std::string filename, std::string delm = ",")
-:fileName(filename), delimeter(delm)
+CSVReader::CSVReader(std::string filename)
+:fileName(filename), delimeter(",")
 {
 }
 
-std::vector<std::vector<string>> CSVReader::getData(){
+std::vector<std::vector<std::string>> CSVReader::getData(){
   std::ifstream file(fileName);
 
 	std::vector<std::vector<std::string> > dataList;
 
 	std::string line = "";
+  char delim = ',';
 	// Iterate through each line and split the content using delimeter
 	while (getline(file, line))
 	{
 		std::vector<std::string> vec;
-		boost::algorithm::split(vec, line, boost::is_any_of(delimeter));
+		vec = split(line, delim);
 		dataList.push_back(vec);
 	}
 	// Close the File
@@ -425,30 +448,32 @@ std::vector<std::vector<string>> CSVReader::getData(){
 	return dataList;
 }
 
-CSVInterface::CSVInterface(std::string filename. std::string delm = ",")
-:CSVWriter(filename), CSVReader(filename), fileName(filename), delimeter(delm), lineCount(CSVWriter.getLineCount)
+CSVInterface::CSVInterface(std::string filename)
+:writer(filename), reader(filename), fileName(filename), delimeter(","), lineCount(this->writer.getLineCount())
 {
 }
 
 int CSVInterface::getLineCount(){
-  lineCount = CSVWriter.getLineCount();
-  return CSVWriter.getLineCount();
+  lineCount = writer.getLineCount();
+  return writer.getLineCount();
 }
 
+template <typename T>
 void CSVInterface::addData(T first, T last){
-  CSVWriter.addDataInRow(first, last);
+  writer.addDataInRow(first, last);
 }
 
+template <typename T>
 void CSVInterface::addNestedData(T first, T last){
-  CSVWriter.addNestedRanges(first, last);
+  writer.addNestedRanges(first, last);
 }
 
 std::vector<std::vector<std::string>> CSVInterface::getData(){
-  CSVReader.getData();
+  reader.getData();
 }
 
 std::vector<std::vector<int>> CSVInterface::getDataAsInt(){
-  std::vector<std::vector<std::string>> data = CSVReader.getData();
+  std::vector<std::vector<std::string>> data = reader.getData();
   std::vector<std::vector<int>> dataAsInt;
 
   for(unsigned int i = 0; i < data.size(); i++){

@@ -64,9 +64,8 @@ class SmartController{
     void saveDataToAutoLog();
     void autoLogParser(std::vector<std::vector<int>>& autoData);
     void autonomousUpdate(std::vector<std::vector<int>>& autoData);
-    void saveData(std::string data);
-    std::vector<int> getSmartControllerLine();
-    void getAutoLog(int autoLogIndex);
+    void saveDataToSDCard(std::string filename);
+    void loadDataFromSDCard(std::string filename);
 };
 
 class CSVWriter {
