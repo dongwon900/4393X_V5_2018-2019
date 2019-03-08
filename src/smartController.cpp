@@ -234,12 +234,14 @@ void SmartController::update(){
   if(buttonStates[7] == controllerButtonState::changedToPressed){ //checks the recordAutoDataButton to see if it was changedToPressed
     if(isRecording){
       isRecording = false;
+      saveDataToSDCard("robotSkills");
     } else {
       isRecording = true;
+      saveDataToAutoLog();
     }
   }
 
-  if(isRecording){ //if the recordAutoDataButton was changedToPressed then save the data
+  if(isRecording){
     saveDataToAutoLog();
   }
 }
