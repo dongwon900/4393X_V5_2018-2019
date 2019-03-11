@@ -37,6 +37,7 @@ enum class controllerButtonState{
 };
 
 enum controllerButtonNames{
+	none,
 	L1,
 	L2,
 	R1,

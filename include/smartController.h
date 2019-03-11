@@ -5,6 +5,7 @@
 #include "enums.h"
 
 //built on the okapi api controller and controllerButton, has the same functionality and more
+//smartController is singleton themed so that way there cannot be multiple 'controllers' controlling multiple things
 class SmartController{
   public:
     static SmartController* inst;
@@ -27,6 +28,8 @@ class SmartController{
     float rightY;
     float rightX;
     std::vector<controllerButtonState> buttonStates;
+    //the button to record data
+    controllerButtonNames recordingButton;
     //Stores data for use in simulating opcontrol in auto
     int startMillis;
     int currentMillis;
@@ -41,10 +44,13 @@ class SmartController{
     std::vector<std::vector<int>> autoLog;
   private:
     SmartController();
+    SmartController(controllerButtonNames recordingButton);
   public:
     static SmartController& instance();
+    static SmartController& instance(controllerButtonNames recordingButton);
     void operator=(const SmartController& controller);
     void initialize();
+    void initialize(controllerButtonNames recordingButton);
     ~SmartController();
     controllerButtonState buttonStateFromControllerButton(ControllerButton button);
     controllerButtonState buttonStateFromButtonIndex(int buttonIndex);

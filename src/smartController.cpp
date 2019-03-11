@@ -26,6 +26,12 @@ void SmartController::initialize(){
   for(unsigned int i = 0; i < 12; i++){
     isButtonPressed[i] = false;
   }
+  recordingButton = controllerButtonNames::none;
+}
+
+void SmartController::initialize(controllerButtonNames recordingButton){
+  initialize();
+  this->recordingButton = recordingButton;
 }
 
 //constructor boy
@@ -46,6 +52,11 @@ A(ControllerDigital::A, false) {
   initialize();
 }
 
+SmartController::SmartController(controllerButtonNames recordingButton):SmartController()
+{
+  this->recordingButton = recordingButton;
+}
+
 //destructor boy
 SmartController::~SmartController(){
 
@@ -63,29 +74,29 @@ controllerButtonState SmartController::buttonStateFromControllerButton(Controlle
 //takes a buttonIndex which is than turned into a button name from an inOrder list
 controllerButtonState SmartController::buttonStateFromButtonIndex(int buttonIndex){
   switch(buttonIndex){
-    case 0:
-      return buttonStateFromControllerButton(this->L1);
     case 1:
-      return buttonStateFromControllerButton(this->L2);
+      return buttonStateFromControllerButton(this->L1);
     case 2:
-      return buttonStateFromControllerButton(this->R1);
+      return buttonStateFromControllerButton(this->L2);
     case 3:
-      return buttonStateFromControllerButton(this->R2);
+      return buttonStateFromControllerButton(this->R1);
     case 4:
-      return buttonStateFromControllerButton(this->up);
+      return buttonStateFromControllerButton(this->R2);
     case 5:
-      return buttonStateFromControllerButton(this->down);
+      return buttonStateFromControllerButton(this->up);
     case 6:
-      return buttonStateFromControllerButton(this->left);
+      return buttonStateFromControllerButton(this->down);
     case 7:
-      return buttonStateFromControllerButton(this->right);
+      return buttonStateFromControllerButton(this->left);
     case 8:
-      return buttonStateFromControllerButton(this->X);
+      return buttonStateFromControllerButton(this->right);
     case 9:
-      return buttonStateFromControllerButton(this->B);
+      return buttonStateFromControllerButton(this->X);
     case 10:
-      return buttonStateFromControllerButton(this->Y);
+      return buttonStateFromControllerButton(this->B);
     case 11:
+      return buttonStateFromControllerButton(this->Y);
+    case 12:
       return buttonStateFromControllerButton(this->A);
   }
 }
@@ -231,18 +242,12 @@ void SmartController::update(){
 
   currentMillis = pros::millis(); //generates the timestamp
 
-  if(buttonStates[7] == controllerButtonState::changedToPressed){ //checks the recordAutoDataButton to see if it was changedToPressed
-    if(isRecording){
-      isRecording = false;
-      saveDataToSDCard("robotSkills");
-    } else {
-      isRecording = true;
-      saveDataToAutoLog();
-    }
-  }
-
+  //saves the collected data for a cycle to the autoLog
   if(isRecording){
     saveDataToAutoLog();
+    printf("I am recording");
+  } else {
+    printf("Not recording");
   }
 }
 
@@ -330,10 +335,20 @@ int SmartController::controllerButtonStateToInt(controllerButtonState buttonStat
   return (int)buttonState;
 }
 
-//gets a reference to the smartcontroller object
+//gets a reference to the smartcontroller object with no recordingbutton
+//once you generate the smartcontroller with or without a recordingbutton you cannot generate one with the other orientation
 SmartController& SmartController::instance(){
   if(!inst){
     inst = new SmartController();
+  }
+  return *inst;
+}
+
+//gets a reference to the smartController object with a recordingButton
+//once you generate the smartcontroller with or without a recordingbutton you cannot generate one with the other orientation
+SmartController& SmartController::instance(controllerButtonNames recordingButton){
+  if(!inst){
+    inst = new SmartController(recordingButton);
   }
   return *inst;
 }
@@ -357,16 +372,19 @@ void SmartController::operator=(const SmartController& controller){
   this->autoLog = controller.autoLog;
 }
 
+//takes a filename and saves the data from the controller to the SD card in a CSV
 void SmartController::saveDataToSDCard(std::string filename){
   CSVInterface interface(filename);
   interface.addNestedData(autoLog.begin(), autoLog.end());
 }
 
+//takes a filename and gets a file with that name and loads the data to the autoLog
 void SmartController::loadDataFromSDCard(std::string filename){
   CSVInterface interface(filename);
   autoLog = interface.getDataAsInt();
 }
 
+//takes a string and removes the delimeter and returns each item has an index in a vector
 std::vector<std::string> split(const std::string& str, char delimiter)
 {
    std::vector<std::string> tokens;
@@ -379,6 +397,7 @@ std::vector<std::string> split(const std::string& str, char delimiter)
    return tokens;
 }
 
+//CSVWriter is used to write data as a CSV to the SDCARD
 CSVWriter::CSVWriter(std::string filename)
 :fileName(filename), delimeter(","), lineCount(0)
 {
@@ -425,11 +444,13 @@ void CSVWriter::addNestedRanges(T first, T last){
 	file.close();
 }
 
+//CSVReader loads data as a CSV from the SDCARD
 CSVReader::CSVReader(std::string filename)
 :fileName(filename), delimeter(",")
 {
 }
 
+//Gets the data from the SDCard and returns it
 std::vector<std::vector<std::string>> CSVReader::getData(){
   std::ifstream file(fileName);
 
@@ -450,30 +471,36 @@ std::vector<std::vector<std::string>> CSVReader::getData(){
 	return dataList;
 }
 
+//CSVInterface is the wrapper for the CSVReader and the CSVWriter to allow easy use of CSV files on the SDCARD
 CSVInterface::CSVInterface(std::string filename)
 :writer(filename), reader(filename), fileName(filename), delimeter(","), lineCount(this->writer.getLineCount())
 {
 }
 
+//Gets the lineCount of the file, if known
 int CSVInterface::getLineCount(){
   lineCount = writer.getLineCount();
   return writer.getLineCount();
 }
 
+//Adds data to the file from the first and last iterator
 template <typename T>
 void CSVInterface::addData(T first, T last){
   writer.addDataInRow(first, last);
 }
 
+//Adds nestedData using the first and last iterator of the parent object
 template <typename T>
 void CSVInterface::addNestedData(T first, T last){
   writer.addNestedRanges(first, last);
 }
 
+//Gets the data from the SDCard
 std::vector<std::vector<std::string>> CSVInterface::getData(){
-  reader.getData();
+  return reader.getData();
 }
 
+//Gets the data and converts it to intergers for ease of use
 std::vector<std::vector<int>> CSVInterface::getDataAsInt(){
   std::vector<std::vector<std::string>> data = reader.getData();
   std::vector<std::vector<int>> dataAsInt;
