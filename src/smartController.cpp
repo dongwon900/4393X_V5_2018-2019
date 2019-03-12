@@ -15,6 +15,7 @@ void SmartController::initialize(){
   parsedData = false;
   timestampDiff = 0;
   isRecording = false;
+  changedToNotRecording = false;
   isButtonChangedToPressed.resize(12);
   isButtonPressed.resize(12);
   for(unsigned int i = 0; i < 12; i++){
@@ -106,30 +107,36 @@ controllerButtonState SmartController::evaluateButton(int buttonIndex){
   if(buttonStateFromButtonIndex(buttonIndex) == controllerButtonState::isPressed){ //if the button is pressed continue on to check to see if it should be changedToPressed
     if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttonIndex] == false){ //if the button was notPressed before than clearly it is changedToPressed
       isButtonChangedToPressed[buttonIndex] = true;
-      isButtonPressed[buttonIndex] = false;
+      isButtonPressed[buttonIndex] = true;
       return controllerButtonState::changedToPressed;
-    } else if(isButtonChangedToPressed[buttonIndex] == true && isButtonPressed[buttonIndex] == false){
+    }
+    else if(isButtonChangedToPressed[buttonIndex] == true && isButtonPressed[buttonIndex] == true){ //if the button isPressed and was previously changedToPressed
       isButtonChangedToPressed[buttonIndex] = false;
       isButtonPressed[buttonIndex] = true;
       return controllerButtonState::isPressed;
-    } else if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttonIndex] == true){
-      return controllerButtonState::isPressed;
-    } else if(isButtonChangedToPressed[buttonIndex] == true && isButtonPressed[buttonIndex] == true){
-      isButtonChangedToPressed[buttonIndex] == false;
+    }
+    else if(isButtonChangedToPressed[buttonIndex] == false && isButtonPressed[buttonIndex] == true){ //if the button isPressed already
       return controllerButtonState::isPressed;
     }
-  } else if(isButtonPressed[buttonIndex] == true){ //if the button is notPressed than set everything to false and return notPressed
+    else {
+      return controllerButtonState::isPressed; //if all else fails return isPressed
+    }
+  }
+  else if(isButtonPressed[buttonIndex] == true){ //if the button is notPressed than set everything to false and return notPressed
     isButtonPressed[buttonIndex] = false;
     return controllerButtonState::changedToNotPressed;
-  } else if(isButtonPressed[buttonIndex] == false){
+  }
+  else if(isButtonPressed[buttonIndex] == false){
     return controllerButtonState::notPressed;
+  }
+  else {
+    controllerButtonState::notPressed;
   }
 }
 
 //takes the button and runs evaluateButton and returns the result
 controllerButtonState SmartController::updateButton(controllerButtonNames button){
-  int buttonIndex = (int) button;
-  return evaluateButton(buttonIndex);
+  return evaluateButton(button);
 }
 
 //if the x is between the low and the high than it returns true
@@ -138,6 +145,7 @@ bool SmartController::inRange(int low, int high, int x){
 }
 
 //return true to ignore the data and false to save it. The data is similar if the joysticks are within the resAdjust of the old readings and the buttons are the same
+//newData is the most recently RECORDED (not saved) data. So it is the data that is waiting to be saved
 bool SmartController::vectorDataCloseEnough(std::vector<int> newData, int resAdjust){
   if(autoLog.size() < 1){ //checks to see if there is data in autoLog to compare
     return false;
@@ -241,6 +249,14 @@ void SmartController::update(){
   }
 
   currentMillis = pros::millis(); //generates the timestamp
+
+  if(buttonStates[recordingButton] == controllerButtonState::changedToPressed){
+    isRecording = true;
+  }
+  if(buttonStates[recordingButton] == controllerButtonState::changedToNotPressed){
+    isRecording = false;
+    saveDataToSDCard("robotSkills");
+  }
 
   //saves the collected data for a cycle to the autoLog
   if(isRecording){

@@ -36,6 +36,7 @@ class SmartController{
     bool parsedData;
     int timestampDiff;
     bool isRecording;
+    bool changedToNotRecording;
     std::vector<bool> isButtonChangedToPressed;
     std::vector<bool> isButtonPressed;
     //The first four indexes are the floats converted to integral form
